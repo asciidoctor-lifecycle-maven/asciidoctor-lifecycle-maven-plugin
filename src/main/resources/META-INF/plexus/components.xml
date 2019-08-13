@@ -8,7 +8,6 @@
                 <id>mydoctor-build</id>
                 <phases>
                     <phase>theme-download</phase>
-                    <phase>generate-documentation</phase>
                     <phase>pre-build</phase>
                     <phase>build</phase>
                     <phase>post-build</phase>
