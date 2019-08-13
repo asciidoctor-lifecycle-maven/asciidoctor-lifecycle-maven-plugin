@@ -23,6 +23,7 @@ ifdef::env-github[]
 :caution-caption: :fire:
 :warning-caption: :warning:
 endif::[]
+
 // Badges
 ifdef::badges[]
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/mydoctor-maven-plugin/mydoctor-maven-plugin"]
