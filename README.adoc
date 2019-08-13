@@ -1,6 +1,8 @@
 = mydoctor-maven-plugin
 //
 :release-version: 1.0-SNAPSHOT
+:idprefix:
+:idseparator: -
 //
 ifdef::env-github,env-browser[]
 :toc: preamble
@@ -29,5 +31,139 @@ ifdef::badges[]
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/mydoctor-maven-plugin/mydoctor-maven-plugin"]
 endif::[]
 
-A lifecycle and custom mojos to isolate the building of asciidoctor documentation from the default lifecycle with the asciidoctor-maven-plugin
+A lifecycle and custom mojos to isolate the building of asciidoctor
+documentation from the default lifecycle with the asciidoctor-maven-plugin.
 
+== About this project
+
+=== What this project offers?
+
+This project offers a new Maven plugin, with the following functionalities (this is a work in progress):
+
+* A new lifecycle, designed for resolving some of the needs I've found in my personal projects.
+* A mojo for downloading themes for using with Asciidoctor Maven Plugin.
+
+I hope this plugin helps others to write a cleaner separation between the build of the asciidoc documentation 
+
+=== Why this project?
+
+This project tries to cover those aspects of asciidoctor-maven-plugin that doesn't fit well with the Maven default lifecycle.
+What are this aspects?
+
+* When a project contains asciidoc documentation and code, you need a complicated configuration to build only asciidoc or only code.
+Profiles here may be a solution, specifying modules to build in every one, but...
+* The default lifecycle seems oriented to code building;
+this is not something negative in itself, 
+but the name of the phases are confusing enough if we think about documentation and not code (`compile`, `test`, `verify`).
+* If you want to build the site documentation, Maven offers you another lifecycle, the *site* lifecycle.
+* If you need to download a theme for generating a pdf (for example) you need to use the `dependency:get` as a solution,
+and if you need to do something more with the theme content may be you more and more configuration.
+
+So, why not develop a custom lifecycle?
+
+== Themes
+=== What is a theme?
+
+For the moment a theme in mydoctor is only an artifact wich zip packaging.
+This requirement allow us uncompress its contents to a folder.
+
+At the moment it has not been formally defined or its contents established.
+
+== How to use it
+
+=== Configure the new lifecycle in our projects
+
+It is very easy use this new lifecycle.
+It is a standard Maven plugin.
+
+[source,xml]
+----
+<plugin>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>mydoctor-maven-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <extensions>true</extensions> <!--1-->
+</plugin>
+----
+<1> We use the plugin as an extension.
+
+=== Configure the asciidoctor-maven-plugin
+
+We configure the
+https://github.com/asciidoctor/asciidoctor-maven-plugin/[asciidoctor-maven-plugin]
+attaching the `process-asciidoc` goal to the `build` phase.
+
+
+[source,xml]
+----
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>1.5.8</version>
+    <executions>
+    <!-- So many executions as you need -->
+        <execution>
+            <id>output-html</id>              
+            <phase>build</phase> <!--1-->
+            <goals>
+                <goal>process-asciidoc</goal> 
+            </goals>
+            <configuration>
+                <backend>html5</backend>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+<1> We attach the `asciidoctor-maven-plugin:process-asciidoc` goal 
+to the build phase of the `mydoctor-build` lifecycle.
+
+We are ready to generate our documentation separate of the normal build of our code.
+
+=== Generate the html documents
+
+[source,bash]
+----
+mvn build
+----
+
+=== Requirements
+
+* Java 7+
+* Maven 3.5.0
+
+=== How themes are managed by the plugin?
+
+You can define the use of a theme (downloading and unpacking it to a directory) as part of the
+mydoctor-maven-plugin configuration.
+
+You can configure so many themes as you desire.
+The themes are expressed as Maven coordinates as:
+
+<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>
+
+So a valid expression from a theme may be `groupId:artifactId:zip:3.3.3`, for example.
+
+WARNING: Remember that the only requirement for a theme is a zip packaging.
+
+[source,xml]
+----
+<plugin>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>mydoctor-maven-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <extensions>true</extensions> <!--1-->
+    <configuration>
+        <themes>
+            <theme>groupId:artifactId:zip:3.3.3</theme> <!--1-->
+            <theme>groupId:artifactId2:zip:4.1.1</theme> <!--2-->
+        </themes>
+        <themesBaseDir>${project.build.directory}/themes</themesBaseDir> <!--3-->
+    </configuration>
+</plugin>
+----
+<1> The coordinates of the first theme.
+<2> The coordinates of the second theme.
+<3> The directory where themes will be unzipping.
+The defalut value is `${project.build.directory}/mydoctor-themes`.
