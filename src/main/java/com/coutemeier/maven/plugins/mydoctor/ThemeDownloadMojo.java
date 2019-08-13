@@ -23,17 +23,14 @@ import com.coutemeier.maven.plugins.mydoctor.util.ZipUtil;
  * <p>
  * This mojo downloads a list of themes and unpack every one to its own folder.
  */
-@Mojo( name="theme-download", requiresProject = false, threadSafe = true )
+@Mojo( name="theme-download", requiresProject = true, threadSafe = true )
 public class ThemeDownloadMojo
 extends AbstractMyDoctorMojo {
-    @Parameter( property = "mydoctor.themes", required = true )
-    private List<String> themes;
-
-    /**
-     * The entry point to Aether, i.e. the component doing all the work.
+	/**
+     * The list of themes to download and unzip
      */
-    @Component
-    private RepositorySystem repoSystem;
+    @Parameter( property = "mydoctor.themes", required = false )
+    private List<String> themes;
 
     /**
      * Disable the unzip of the themes
@@ -41,7 +38,13 @@ extends AbstractMyDoctorMojo {
     @Parameter( property="mydoctor.disableUnzip", defaultValue="false" )
     private boolean disableUnzip;
 
-    /**
+   /**
+     * The entry point to Aether, i.e. the component doing all the work.
+     */
+    @Component
+    private RepositorySystem repoSystem;
+
+   /**
      * The current repository/network configuration of Maven.
      */
     @Parameter( defaultValue = "${repositorySystemSession}", readonly = true )
