@@ -17,6 +17,7 @@ ifndef::env-github[:icons: font]
 :uri-examples: https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin-examples
 :uri-maven: http://maven.apache.org
 ifdef::env-github[]
+:!toc-title:
 :badges:
 :tag: master
 :tip-caption: :bulb:
