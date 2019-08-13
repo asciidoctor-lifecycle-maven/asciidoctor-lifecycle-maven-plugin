@@ -108,7 +108,7 @@ At the moment it has not been formally defined or its contents established.
 
 == How to use it
 
-=== Configure the new lifecycle in our projects
+=== Configure the new lifecycle in pom.xml
 
 It is very easy use this new lifecycle.
 It is a standard Maven plugin.
