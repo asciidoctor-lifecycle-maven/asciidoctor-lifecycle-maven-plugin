@@ -17,6 +17,7 @@ ifndef::env-github[:icons: font]
 :uri-examples: https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin-examples
 :uri-maven: http://maven.apache.org
 ifdef::env-github[]
+:!toc-title:
 :badges:
 :tag: master
 :tip-caption: :bulb:
@@ -60,6 +61,15 @@ but the name of the phases are confusing enough if we think about documentation 
 and if you need to do something more with the theme content may be you more and more configuration.
 
 So, why not develop a custom lifecycle?
+
+== Status of this project
+
+This project is a Work In Progress, in early stage of development.
+You can test it or use it at your own projects, but you should understand:
+
+. Something can change at any time before the first release, breaking compatibility with pre releases versions.
+. There is no version available in any repository yet.
+. You have to build it with your own hands (it is not difficult, it is a standard Maven project).
 
 == A custom lifecycle for build Asciidoctor projects
 
@@ -150,14 +160,12 @@ We are ready to generate our documentation separate of the normal build of our c
 
 === Generate the html documents
 
-[source,bash]
-----
+[source,shell]
 mvn build
-----
 
 === Requirements
 
-* Java 7+
+* Java 8+
 * Maven 3.5.0
 
 === How themes are managed by the plugin?
@@ -194,3 +202,20 @@ WARNING: Remember that the only requirement for a theme is a zip packaging.
 <2> The coordinates of the second theme.
 <3> The directory where themes will be unzipping.
 The defalut value is `${project.build.directory}/mydoctor-themes`.
+
+== How can I build the project?
+
+You can build the project with Maven 3.5.0 and Java 8.
+
+[source,shell]
+mvn clean package
+
+You can launch the integration tests:
+
+[source,shell]
+mvn clean package -Prun-it
+
+== References
+
+* https://asciidoctor.org/[Asciidoctor home page]
+* https://github.com/asciidoctor/asciidoctor-maven-plugin[asciidoctor-maven-plugin in Github]
