@@ -1,0 +1,32 @@
+<component-set>
+    <components>
+        <component>
+            <role>org.apache.maven.lifecycle.Lifecycle</role>
+            <implementation>org.apache.maven.lifecycle.Lifecycle</implementation>
+            <role-hint>mydoctor-build</role-hint>
+            <configuration>
+                <id>mydoctor-build</id>
+                <phases>
+                    <phase>theme-download</phase>
+                    <phase>generate-documentation</phase>
+                    <phase>pre-build</phase>
+                    <phase>build</phase>
+                    <phase>post-build</phase>
+                    <phase>upload</phase>
+                    <phase>notify</phase>
+                </phases>
+                <default-phases>
+                    <theme-download>com.coutemeier.maven.plugins:mydoctor-maven-plugin:theme-download</theme-download>
+                    <!-- 
+                        This has the inconvenient of generating an extra xml, 
+                        because it is invoked the default process-asciidoc goal, outside the executions,
+                        and the backend by default is docbook.
+                        So at this moment the process-asciidoc goal is not configured in the build phase.
+                    -->
+                    <!-- <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build> -->
+                    
+                </default-phases>
+            </configuration>
+        </component>
+    </components>
+</component-set>
