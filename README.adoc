@@ -1,0 +1,33 @@
+= mydoctor-maven-plugin
+//
+:release-version: 1.0-SNAPSHOT
+//
+ifdef::env-github,env-browser[]
+:toc: preamble
+endif::[]
+//
+ifndef::env-github[:icons: font]
+//
+:project-repo: mydoctor-maven-plugin/mydoctor-maven-plugin
+:uri-repo: https://github.com/{project-repo}
+:uri-asciidoc: http://asciidoc.org
+:uri-asciidoctor: http://asciidoctor.org
+:uri-examples: https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin-examples
+:uri-maven: http://maven.apache.org
+ifdef::env-github[]
+:badges:
+:tag: master
+:tip-caption: :bulb:
+:note-caption: :paperclip:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+// Badges
+ifdef::badges[]
+image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/mydoctor-maven-plugin/mydoctor-maven-plugin"]
+endif::[]
+
+A lifecycle and custom mojos to isolate the building of asciidoctor documentation from the default lifecycle with the asciidoctor-maven-plugin
+
