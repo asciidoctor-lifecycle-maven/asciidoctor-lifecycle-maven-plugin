@@ -1,4 +1,4 @@
-package com.coutemeier.maven.plugins.mydoctor;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
 import java.io.File;
 
@@ -7,21 +7,21 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
-public abstract class AbstractMyDoctorMojo
+public abstract class AbstractAsciidoctorLifecycleMojo
 extends AbstractMojo {
 	/**
      * Skip plugin execution completely
      */
-    @Parameter( property = "mydoctor.skip", defaultValue = "false", required = false)
+    @Parameter( property = "asciidoctor.lifecycle.skip", defaultValue = "false", required = false)
     private boolean skip;
 
     /**
      * The directory where themes should be unzipping
      */
-    @Parameter( property = "mydoctor.themesBaseDir", defaultValue = "${project.build.directory}/mydoctor-themes" )
+    @Parameter( property = "asciidoctor.lifecycle.themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes" )
     private File themesBaseDir;
 
-	public AbstractMyDoctorMojo() {
+	public AbstractAsciidoctorLifecycleMojo() {
 	}
 
 	/*

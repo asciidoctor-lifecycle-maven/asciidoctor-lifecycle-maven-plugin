@@ -1,4 +1,4 @@
-package com.coutemeier.maven.plugins.mydoctor.util;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.io.File;
 import java.io.FileInputStream;

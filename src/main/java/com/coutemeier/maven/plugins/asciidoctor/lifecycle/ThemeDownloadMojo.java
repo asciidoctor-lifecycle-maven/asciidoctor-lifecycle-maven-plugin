@@ -1,4 +1,4 @@
-package com.coutemeier.maven.plugins.mydoctor;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 
-import com.coutemeier.maven.plugins.mydoctor.util.ArtifactUtil;
-import com.coutemeier.maven.plugins.mydoctor.util.ZipUtil;
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 
 /**
  * Download and unpack a list of themes
@@ -25,17 +25,17 @@ import com.coutemeier.maven.plugins.mydoctor.util.ZipUtil;
  */
 @Mojo( name="theme-download", requiresProject = true, threadSafe = true )
 public class ThemeDownloadMojo
-extends AbstractMyDoctorMojo {
+extends AbstractAsciidoctorLifecycleMojo {
 	/**
      * The list of themes to download and unzip
      */
-    @Parameter( property = "mydoctor.themes", required = false )
+    @Parameter( property = "asciidoctor.lifecycle.themes", required = false )
     private List<String> themes;
 
     /**
      * Disable the unzip of the themes
      */
-    @Parameter( property="mydoctor.disableUnzip", defaultValue="false" )
+    @Parameter( property="asciidoctor.lifecycle.disableUnzip", defaultValue="false" )
     private boolean disableUnzip;
 
    /**
