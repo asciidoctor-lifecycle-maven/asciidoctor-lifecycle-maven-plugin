@@ -21,9 +21,6 @@ extends AbstractMojo {
     @Parameter( property = "asciidoctor.lifecycle.themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes" )
     private File themesBaseDir;
 
-	public AbstractAsciidoctorLifecycleMojo() {
-	}
-
 	/*
      * @see org.apache.maven.plugin.Mojo#execute()
      */
