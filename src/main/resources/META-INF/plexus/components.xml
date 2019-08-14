@@ -10,7 +10,7 @@
                     <phase>theme-download</phase>
                     <phase>pre-build</phase>
                     <phase>build</phase>
-                    <phase>post-build</phase>
+                    <phase>pre-upload</phase>
                     <phase>upload</phase>
                     <phase>notify</phase>
                 </phases>
