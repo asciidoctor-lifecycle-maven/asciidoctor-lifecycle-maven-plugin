@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.coutemeier.maven.plugins.mydoctor.util;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.io.IOException;
 import java.util.List;

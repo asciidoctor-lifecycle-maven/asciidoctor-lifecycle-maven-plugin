@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins</groupId>
-    <artifactId>mydoctor-maven-plugin</artifactId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Maven Lifecycle and mojos for building Asciidoctor documentation</name>
     <description>A lifecycle and custom mojos to isolate the building of asciidoctor documentation from the default lifecycle with the asciidoctor-maven-plugin</description>
-    <url>https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin</url>
+    <url>https://github.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin</url>
 
     <developers>
         <developer>
@@ -38,13 +38,13 @@
     </prerequisites>
 
     <scm>
-        <url>scm:git:git@github.com:mydoctor-maven-plugin/mydoctor-maven-plugin.git</url>
-        <connection>scm:git:git@github.com:mydoctor-maven-plugin/mydoctor-maven-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:mydoctor-maven-plugin/mydoctor-maven-plugin.git</developerConnection>
+        <url>scm:git:git@github.com:asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin.git</url>
+        <connection>scm:git:git@github.com:asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:asciidoctor-lifecycler-maven-plugin/asciidoctor-lifecycle-maven-plugin.git</developerConnection>
     </scm>
 
     <issueManagement>
-        <url>https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin/issues</url>
+        <url>https://github.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -97,7 +97,7 @@
                 <version>${version.maven-plugin-plugin}</version>
                 <configuration>
                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                    <goalPrefix>mydoctor</goalPrefix>
+                    <goalPrefix>asciidoctor-lifecycle</goalPrefix>
                 </configuration>
                 <executions>
                     <execution>

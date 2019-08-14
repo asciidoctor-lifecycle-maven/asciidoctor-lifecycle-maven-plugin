@@ -1,4 +1,4 @@
-= mydoctor-maven-plugin
+= asciidoctor-lifecycle-maven-plugin
 //
 :release-version: 1.0-SNAPSHOT
 :idprefix:
@@ -10,11 +10,11 @@ endif::[]
 //
 ifndef::env-github[:icons: font]
 //
-:project-repo: mydoctor-maven-plugin/mydoctor-maven-plugin
+:project-repo: asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin
 :uri-repo: https://github.com/{project-repo}
 :uri-asciidoc: http://asciidoc.org
 :uri-asciidoctor: http://asciidoctor.org
-:uri-examples: https://github.com/mydoctor-maven-plugin/mydoctor-maven-plugin-examples
+:uri-examples: https://github.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin-examples
 :uri-maven: http://maven.apache.org
 ifdef::env-github[]
 :!toc-title:
@@ -29,7 +29,7 @@ endif::[]
 
 // Badges
 ifdef::badges[]
-image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/mydoctor-maven-plugin/mydoctor-maven-plugin"]
+image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
 endif::[]
 
 A lifecycle and custom mojos to isolate the building of asciidoctor
@@ -73,7 +73,7 @@ You can test it or use it at your own projects, but you should understand:
 
 == A custom lifecycle for build Asciidoctor projects
 
-=== The lifecycle mydoctor-build
+=== The lifecycle asciidoctor-lifecycle-build
 
 This lifecycle add a defined sequence of phases that helps to build the Asciidoctor documents
 without the use of profiles. These are the phases of this lifecycle (in sequential order):
@@ -92,7 +92,7 @@ Copy the theme to another location, modify it contents...|
 |notice         |Actions to be performed for notifying users the new documentation version|
 |===
 
-You will notice that the `mydoctor@build` goal is not binded by default to the `asciidoctor@process-asciidoc` goal.
+You will notice that the `asciidoctor-lifecycle@build` goal is not binded by default to the `asciidoctor@process-asciidoc` goal.
 
 The main reason is that if you define a shared configuration and several executions,
 an additional document corresponding to the default backend (dockbook) will be generated.
@@ -101,7 +101,7 @@ This is by design of the `asciidoctor-maven-plugin`.
 == Themes
 === What is a theme?
 
-For the moment a theme in mydoctor is only an artifact wich zip packaging.
+For the moment a theme in asciidoctor-lifecycle is only an artifact wich zip packaging.
 This requirement allow us uncompress its contents to a folder.
 
 At the moment it has not been formally defined or its contents established.
@@ -117,7 +117,7 @@ It is a standard Maven plugin.
 ----
 <plugin>
     <groupId>com.coutemeier.maven.plugins</groupId>
-    <artifactId>mydoctor-maven-plugin</artifactId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <extensions>true</extensions> <!--1-->
 </plugin>
@@ -154,7 +154,7 @@ attaching the `process-asciidoc` goal to the `build` phase.
 ----
 
 <1> We attach the `asciidoctor-maven-plugin:process-asciidoc` goal 
-to the build phase of the `mydoctor-build` lifecycle.
+to the build phase of the `asciidoctor-lifecycle-build` lifecycle.
 
 We are ready to generate our documentation separate of the normal build of our code.
 
@@ -171,7 +171,7 @@ mvn build
 === How themes are managed by the plugin?
 
 You can define the use of a theme (downloading and unpacking it to a directory) as part of the
-mydoctor-maven-plugin configuration.
+asciidoctor-lifecycle-maven-plugin configuration.
 
 You can configure so many themes as you desire.
 The themes are expressed as Maven coordinates as:
@@ -186,7 +186,7 @@ WARNING: Remember that the only requirement for a theme is a zip packaging.
 ----
 <plugin>
     <groupId>com.coutemeier.maven.plugins</groupId>
-    <artifactId>mydoctor-maven-plugin</artifactId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <extensions>true</extensions> <!--1-->
     <configuration>
@@ -201,7 +201,7 @@ WARNING: Remember that the only requirement for a theme is a zip packaging.
 <1> The coordinates of the first theme.
 <2> The coordinates of the second theme.
 <3> The directory where themes will be unzipping.
-The defalut value is `${project.build.directory}/mydoctor-themes`.
+The defalut value is `${project.build.directory}/asciidoctor-themes`.
 
 == How can I build the project?
 
