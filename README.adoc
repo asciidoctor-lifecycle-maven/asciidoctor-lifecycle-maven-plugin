@@ -30,6 +30,7 @@ endif::[]
 // Badges
 ifdef::badges[]
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
+image:https://www.codefactor.io/repository/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin/badge[CodeFactor, link="https://www.codefactor.io/repository/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
 endif::[]
 
 A lifecycle and custom mojos to isolate the building of asciidoctor
@@ -92,7 +93,7 @@ Copy the theme to another location, modify it contents...|
 |notice         |Actions to be performed for notifying users the new documentation version|
 |===
 
-You will notice that the `asciidoctor-lifecycle@build` goal is not binded by default to the `asciidoctor@process-asciidoc` goal.
+You will notice that the `asciidoctor-lifecycle@build` goal is not bound by default to the `asciidoctor@process-asciidoc` goal.
 
 The main reason is that if you define a shared configuration and several executions,
 an additional document corresponding to the default backend (dockbook) will be generated.
