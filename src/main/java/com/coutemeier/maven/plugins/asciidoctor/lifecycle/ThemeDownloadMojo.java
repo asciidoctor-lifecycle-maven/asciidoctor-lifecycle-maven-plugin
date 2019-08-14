@@ -56,10 +56,6 @@ extends AbstractAsciidoctorLifecycleMojo {
     @Parameter( defaultValue = "${project.remoteProjectRepositories}", readonly = true )
     private List<RemoteRepository> remoteRepositories;
 
-    public ThemeDownloadMojo() {
-		super();
-	}
-
     @Override
 	protected void doExecute()
     throws MojoExecutionException, MojoFailureException {
