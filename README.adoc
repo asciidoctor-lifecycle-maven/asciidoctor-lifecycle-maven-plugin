@@ -87,7 +87,7 @@ if required, and then unzipped. | ThemeDownloadMojo
 |pre-build      |Actions to be performed before the build.
 Copy the theme to another location, modify it contents...|
 |build          |The `process-asciidoc` should be attached to this phase, to build the documentation|
-|post-build     |Actions to be performed before the upload phase|
+|pre-upload     |Actions to be performed before the upload phase|
 |upload         |Actions to be performed for uploading the generated content|
 |notice         |Actions to be performed for notifying users the new documentation version|
 |===
