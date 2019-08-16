@@ -120,6 +120,20 @@ At the moment it has not been formally defined or its contents established.
 
 === How Asciidoctor Lifecycle Maven Plugin manages themes
 
+You can define the use of a theme (downloading and unpacking it to a directory) as part of the
+`asciidoctor-lifecycle-maven-plugin` configuration.
+You can configure so many themes as you desire.
+
+The themes are expressed as Maven coordinates as:
+
+[.text-center]
+`<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
+
+So a valid theme expression is:
+
+[.text-center]
+`groupId:artifactId:zip:3.3.3`
+
 The Asciidoctor Lifecycle Maven Pluging does the following operations for every configured theme:
 
 . Tries to download the artifact (theme).
@@ -193,20 +207,6 @@ mvn build
 == Some examples explained in detail
 
 === How to use the automatically created properties
-
-You can define the use of a theme (downloading and unpacking it to a directory) as part of the
-`asciidoctor-lifecycle-maven-plugin` configuration.
-You can configure so many themes as you desire.
-
-The themes are expressed as Maven coordinates as:
-
-[.text-center]
-`<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
-
-So a valid theme expression is:
-
-[.text-center]
-`groupId:artifactId:zip:3.3.3`, for example.
 
 Suposse you configure the `asciidoctor-maven-plugin` and the `asciidoctor-lifecycle-maven-plugin`
 as (I show you only the relevant configuration for this purpose):
