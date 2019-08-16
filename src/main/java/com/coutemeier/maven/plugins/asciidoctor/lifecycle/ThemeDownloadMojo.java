@@ -61,13 +61,20 @@ extends AbstractAsciidoctorLifecycleMojo {
     throws MojoExecutionException, MojoFailureException {
         try {
         	for( final String theme: themes ) {
-	        	getLog().info( "Downloading asciidoctor theme: " + theme );
+
+	        	getLog().info( "Asciidoctor theme " + theme + ": downloading" );
 	            final Artifact themeArtifact = ArtifactUtil.downloadByAether( theme, repoSystem, repoSession, remoteRepositories );
-	            getLog().info( "Asciidoctor theme " + theme + " downloaded" );
+	            getLog().info( "Asciidoctor theme " + theme + ": downloaded" );
 	            if ( ! this.disableUnzip ) {
 	            	final File themeOutputDir = new File( this.getThemesBaseDir(), themeArtifact.getArtifactId() );
 	            	ZipUtil.unzip( themeArtifact.getFile(), themeOutputDir );
-	            	getLog().info( "Asciidoctor theme " + theme + " unpacked in " + themeOutputDir );
+	            	final String propertyName = createPropertyName( themeArtifact );
+	            	final String propertyValue = themeOutputDir.getCanonicalPath();
+	            	this.setProperty( propertyName,  propertyValue );
+
+	            	if ( getLog().isDebugEnabled() ) {
+	                    getLog().debug( "Asciidoctor theme " + theme + " property: " + propertyName + " = \"" + propertyValue + "\"" );
+	                }
 	            }
         	}
 
@@ -76,5 +83,16 @@ extends AbstractAsciidoctorLifecycleMojo {
         } catch ( final ArtifactResolutionException cause ) {
         	throw new MojoExecutionException( "Error downloading theme", cause );
         }
+    }
+
+    /**
+     * Creates a property name for the artifact (theme), normalizing the artifacId, prepending it with "asciidoctor.theme." and
+     * ending it with ".path"
+     *
+     * @param artifact the artifact for which property will be created
+     * @return a text with the name of the property
+     */
+    private String createPropertyName( final Artifact artifact ) {
+    	return "asciidoctor.theme." + ArtifactUtil.normalizeArtifactId( artifact ) + ".path";
     }
 }
