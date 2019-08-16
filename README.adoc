@@ -190,7 +190,9 @@ We are ready to generate our documentation separate of the normal build of our c
 [source,shell]
 mvn build
 
-=== How themes are managed by the plugin?
+== Some examples explained in detail
+
+=== How to use the automatically created properties
 
 You can define the use of a theme (downloading and unpacking it to a directory) as part of the
 `asciidoctor-lifecycle-maven-plugin` configuration.
