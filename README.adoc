@@ -39,6 +39,16 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 
 == About this project
 
+=== Last changes
+
+In this section I will tell you the most recent changes.
+This section will disappear with the final release.
+
+.2019/08/16
+* In the theme-download phase for each downloaded theme,
+  a property is created. Its value is the path where it was unzipped.
+* Documentation updated.
+
 === What this project offers?
 
 This project offers a new Maven plugin, with the following functionalities (this is a work in progress):
@@ -108,7 +118,36 @@ This requirement allow us uncompress its contents to a folder.
 
 At the moment it has not been formally defined or its contents established.
 
-== How to use it
+=== How Asciidoctor Lifecycle Maven Plugin manages themes
+
+You can define the use of a theme (downloading and unpacking it to a directory) as part of the
+`asciidoctor-lifecycle-maven-plugin` configuration.
+You can configure so many themes as you desire.
+
+The themes are expressed as Maven coordinates as:
+
+[.text-center]
+`<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>`
+
+So a valid theme expression is:
+
+[.text-center]
+`groupId:artifactId:zip:3.3.3`
+
+The Asciidoctor Lifecycle Maven Pluging does the following operations for every configured theme:
+
+. Tries to download the artifact (theme).
+. Tries to unzip the contents of the artifact downloaded to a directory,
+specified by the configuration property `themesBaseDir` as parent directory,
+and the directory child name is the same as its `artifactId`.
+. Creates a property with the value of the path of the directory where the theme
+was unzipped.
+. If any of the previous operations fails, it breaks the build.
+
+All these operations are done at `theme-download` phase, so using the Asciidoctor Lifecycle
+you can use  in the rest of the phases the property created automatically at this phase.
+
+== How to use the lifecycle
 
 === Configure the new lifecycle in pom.xml
 
@@ -165,24 +204,12 @@ We are ready to generate our documentation separate of the normal build of our c
 [source,shell]
 mvn build
 
-=== Requirements
+== Some examples explained in detail
 
-* Java 8+
-* Maven 3.5.0
+=== How to use the automatically created properties
 
-=== How themes are managed by the plugin?
-
-You can define the use of a theme (downloading and unpacking it to a directory) as part of the
-asciidoctor-lifecycle-maven-plugin configuration.
-
-You can configure so many themes as you desire.
-The themes are expressed as Maven coordinates as:
-
-<groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>
-
-So a valid expression from a theme may be `groupId:artifactId:zip:3.3.3`, for example.
-
-WARNING: Remember that the only requirement for a theme is a zip packaging.
+Suposse you configure the `asciidoctor-maven-plugin` and the `asciidoctor-lifecycle-maven-plugin`
+as (I show you only the relevant configuration for this purpose):
 
 [source,xml]
 ----
@@ -190,22 +217,78 @@ WARNING: Remember that the only requirement for a theme is a zip packaging.
     <groupId>com.coutemeier.maven.plugins</groupId>
     <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <extensions>true</extensions> <!--1-->
+    <extensions>true</extensions>
     <configuration>
+        <themesBaseDir>${project.build.directory}/asciidoctor-themes</themesBaseDir> <!--1-->
         <themes>
-            <theme>groupId:artifactId:zip:3.3.3</theme> <!--1-->
-            <theme>groupId:artifactId2:zip:4.1.1</theme> <!--2-->
+            <theme>com.coutemeier.maven.plugins:theme-example-1:zip:1.2.0</theme> <!--2-->
+            <theme>com.coutemeier.maven.plugins:theme-example-2:zip:2.2.1</theme>
         </themes>
-        <themesBaseDir>${project.build.directory}/themes</themesBaseDir> <!--3-->
     </configuration>
 </plugin>
-----
-<1> The coordinates of the first theme.
-<2> The coordinates of the second theme.
-<3> The directory where themes will be unzipping.
-The defalut value is `${project.build.directory}/asciidoctor-themes`.
 
-== How can I build the project?
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>${asciidoctor.maven.plugin.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-pdf</artifactId>
+            <version>${asciidoctorj.pdf.version}</version>
+        </dependency>
+    </dependencies>
+    <executions>
+        <execution>
+            <id>generate-pdf-doc-custom-theme</id>
+            <phase>build</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>pdf</backend>
+                <outputDirectory>${project.build.directory}/generated-docs-custom-theme</outputDirectory>
+                <sourceHighlighter>coderay</sourceHighlighter>
+                <doctype>book</doctype>
+                <attributes>
+                    <!-- 
+                        The property "asciidoctor.theme.theme-example-1.path" is created at theme-download phase,
+                        so it is not needed to define it in the pom.xml.
+                    -->
+                    <pdf-stylesdir>${asciidoctor.theme.theme-example-1.path}/pdf</pdf-stylesdir> <!--3-->
+                    <pdf-style>custom</pdf-style>
+                    <icons>font</icons>
+                    <pagenums/>
+                    <toc/>
+                    <idprefix/>
+                    <idseparator>-</idseparator>
+                </attributes>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+<1> The directory where themes will be unzipping (this is the default value).
+<2> You need the plugin whose coordinates are `com.coutemeier.maven.plugins:theme-example-1:zip:1.2.0`. 
+<3> You configure the path of the theme using the property `asciidoctor.theme.theme-example-1.path`,
+created at `theme-download` phase.
+
+After the `theme-download` phase execution you'll get:
+
+. Two directories in the `target/asciidoctor-themes`:
+  * `theme-example-1`
+  * `theme-example-2`
+. Two properties are created in this phase, so you can use them in later phases.
+  * `asciidoctor.theme.theme-example-1.path = ${project.output.dir}/asciidoctor-themes/theme-example1`
+  * `asciidoctor.theme.theme-example-2.path = ${project.output.dir}/asciidoctor-themes/theme-example2`
+
+In the `build` phase execution:
+
+. The property `asciidoctor.theme.theme-example-1.path` and `asciidoctor.theme.theme-example-2.path` are defined,
+so you can use them as a property to configure the path of the YAML file.
+
+== How can I build the plugin?
 
 You can build the project with Maven 3.5.0 and Java 8.
 
@@ -215,7 +298,7 @@ mvn clean package
 You can launch the integration tests:
 
 [source,shell]
-mvn clean package -Prun-it
+mvn integration-test -Prun-it
 
 == References
 

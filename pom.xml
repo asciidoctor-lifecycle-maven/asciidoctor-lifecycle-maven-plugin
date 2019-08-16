@@ -53,7 +53,6 @@
         <mavenVersionShort>3.5</mavenVersionShort>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.test.skip>true</maven.test.skip>
         <version.junit>4.11</version.junit>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>

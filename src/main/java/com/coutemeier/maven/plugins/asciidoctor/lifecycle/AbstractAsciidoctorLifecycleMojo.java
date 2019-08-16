@@ -6,6 +6,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractAsciidoctorLifecycleMojo
 extends AbstractMojo {
@@ -20,6 +21,12 @@ extends AbstractMojo {
      */
     @Parameter( property = "asciidoctor.lifecycle.themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes" )
     private File themesBaseDir;
+
+    /**
+     * The maven project
+     */
+    @Parameter( readonly = true, defaultValue = "${project}" )
+    protected MavenProject project;
 
 	/*
      * @see org.apache.maven.plugin.Mojo#execute()
@@ -48,6 +55,23 @@ extends AbstractMojo {
      */
     public File getThemesBaseDir() {
     	return this.themesBaseDir;
+    }
+
+    /**
+     * Get the current project instance.
+     *
+     * @return the project
+     */
+    public MavenProject getProject()
+    {
+        return this.project;
+    }
+
+    protected void setProperty( final String name, final String value ) {
+    	if ( getLog().isDebugEnabled() ) {
+    		getLog().debug( "define property " + name + " = \"" + value + "\"" );
+        }
+    	this.project.getProperties().put( name,  value );
     }
 
 

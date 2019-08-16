@@ -7,6 +7,8 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.aether.RepositorySystem;
@@ -20,6 +22,8 @@ import org.eclipse.aether.resolution.ArtifactResult;
 
 
 public class ArtifactUtil {
+	private static final Pattern ARTIFACT_NAME_NORMALIZER_RE = Pattern.compile( "[^a-zA-Z0-9-]" );
+
 	/**
 	 * Download an artifact from a repository
 	 * <p>
@@ -47,4 +51,15 @@ public class ArtifactUtil {
 		final ArtifactResult artifactResult = repositorySystem.resolveArtifact( session, artifactRequest );
 		return artifactResult.getArtifact();
 	}
+
+	/**
+	 * Normalize the artifactId of an artifact by removing all characters not in [A-Za-z0-9-].
+	 *
+	 * @param artifact the {@link Artifact} to normalize
+	 * @return a text with the artifactId normalized
+	 */
+	public static String normalizeArtifactId( final Artifact artifact ) {
+		Objects.requireNonNull( artifact, "The artifact can not be null" );
+		return ARTIFACT_NAME_NORMALIZER_RE.matcher( artifact.getArtifactId() ).replaceAll( "" );
+    }
 }
