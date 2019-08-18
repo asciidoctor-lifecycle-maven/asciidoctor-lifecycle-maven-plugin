@@ -5,19 +5,31 @@ import java.util.NoSuchElementException;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.SettingsUtil;
 
 /**
  * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the Asciidoctor repository URL specified by
@@ -40,6 +52,9 @@ implements Contextualizable {
     @Parameter( defaultValue = "${settings}", readonly = true )
     private Settings settings;
 
+    @Component
+    private SettingsDecrypter settingsDecrypter;
+
     private PlexusContainer container;
 
 	@Parameter( property = GOAL_PREFIX + "outputDirectory", defaultValue="${project.build.directory}/generated-docs", required = true )
@@ -53,16 +68,27 @@ implements Contextualizable {
 
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
-		deployTo( new Repository( this.serverId, this.uploadTo ) );
+		uploadTo( new Repository( this.serverId, this.uploadTo ) );
 	}
 
 
-	private final void deploy( final File input, final Repository repository )
+	private final void upload( final File input, final Repository repository )
 	throws MojoExecutionException {
+		final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings, this.settingsDecrypter);
+		if ( authenticationInfo != null ) {
+			getLog().info( "Credentials " + authenticationInfo.getUserName() + " / " +authenticationInfo.getPassword() );
+		}
 		final Wagon wagon = getWagon( repository, this.container );
 
 		try {
-			configureWagon( wagon, repository.getId(), settings, container, getLog() );
+			// TODO Review. Is this required in Maven 3.5?
+			configureWagon( wagon );
+			// TODO Need investigation for how get proxy info.
+			// For the moment it will be null (no proxy info).
+			final ProxyInfo proxyInfo = null;
+
+			uploadDirectory( repository, authenticationInfo, wagon, proxyInfo );
+
 		} catch ( TransferFailedException e ) {
             throw new MojoExecutionException( "Unable to configure Wagon: '" + repository.getProtocol() + "'", e );
         }
@@ -74,18 +100,7 @@ implements Contextualizable {
 		try {
 			// This seems the new way to get the wagon reference
 			wagon = ( Wagon ) container.lookup( Wagon.ROLE, repository.getProtocol() );
-			//wagon = wagonManager.getWagon( repository );
-/*
-		} catch ( final UnsupportedProtocolException cause ) {
-			final String message = "Unsupported protocol: '" + repository.getProtocol() + "' "
-				+ "for Asciidoctor upload to asciidoctor.lifecycle.deployToUrl = '" + repository.getUrl() + "'.";
-			final String messageWithAvailableProtocols = "Available protocols are: " + getSupportedProtocols() + ".\n"
-				+ " More protocols may be added through wagon providers, see http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
-			getLog().error( messageWithAvailableProtocols );
-			throw new MojoExecutionException( message, cause );
-		} catch ( final TransferFailedException cause ) {
-			throw new MojoExecutionException( "Error while configuring wagon: '" + repository.getProtocol() + "'.", cause );
-*/
+
 		} catch ( final ComponentLookupException cause ) {
 			final Throwable originalCause = cause.getCause();
 
@@ -106,7 +121,7 @@ implements Contextualizable {
 		return wagon;
 	}
 
-	private final void deployTo( final Repository repository )
+	private final void uploadTo( final Repository repository )
 	throws MojoExecutionException {
 		if ( ! this.inputDirectory.exists() ) {
 			throw new MojoExecutionException( "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first." );
@@ -116,12 +131,41 @@ implements Contextualizable {
 			getLog().debug( "Uploading to '" + this.uploadTo + "' , using credentials from server id '" + this.serverId + "'." );
 		}
 
-		deploy( this.inputDirectory, repository );
+		upload( this.inputDirectory, repository );
 	}
 
-	private final void configureWagon( final Wagon wagon, final String repositoryId, final Settings settings, final PlexusContainer container, final Log logger )
-	throws TransferFailedException {
+	private final void uploadDirectory( final Repository repository, final AuthenticationInfo authenticationInfo, final Wagon wagon, final ProxyInfo proxyInfo ) {
 
+	}
+
+	private final void configureWagon( final Wagon wagon )
+	throws TransferFailedException {
+		getLog().debug( "Wagon configuration: Initialized" );
+		final Server server = settings.getServer( this.serverId );
+		if ( server != null && server.getConfiguration() != null ) {
+			final PlexusConfiguration plexusConfiguration = new XmlPlexusConfiguration( ( Xpp3Dom ) server.getConfiguration() );
+            ComponentConfigurator componentConfigurator = null;
+
+            try {
+                componentConfigurator = ( ComponentConfigurator ) container.lookup( ComponentConfigurator.ROLE, "basic" );
+                componentConfigurator.configureComponent( wagon, plexusConfiguration, container.getContainerRealm() );
+
+            } catch ( final ComponentLookupException cause ) {
+                throw new TransferFailedException( "Unable to lookup wagon configurator for \'" + this.serverId + "\'", cause );
+            } catch ( ComponentConfigurationException cause ) {
+                throw new TransferFailedException( "Unable to apply wagon configuration for \'" + this.serverId + "\'.", cause );
+            }
+            finally {
+                if ( componentConfigurator != null ) {
+                    try {
+                        container.release( componentConfigurator );
+                    } catch ( ComponentLifecycleException e ) {
+                        getLog().error( "Problem releasing component configurator - ignoring: " + e.getMessage() );
+                    }
+                }
+            }
+		}
+		getLog().debug( "Wagon configuration: Finished" );
 	}
 
 	private String getSupportedProtocols() {
