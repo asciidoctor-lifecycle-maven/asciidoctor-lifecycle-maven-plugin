@@ -11,8 +11,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
+import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
@@ -30,10 +32,11 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.SettingsUtil;
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
 
 /**
- * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the Asciidoctor repository URL specified by
- * the {@link #uploadTo} parameter.
+ * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a>
+ * to the Asciidoctor repository URL specified by the {@link #uploadTo} parameter.
  *
  * @author rrialq
  * @since 1.0
@@ -43,9 +46,6 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.SettingsUtil;
 public class UploadMojo
 extends AbstractAsciidoctorLifecycleMojo
 implements Contextualizable {
-//    @Component
-//    private WagonManager wagonManager;
-
     /**
      * The current user system settings for use in Maven.
      */
@@ -71,13 +71,21 @@ implements Contextualizable {
 		uploadTo( new Repository( this.serverId, this.uploadTo ) );
 	}
 
+	private final void uploadTo( final Repository repository )
+	throws MojoExecutionException {
+		if ( ! this.inputDirectory.exists() ) {
+			throw new MojoExecutionException( "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first." );
+		}
+
+		if ( getLog().isDebugEnabled() ) {
+			getLog().debug( "Uploading to '" + this.uploadTo + "' , using credentials from server id '" + this.serverId + "'." );
+		}
+
+		upload( this.inputDirectory, repository );
+	}
 
 	private final void upload( final File input, final Repository repository )
 	throws MojoExecutionException {
-		final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings, this.settingsDecrypter);
-		if ( authenticationInfo != null ) {
-			getLog().info( "Credentials " + authenticationInfo.getUserName() + " / " +authenticationInfo.getPassword() );
-		}
 		final Wagon wagon = getWagon( repository, this.container );
 
 		try {
@@ -87,7 +95,7 @@ implements Contextualizable {
 			// For the moment it will be null (no proxy info).
 			final ProxyInfo proxyInfo = null;
 
-			uploadDirectory( repository, authenticationInfo, wagon, proxyInfo );
+			uploadDirectory( repository, wagon, proxyInfo );
 
 		} catch ( TransferFailedException e ) {
             throw new MojoExecutionException( "Unable to configure Wagon: '" + repository.getProtocol() + "'", e );
@@ -107,8 +115,9 @@ implements Contextualizable {
 			if ( originalCause instanceof NoSuchElementException ) {
 				final String message = "Unsupported protocol: '" + repository.getProtocol() + "' "
 						+ "for Asciidoctor upload to asciidoctor.lifecycle.deployToUrl = '" + repository.getUrl() + "'.";
-				final String messageWithAvailableProtocols = message + "\nAvailable protocols are: " + getSupportedProtocols() + ".\n"
-						+ " More protocols may be added through wagon providers, see http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
+				final String messageWithAvailableProtocols = message
+						+ "\nAvailable protocols are: " + WagonUtil.getSupportedProtocols( this.container, getLog() ) + "."
+						+ "\nMore protocols may be added through wagon providers, see http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
 				getLog().error( messageWithAvailableProtocols );
 				throw new MojoExecutionException( message, cause.getCause() );
 			}
@@ -121,21 +130,28 @@ implements Contextualizable {
 		return wagon;
 	}
 
-	private final void uploadTo( final Repository repository )
+
+	private final void uploadDirectory( final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo )
 	throws MojoExecutionException {
-		if ( ! this.inputDirectory.exists() ) {
-			throw new MojoExecutionException( "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first." );
+		final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings, this.settingsDecrypter);
+
+		try {
+			if ( proxyInfo != null ) {
+				wagon.connect(repository, authenticationInfo, proxyInfo );
+			} else if ( authenticationInfo != null ) {
+				wagon.connect( repository, authenticationInfo );
+			} else {
+				wagon.connect( repository );
+			}
+		} catch ( final AuthenticationException | ConnectionException cause ) {
+			throw new MojoExecutionException( "Error uploading Asciidoctor documents to server", cause	 );
+		} finally {
+			try {
+				wagon.disconnect();
+			} catch ( final ConnectionException cause ) {
+				getLog().error( "Error disconnecting wagon - ignored", cause );
+			}
 		}
-
-		if ( getLog().isDebugEnabled() ) {
-			getLog().debug( "Uploading to '" + this.uploadTo + "' , using credentials from server id '" + this.serverId + "'." );
-		}
-
-		upload( this.inputDirectory, repository );
-	}
-
-	private final void uploadDirectory( final Repository repository, final AuthenticationInfo authenticationInfo, final Wagon wagon, final ProxyInfo proxyInfo ) {
-
 	}
 
 	private final void configureWagon( final Wagon wagon )
@@ -167,16 +183,6 @@ implements Contextualizable {
 		}
 		getLog().debug( "Wagon configuration: Finished" );
 	}
-
-	private String getSupportedProtocols() {
-		try {
-			return String.join( ",", container.lookupMap( Wagon.class ).keySet() );
-
-		} catch ( final ComponentLookupException cause ) {
-			getLog().error( cause );
-		}
-		return "";
-    }
 
     /**
      * {@inheritDoc}
