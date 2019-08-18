@@ -19,6 +19,14 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
+/**
+ * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the Asciidoctor repository URL specified by
+ * the {@link #uploadTo} parameter.
+ *
+ * @author rrialq
+ * @since 1.0
+ *
+ */
 @Mojo( name="upload", requiresProject=true, threadSafe = true)
 public class UploadMojo
 extends AbstractAsciidoctorLifecycleMojo

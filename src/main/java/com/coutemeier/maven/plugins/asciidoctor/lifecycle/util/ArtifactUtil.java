@@ -5,7 +5,6 @@
  */
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -20,7 +19,12 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
-
+/**
+ * Aether Eclipse Artifact utils.
+ *
+ * @author rrialq
+ * @since 1.0
+ */
 public class ArtifactUtil {
 	private static final Pattern ARTIFACT_NAME_NORMALIZER_RE = Pattern.compile( "[^a-zA-Z0-9-]" );
 
@@ -28,6 +32,16 @@ public class ArtifactUtil {
 	 * Download an artifact from a repository
 	 * <p>
 	 * For the moment This method assume that relocations has been resolved
+	 *
+	 * @param theme the theme coordinates to download
+	 * @param repositorySystem the entry point to Aether
+	 * @param session the current repository/network configuration of Maven
+	 * @param remoteRepositories the remote repositories using for resolving the theme
+	 *
+	 * @return the {@link Artifact} resolved
+	 * @throws ArtifactResolutionException if the theme can not be resolved
+	 * @throws MojoFailureException if the theme coordinates are not valid
+	 *
 	 * @author rrialq
 	 * @since 1.0.0
 	 */
@@ -36,7 +50,7 @@ public class ArtifactUtil {
 			final RepositorySystem repositorySystem,
 			final RepositorySystemSession session,
 			final List<RemoteRepository> remoteRepositories)
-			throws IOException, ArtifactResolutionException, MojoFailureException {
+			throws ArtifactResolutionException, MojoFailureException {
 		final Artifact artifact;
 
 		try {
@@ -57,6 +71,9 @@ public class ArtifactUtil {
 	 *
 	 * @param artifact the {@link Artifact} to normalize
 	 * @return a text with the artifactId normalized
+	 *
+	 * @author rrialq
+	 * @since 1.0.0
 	 */
 	public static String normalizeArtifactId( final Artifact artifact ) {
 		Objects.requireNonNull( artifact, "The artifact can not be null" );
