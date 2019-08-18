@@ -19,23 +19,54 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 
 /**
- * Download and unpack a list of themes
+ * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped
  * <p>
- * This mojo downloads a list of themes and unpack every one to its own folder.
+ * This mojo follows the following steps for each theme configured:
+ * <ol>
+ * 		<li>Download the theme (an artifact with type zip).
+ *  	<li>Unzip the theme.
+ *  	<li>Create a property to reflect where this theme has been unzipped.
+ * </ol>
+ *
+ * <b>Pattern for property names created in step 3</b>
+ * <p>
+ * <code>asciidoctor.theme.${normalizedArtifactId}.path</code>
+ * <p>
+ * The <code>normalizedArtifactId</code> is the name of the <code>artifactId</code> theme, but removing chars not in
+ * [A-Za-z0-9-].
+ *
  */
-@Mojo( name="theme-download", requiresProject = true, threadSafe = true )
-public class ThemeDownloadMojo
+@Mojo( name="theme", requiresProject = true, threadSafe = true )
+public class ThemeMojo
 extends AbstractAsciidoctorLifecycleMojo {
 	/**
-     * The list of themes to download and unzip
+	 * Prefix for this goal only properties
+	 */
+	private final String THIS_GOAL_PREFIX = GOAL_PREFIX + "theme.";
+
+	/**
+	 * Prefix to apply to properties created automatically to reflect where a theme was unzipped
+	 */
+	private final String THEME_AUTOPROPERTY_PREFIX = "asciidoctor.theme.";
+
+    /**
+     * The directory where themes should be unzipping
      */
-    @Parameter( property = "asciidoctor.lifecycle.themes", required = false )
+    @Parameter( property = THIS_GOAL_PREFIX + "themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes" )
+    private File themesBaseDir;
+
+	/**
+     * The list of themes to download and unzip
+     *
+     * TODO it is not possible to specify a list as a Maven property, or so? The only solution appears to be convert it to a delimited String
+     */
+    @Parameter( property = "themes", required = false )
     private List<String> themes;
 
     /**
      * Disable the unzip of the themes
      */
-    @Parameter( property="asciidoctor.lifecycle.disableUnzip", defaultValue="false" )
+    @Parameter( property = THIS_GOAL_PREFIX + "disableUnzip", defaultValue="false" )
     private boolean disableUnzip;
 
    /**
@@ -61,19 +92,22 @@ extends AbstractAsciidoctorLifecycleMojo {
     throws MojoExecutionException, MojoFailureException {
         try {
         	for( final String theme: themes ) {
-
-	        	getLog().info( "Asciidoctor theme " + theme + ": downloading" );
+        		if ( getLog().isInfoEnabled() ) {
+        			getLog().info( "Asciidoctor theme " + theme + ": downloading..." );
+        		}
 	            final Artifact themeArtifact = ArtifactUtil.downloadByAether( theme, repoSystem, repoSession, remoteRepositories );
-	            getLog().info( "Asciidoctor theme " + theme + ": downloaded" );
+	            if ( getLog().isInfoEnabled() ) {
+	            	getLog().info( "Asciidoctor theme " + theme + ": downloaded" );
+	            }
 	            if ( ! this.disableUnzip ) {
-	            	final File themeOutputDir = new File( this.getThemesBaseDir(), themeArtifact.getArtifactId() );
+	            	final File themeOutputDir = new File( this.themesBaseDir, themeArtifact.getArtifactId() );
 	            	ZipUtil.unzip( themeArtifact.getFile(), themeOutputDir );
 	            	final String propertyName = createPropertyName( themeArtifact );
 	            	final String propertyValue = themeOutputDir.getCanonicalPath();
 	            	this.setProperty( propertyName,  propertyValue );
 
 	            	if ( getLog().isDebugEnabled() ) {
-	                    getLog().debug( "Asciidoctor theme " + theme + " property: " + propertyName + " = \"" + propertyValue + "\"" );
+	                    getLog().debug( "Asciidoctor theme " + theme + " - property: " + propertyName + " = \"" + propertyValue + "\"" );
 	                }
 	            }
         	}
@@ -86,13 +120,14 @@ extends AbstractAsciidoctorLifecycleMojo {
     }
 
     /**
-     * Creates a property name for the artifact (theme), normalizing the artifacId, prepending it with "asciidoctor.theme." and
-     * ending it with ".path"
+     * Creates a property name for the artifact (theme), normalizing its artifacId, prepending it with a prefix
+     * and ending it with ".path"
      *
      * @param artifact the artifact for which property will be created
      * @return a text with the name of the property
+     * @see #THEME_AUTOPROPERTY_PREFIX
      */
     private String createPropertyName( final Artifact artifact ) {
-    	return "asciidoctor.theme." + ArtifactUtil.normalizeArtifactId( artifact ) + ".path";
+    	return THEME_AUTOPROPERTY_PREFIX + ArtifactUtil.normalizeArtifactId( artifact ) + ".path";
     }
 }

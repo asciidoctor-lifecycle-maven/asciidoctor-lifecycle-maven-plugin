@@ -1,7 +1,5 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import java.io.File;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,17 +8,13 @@ import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractAsciidoctorLifecycleMojo
 extends AbstractMojo {
+	protected static final String GOAL_PREFIX = "asciidoctor.lifecycle.";
+
 	/**
      * Skip plugin execution completely
      */
-    @Parameter( property = "asciidoctor.lifecycle.skip", defaultValue = "false", required = false)
+    @Parameter( property = GOAL_PREFIX + "skip", defaultValue = "false", required = false)
     private boolean skip;
-
-    /**
-     * The directory where themes should be unzipping
-     */
-    @Parameter( property = "asciidoctor.lifecycle.themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes" )
-    private File themesBaseDir;
 
     /**
      * The maven project
@@ -46,15 +40,6 @@ extends AbstractMojo {
      */
     public boolean isSkip() {
         return skip;
-    }
-
-    /**
-     * Return the directory base for unzipping themes
-     *
-     * @return {@link #themesBaseDir}
-     */
-    public File getThemesBaseDir() {
-    	return this.themesBaseDir;
     }
 
     /**
