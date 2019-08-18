@@ -8,9 +8,9 @@
                 <id>asciidoctor-lifecycle-build</id>
                 <phases>
                     <phase>theme</phase>
-                    <phase>pre-build</phase>
+                    <phase>prepare-build</phase>
                     <phase>build</phase>
-                    <phase>pre-upload</phase>
+                    <phase>prepare-upload</phase>
                     <phase>upload</phase>
                     <phase>notify</phase>
                 </phases>
