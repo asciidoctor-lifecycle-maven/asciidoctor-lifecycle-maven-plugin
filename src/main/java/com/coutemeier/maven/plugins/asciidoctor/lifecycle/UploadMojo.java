@@ -3,11 +3,9 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 import java.io.File;
 import java.util.NoSuchElementException;
 
-import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Settings;
@@ -25,10 +23,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 public class UploadMojo
 extends AbstractAsciidoctorLifecycleMojo
 implements Contextualizable {
-	/**
-     */
-    @Component
-    private WagonManager wagonManager;
+//    @Component
+//    private WagonManager wagonManager;
 
     /**
      * The current user system settings for use in Maven.
@@ -38,13 +34,13 @@ implements Contextualizable {
 
     private PlexusContainer container;
 
-	@Parameter( property = "asciidoctor.lifecycle.outputDirectory", defaultValue="${project.build.directory}/generated-docs", required = true )
-	private File outputDirectory;
+	@Parameter( property = GOAL_PREFIX + "outputDirectory", defaultValue="${project.build.directory}/generated-docs", required = true )
+	private File inputDirectory;
 
-	@Parameter( property="asciidoctor.lifecycle.uploadTo", required = true )
+	@Parameter( property = GOAL_PREFIX + "uploadTo", required = true )
 	private String uploadTo;
 
-	@Parameter( property="asciidoctor.lifecycle.upload.serverId", required = false )
+	@Parameter( property = GOAL_PREFIX + "upload.serverId", required = false )
 	private String serverId;
 
 	@Override
@@ -104,7 +100,7 @@ implements Contextualizable {
 
 	private final void deployTo( final Repository repository )
 	throws MojoExecutionException {
-		if ( ! this.outputDirectory.exists() ) {
+		if ( ! this.inputDirectory.exists() ) {
 			throw new MojoExecutionException( "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first." );
 		}
 
@@ -112,7 +108,7 @@ implements Contextualizable {
 			getLog().debug( "Uploading to '" + this.uploadTo + "' , using credentials from server id '" + this.serverId + "'." );
 		}
 
-		deploy( this.outputDirectory, repository );
+		deploy( this.inputDirectory, repository );
 	}
 
 	private final void configureWagon( final Wagon wagon, final String repositoryId, final Settings settings, final PlexusContainer container, final Log logger )

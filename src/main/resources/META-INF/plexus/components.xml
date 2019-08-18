@@ -7,7 +7,7 @@
             <configuration>
                 <id>asciidoctor-lifecycle-build</id>
                 <phases>
-                    <phase>theme-download</phase>
+                    <phase>theme</phase>
                     <phase>pre-build</phase>
                     <phase>build</phase>
                     <phase>pre-upload</phase>
@@ -15,7 +15,7 @@
                     <phase>notify</phase>
                 </phases>
                 <default-phases>
-                    <theme-download>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:theme-download</theme-download>
+                    <theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:theme</theme>
                     <!-- 
                         This has the inconvenient of generating an extra xml, 
                         because it is invoked the default process-asciidoc goal, outside the executions,
