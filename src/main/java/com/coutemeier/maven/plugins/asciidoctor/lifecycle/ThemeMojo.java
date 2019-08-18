@@ -19,7 +19,7 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 
 /**
- * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped
+ * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped.
  * <p>
  * This mojo follows the following steps for each theme configured:
  * <ol>
@@ -35,6 +35,8 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
  * The <code>normalizedArtifactId</code> is the name of the <code>artifactId</code> theme, but removing chars not in
  * [A-Za-z0-9-].
  *
+ * @author rrialq
+ * @since 1.0
  */
 @Mojo( name="theme", requiresProject = true, threadSafe = true )
 public class ThemeMojo

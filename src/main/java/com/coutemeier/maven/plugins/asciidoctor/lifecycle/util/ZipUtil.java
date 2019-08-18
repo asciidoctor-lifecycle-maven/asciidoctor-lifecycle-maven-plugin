@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Zip utils
+ * @author rrialq
+ * @since 1.0
+ */
 public class ZipUtil {
 
 	private ZipUtil() {
