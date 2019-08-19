@@ -198,6 +198,10 @@
                             <debug>true</debug>
                             <noLog>false</noLog>
                             <showErrors>true</showErrors>
+                            <scriptVariables>
+                                <projectArtifactId>${project.artifactId}</projectArtifactId>
+                                <projectVersion>${project.version}</projectVersion>
+                            </scriptVariables>
                         </configuration>
                         <executions>
                             <execution>
