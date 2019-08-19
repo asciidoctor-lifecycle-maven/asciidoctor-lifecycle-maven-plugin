@@ -25,7 +25,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
  * @author rrialq
  * @since 1.0
  */
-public class ArtifactUtil {
+public final class ArtifactUtil {
 	private static final Pattern ARTIFACT_NAME_NORMALIZER_RE = Pattern.compile( "[^a-zA-Z0-9-]" );
 
 	/**
