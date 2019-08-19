@@ -43,6 +43,7 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
+
 .2019/08/19
 * Initial support for uploading generated files to a wagon repository.
 You need to configure the wagon provider in `asciidoctor-lifecycle-maven-plugin` dependencies.
