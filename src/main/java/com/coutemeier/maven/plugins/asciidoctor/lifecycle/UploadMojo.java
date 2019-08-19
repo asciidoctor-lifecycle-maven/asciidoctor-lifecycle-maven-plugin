@@ -12,10 +12,12 @@ import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.wagon.ConnectionException;
+import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.PlexusConstants;
@@ -134,7 +136,7 @@ implements Contextualizable {
 	private final void uploadDirectory( final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo )
 	throws MojoExecutionException {
 		final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings, this.settingsDecrypter);
-
+getLog().info( "WAGON Conecting to ..." + repository.getUrl() );
 		try {
 			if ( proxyInfo != null ) {
 				wagon.connect(repository, authenticationInfo, proxyInfo );
@@ -143,8 +145,9 @@ implements Contextualizable {
 			} else {
 				wagon.connect( repository );
 			}
-		} catch ( final AuthenticationException | ConnectionException cause ) {
-			throw new MojoExecutionException( "Error uploading Asciidoctor documents to server", cause	 );
+			wagon.putDirectory( inputDirectory, "/test" );
+		} catch ( final AuthorizationException | AuthenticationException | ConnectionException | ResourceDoesNotExistException | TransferFailedException cause ) {
+			throw new MojoExecutionException( "Error uploading Asciidoctor documents to server: " + cause.getMessage(), cause	 );
 		} finally {
 			try {
 				wagon.disconnect();

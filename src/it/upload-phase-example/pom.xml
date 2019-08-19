@@ -20,7 +20,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>nexus-snapshots</serverId>
-                    <uploadTo>dav:http://localhost:8080/myrepository</uploadTo>
+                    <uploadTo>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo>
                 </configuration>
                 <dependencies>
                     <dependency>
