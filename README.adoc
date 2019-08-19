@@ -43,6 +43,11 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
+.2019/08/19
+* Initial support for uploading generated files to a wagon repository.
+You need to configure the wagon provider in `asciidoctor-lifecycle-maven-plugin` dependencies.
+* Documentation improved (Javadoc).
+* English fixes in README.adoc (thanks to my friend Manuel Vicente, I still need your help).
 
 .2019/08/18
 * Renamed the `theme-download` phase to `theme` phase, because in this phase
@@ -79,16 +84,16 @@ Profiles here may be a solution, specifying modules to build in every one, but..
 * The default lifecycle seems oriented to code building;
 this is not something negative in itself, 
 but the name of the phases are confusing enough if we think about documentation and not code (`compile`, `test`, `verify`).
-* If you want to build the site documentation, Maven offers you another lifecycle, the *site* lifecycle.
+* If you want to build the site documentation, Maven offers you another lifecycle: the *site* lifecycle.
 * If you need to download a theme for generating a pdf (for example) you need to use the `dependency:get` as a solution,
-and if you need to do something more with the theme content may be you more and more configuration.
+and if you need to do something more with the theme content you need to write too much configuration.
 
 So, why not develop a custom lifecycle?
 
-== Status of this project
+== Project status
 
 This project is a Work In Progress, in early stage of development.
-You can test it or use it at your own projects, but you should understand:
+You can test or use it in your own projects, but you should understand:
 
 . Something can change at any time before the first release, breaking compatibility with pre releases versions.
 . There is no version available in any repository yet.
@@ -106,13 +111,13 @@ without the use of profiles. These are the phases of this lifecycle (in sequenti
 |Phase          |Description |Mojo   
 //----------------------
 |theme          |In this phase the themes are downloaded from remote repositories,
-if required, and then unzipped. | ThemeDownloadMojo
-|prepare-build  |Actions to be performed before the build.
+if required, and then unzipped. | ThemeMojo
+|prepare-build  |Actions required before the build.
 Copy the theme to another location, modify it contents...|
 |build          |The `process-asciidoc` should be attached to this phase, to build the documentation|
-|prepare-upload |Actions to be performed before the upload phase|
-|upload         |Actions to be performed for uploading the generated content|
-|notice         |Actions to be performed for notifying users the new documentation version|
+|prepare-upload |Actions required before the upload phase|
+|upload         |Actions required for uploading generated content|UploadMojo
+|notice         |Actions required for notifying users new documentation version|
 |===
 
 You will notice that the `asciidoctor-lifecycle@build` goal is not bound by default to the `asciidoctor@process-asciidoc` goal.
@@ -124,7 +129,7 @@ This is by design of the `asciidoctor-maven-plugin`.
 == Themes
 === What is a theme?
 
-For the moment a theme in asciidoctor-lifecycle is only an artifact wich zip packaging.
+At the moment a theme in asciidoctor-lifecycle is only an artifact wich zip packaging.
 This requirement allow us uncompress its contents to a folder.
 
 At the moment it has not been formally defined or its contents established.
@@ -215,6 +220,17 @@ We are ready to generate our documentation separate of the normal build of our c
 [source,shell]
 mvn build
 
+=== Upload the generated files
+
+At this moment the `upload` phase is implemented in its basic functionality.
+It uses the https://maven.apache.org/wagon/wagon-provider-api/[wagon-provider-api], so all you have to do is configure the dependency (if needed).
+
+I've tested it to upload files to a webdav server or a directory in your file system,
+and it is possible that works with another wagon providers.
+
+[source,shell]
+mvn upload
+
 == Some examples explained in detail
 
 === How to use the automatically created properties
@@ -298,6 +314,62 @@ In the `build` phase execution:
 
 . The property `asciidoctor.theme.theme-example-1.path` and `asciidoctor.theme.theme-example-2.path` are defined,
 so you can use them as a property to configure the path of the YAML file.
+
+=== How to configure webdav for uploading
+
+Let's see an example to upload files to a webdav repository:
+
+[source,xml]
+----
+<plugin>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <extensions>true</extensions>
+    <configuration>
+        <serverId>webdav-snapshots</serverId> <!--1-->
+        <uploadToRepository>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo> <!--2-->
+        <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory> <!--3-->
+    </configuration>
+    <!-- 
+        You need the wagon-webdav-jackrabbit dependency 
+        if you want to publish to a webdav server
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-webdav-jackrabbit</artifactId> <!--4-->
+            <version>3.0.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+<1> The server id corresponding to a `server` entry in `settings.xml`, with
+credentials to use to uploading the files to the server.
+<2> The url to which you want to upload the files.
+<3> The directory where you want to upload the files.
+<4> The dependency for wagon webdav support.
+
+=== How to configure a path in your filesystem for uploading
+
+       <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository>
+
+[source,xml]
+----
+<plugin>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <extensions>true</extensions>
+    <configuration>
+        <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository> <!--1-->
+        <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory> <!--2-->
+    </configuration>
+    <!-- No dependency needed -->
+</plugin>
+----
+<1> The base path for storing (uploading) the files.
+<2> The directory in the base path where you want to store the files.
 
 == How can I build the plugin?
 
