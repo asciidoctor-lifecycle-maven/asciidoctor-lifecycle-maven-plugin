@@ -223,11 +223,35 @@ mvn build
 === Upload the generated files
 
 At this moment the `upload` phase is implemented in its basic functionality.
-It uses the https://maven.apache.org/wagon/wagon-provider-api/[wagon-provider-api], so all you have to do is configure the dependency (if needed).
+It uses the https://maven.apache.org/wagon/wagon-provider-api/[wagon-provider-api],
+so you have to configure the dependency to the implementation provider (if needed).
 
-I've tested it to upload files to a webdav server or a directory in your file system,
+I've tested it to upload files to a webdav server and to copy them to a directory in my filesystem,
 and it is possible that works with another wagon providers.
 
+It is planned the use of proxies, but at now it doesn't work yet with proxies.
+
+This is a simple example to configure the upload to a directory in your filesystem:
+
+[source,xml]
+----
+<plugin>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <extensions>true</extensions>
+    <configuration>
+        <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository> <!--1-->
+        <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory> <!--2-->
+    </configuration>
+    <!-- No dependency needed -->
+</plugin>
+----
+<1> The base path for storing (uploading) the files.
+<2> The directory in the base path where you want to store the files.
+
+If `${project.artifactId} = theArtifact` and `${project.version} = 1.0.0` 
+then generated files will be copied to `${project.build.directory}/file-repository/theArtifact/1.0.0`directory.
 [source,shell]
 mvn upload
 
@@ -315,7 +339,7 @@ In the `build` phase execution:
 . The property `asciidoctor.theme.theme-example-1.path` and `asciidoctor.theme.theme-example-2.path` are defined,
 so you can use them as a property to configure the path of the YAML file.
 
-=== How to configure webdav for uploading
+=== How to configure wagon for uploading
 
 Let's see an example to upload files to a webdav repository:
 
@@ -329,7 +353,7 @@ Let's see an example to upload files to a webdav repository:
     <configuration>
         <serverId>webdav-snapshots</serverId> <!--1-->
         <uploadToRepository>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo> <!--2-->
-        <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory> <!--3-->
+        <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory> <!--3-->
     </configuration>
     <!-- 
         You need the wagon-webdav-jackrabbit dependency 
@@ -349,27 +373,6 @@ credentials to use to uploading the files to the server.
 <2> The url to which you want to upload the files.
 <3> The directory where you want to upload the files.
 <4> The dependency for wagon webdav support.
-
-=== How to configure a path in your filesystem for uploading
-
-       <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository>
-
-[source,xml]
-----
-<plugin>
-    <groupId>com.coutemeier.maven.plugins</groupId>
-    <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <extensions>true</extensions>
-    <configuration>
-        <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository> <!--1-->
-        <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory> <!--2-->
-    </configuration>
-    <!-- No dependency needed -->
-</plugin>
-----
-<1> The base path for storing (uploading) the files.
-<2> The directory in the base path where you want to store the files.
 
 == How can I build the plugin?
 
