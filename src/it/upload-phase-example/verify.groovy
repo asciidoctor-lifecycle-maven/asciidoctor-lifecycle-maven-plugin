@@ -1,3 +1,3 @@
-File indexHtmlFile = new File( basedir, "target/generated-docs/index.html" )
+File indexHtmlFile = new File( basedir, "target/file-repository/${projectArtifactId}/${projectVersion}/index.html" )
 
 assert indexHtmlFile.isFile()

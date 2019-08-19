@@ -38,7 +38,7 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
 
 /**
  * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a>
- * to the Asciidoctor repository URL specified by the {@link #uploadTo} parameter.
+ * to the Asciidoctor repository URL specified by the {@link #uploadToRepository} parameter.
  *
  * @author rrialq
  * @since 1.0
@@ -62,15 +62,18 @@ implements Contextualizable {
 	@Parameter( property = GOAL_PREFIX + "outputDirectory", defaultValue="${project.build.directory}/generated-docs", required = true )
 	private File inputDirectory;
 
-	@Parameter( property = GOAL_PREFIX + "uploadTo", required = true )
-	private String uploadTo;
+	@Parameter( property = GOAL_PREFIX + "upload.directory", defaultValue="${project.artifactId}/${project.version}", required = true )
+	private String uploadToDirectory;
+
+	@Parameter ( property = GOAL_PREFIX + "upload.repository", required=true )
+	private String uploadToRepository;
 
 	@Parameter( property = GOAL_PREFIX + "upload.serverId", required = false )
 	private String serverId;
 
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
-		uploadTo( new Repository( this.serverId, this.uploadTo ) );
+		uploadTo( new Repository( this.serverId, this.uploadToRepository ) );
 	}
 
 	private final void uploadTo( final Repository repository )
@@ -80,15 +83,15 @@ implements Contextualizable {
 		}
 
 		if ( getLog().isDebugEnabled() ) {
-			getLog().debug( "Uploading to '" + this.uploadTo + "' , using credentials from server id '" + this.serverId + "'." );
+			getLog().debug( "Uploading to '" + this.uploadToRepository + "' , using credentials from server id '" + this.serverId + "'." );
 		}
 
-		upload( this.inputDirectory, repository );
+		upload( repository );
 	}
 
-	private final void upload( final File input, final Repository repository )
+	private final void upload( final Repository repository )
 	throws MojoExecutionException {
-		final Wagon wagon = getWagon( repository, this.container );
+		final Wagon wagon = getWagon( repository );
 
 		try {
 			// TODO Review. Is this required in Maven 3.5?
@@ -104,12 +107,12 @@ implements Contextualizable {
         }
 	}
 
-	private Wagon getWagon( final Repository repository, final PlexusContainer container )
+	private Wagon getWagon( final Repository repository )
     throws MojoExecutionException {
 		final Wagon wagon;
 		try {
 			// This seems the new way to get the wagon reference
-			wagon = ( Wagon ) container.lookup( Wagon.ROLE, repository.getProtocol() );
+			wagon = ( Wagon ) this.container.lookup( Wagon.ROLE, repository.getProtocol() );
 
 		} catch ( final ComponentLookupException cause ) {
 			final Throwable originalCause = cause.getCause();
@@ -136,7 +139,6 @@ implements Contextualizable {
 	private final void uploadDirectory( final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo )
 	throws MojoExecutionException {
 		final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings, this.settingsDecrypter);
-getLog().info( "WAGON Conecting to ..." + repository.getUrl() );
 		try {
 			if ( proxyInfo != null ) {
 				wagon.connect(repository, authenticationInfo, proxyInfo );
@@ -145,7 +147,7 @@ getLog().info( "WAGON Conecting to ..." + repository.getUrl() );
 			} else {
 				wagon.connect( repository );
 			}
-			wagon.putDirectory( inputDirectory, "/test" );
+			wagon.putDirectory( inputDirectory, this.uploadToDirectory );
 		} catch ( final AuthorizationException | AuthenticationException | ConnectionException | ResourceDoesNotExistException | TransferFailedException cause ) {
 			throw new MojoExecutionException( "Error uploading Asciidoctor documents to server: " + cause.getMessage(), cause	 );
 		} finally {
@@ -159,7 +161,6 @@ getLog().info( "WAGON Conecting to ..." + repository.getUrl() );
 
 	private final void configureWagon( final Wagon wagon )
 	throws TransferFailedException {
-		getLog().debug( "Wagon configuration: Initialized" );
 		final Server server = settings.getServer( this.serverId );
 		if ( server != null && server.getConfiguration() != null ) {
 			final PlexusConfiguration plexusConfiguration = new XmlPlexusConfiguration( ( Xpp3Dom ) server.getConfiguration() );
@@ -184,7 +185,6 @@ getLog().info( "WAGON Conecting to ..." + repository.getUrl() );
                 }
             }
 		}
-		getLog().debug( "Wagon configuration: Finished" );
 	}
 
     /**
