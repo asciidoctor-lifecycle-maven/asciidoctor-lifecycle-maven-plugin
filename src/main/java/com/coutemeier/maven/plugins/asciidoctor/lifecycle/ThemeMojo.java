@@ -59,8 +59,6 @@ extends AbstractAsciidoctorLifecycleMojo {
 
 	/**
      * The list of themes to download and unzip
-     *
-     * TODO it is not possible to specify a list as a Maven property, or so? The only solution appears to be convert it to a delimited String
      */
     @Parameter( property = "themes", required = false )
     private List<String> themes;

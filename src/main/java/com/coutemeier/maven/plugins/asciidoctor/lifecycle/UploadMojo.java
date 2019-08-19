@@ -42,7 +42,6 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
  *
  * @author rrialq
  * @since 1.0
- *
  */
 @Mojo( name="upload", requiresProject=true, threadSafe = true)
 public class UploadMojo
@@ -50,24 +49,59 @@ extends AbstractAsciidoctorLifecycleMojo
 implements Contextualizable {
     /**
      * The current user system settings for use in Maven.
+	 *
+	 * @since 1.0
      */
     @Parameter( defaultValue = "${settings}", readonly = true )
     private Settings settings;
 
+    /**
+     * The decrypter used to decrypt passwords in server.xml
+	 *
+	 * @since 1.0
+     */
     @Component
     private SettingsDecrypter settingsDecrypter;
 
+    /**
+     * The container
+	 *
+	 * @since 1.0
+     */
     private PlexusContainer container;
 
+    /**
+     * The directory where Asciidoctor generates the files. The default value is <code>${porject.build.directory/generated-docs}</code>.
+	 *
+	 * @since 1.0
+     */
 	@Parameter( property = GOAL_PREFIX + "outputDirectory", defaultValue="${project.build.directory}/generated-docs", required = true )
 	private File inputDirectory;
 
-	@Parameter( property = GOAL_PREFIX + "upload.directory", defaultValue="${project.artifactId}/${project.version}", required = true )
-	private String uploadToDirectory;
-
+	/**
+	 * The repository to which you want to upload the files
+	 * <p>
+	 * The repository can be any URL supported by wagon, for example:
+	 * {@code dav:http://localhost:8081/nexus/content/sites/test-site/} or {@code file:///tmp/file-repository}
+	 *
+	 * @since 1.0
+	 */
 	@Parameter ( property = GOAL_PREFIX + "upload.repository", required=true )
 	private String uploadToRepository;
 
+	/**
+	 * The directory in the repository to which upload the files
+	 *
+	 * @since 1.0
+	 */
+	@Parameter( property = GOAL_PREFIX + "upload.directory", defaultValue="${project.artifactId}/${project.version}", required = true )
+	private String uploadToDirectory;
+
+	/**
+	 * The id of the server for providing credentials
+	 *
+	 * @since 1.0
+	 */
 	@Parameter( property = GOAL_PREFIX + "upload.serverId", required = false )
 	private String serverId;
 

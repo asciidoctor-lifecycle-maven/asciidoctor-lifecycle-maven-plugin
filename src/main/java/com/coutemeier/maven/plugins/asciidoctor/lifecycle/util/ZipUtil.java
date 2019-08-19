@@ -9,10 +9,11 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Zip utils
+ *
  * @author rrialq
  * @since 1.0
  */
-public class ZipUtil {
+public final class ZipUtil {
 
 	private ZipUtil() {
 	}
@@ -24,6 +25,8 @@ public class ZipUtil {
 	 * @param zipFile the file pointing to the zip
 	 * @param outputDir the file pointing to the output directory
 	 * @throws IOException wwhen Zip Slip vulnerability or other IO problem
+	 *
+	 * @since 1.0
 	 */
 	public static void unzip( final File zipFile, final File outputDir )
 	throws IOException {
@@ -56,8 +59,11 @@ public class ZipUtil {
 	 * @param zipEntry the entry to resolve path
 	 * @return the file where the zipEnrty contents will be written
 	 * @throws IOException when zip slip vulnerability
+	 *
+	 * @since 1.0
 	 */
-	private static File resolveZipEntry( final File outputDir, final ZipEntry zipEntry) throws IOException {
+	private static File resolveZipEntry( final File outputDir, final ZipEntry zipEntry)
+	throws IOException {
 		final File destFile = new File( outputDir, zipEntry.getName() );
 		final String destDirPath = outputDir.getCanonicalPath() + File.separator;
 		final String destFilePath = destFile.getCanonicalPath();
