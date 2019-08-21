@@ -15,28 +15,30 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
 @RunWith(Parameterized.class)
 public class ArtifactUtilTestCase {
 
-	private Artifact artifact;
-	private String expectedPropertyName;
+    private Artifact artifact;
+    private String expectedPropertyName;
 
-	public ArtifactUtilTestCase( final Artifact artifact, final String expectedPropertyName ) {
-		this.artifact = artifact;
-		this.expectedPropertyName = expectedPropertyName;
-	}
+    public ArtifactUtilTestCase(final Artifact artifact, final String expectedPropertyName) {
+        this.artifact = artifact;
+        this.expectedPropertyName = expectedPropertyName;
+    }
 
+    @Test
+    public void normalizeArtifactIdTest() {
+        final String propertyName = ArtifactUtil.normalizeArtifactId(this.artifact);
+        Assert.assertEquals(this.expectedPropertyName, propertyName);
+    }
 
-	@Test
-	public void normalizeArtifactIdTest() {
-		final String propertyName = ArtifactUtil.normalizeArtifactId( this.artifact );
-		Assert.assertEquals( this.expectedPropertyName, propertyName );
-	}
-
-	@Parameterized.Parameters
-	public static Collection<Object[]> artifactIds() {
-		return Arrays.asList(new Object[][] {
-	         { new DefaultArtifact( "com.coutemeier.maven.plugins:asciidoctor-create-theme-example:zip:1.0.0-SNAPSHOT" ), "asciidoctor-create-theme-example" },
-	         { new DefaultArtifact( "com.coutemeier.maven.plugins:asciidoctor-create-theme-example:1.0.0-SNAPSHOT" ), "asciidoctor-create-theme-example"},
-	         { new DefaultArtifact( "com.coutemeier.maven.plugins:theme-ñchar:1.0.0" ), "theme-char" },
-	         { new DefaultArtifact( "com.coutemeier.maven.plugins:theme-char-0123456789:3.0.0" ), "theme-char-0123456789" }
-	    });
-	}
+    @Parameterized.Parameters
+    public static Collection<Object[]> artifactIds() {
+        return Arrays.asList(new Object[][] {
+                { new DefaultArtifact(
+                        "com.coutemeier.maven.plugins:asciidoctor-create-theme-example:zip:1.0.0-SNAPSHOT"),
+                        "asciidoctor-create-theme-example" },
+                { new DefaultArtifact("com.coutemeier.maven.plugins:asciidoctor-create-theme-example:1.0.0-SNAPSHOT"),
+                        "asciidoctor-create-theme-example" },
+                { new DefaultArtifact("com.coutemeier.maven.plugins:theme-ñchar:1.0.0"), "theme-char" },
+                { new DefaultArtifact("com.coutemeier.maven.plugins:theme-char-0123456789:3.0.0"),
+                        "theme-char-0123456789" } });
+    }
 }
