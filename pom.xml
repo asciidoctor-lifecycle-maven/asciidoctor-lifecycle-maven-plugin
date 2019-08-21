@@ -53,10 +53,13 @@
         <mavenVersionShort>3.5</mavenVersionShort>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        
+        <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
         <version.junit>4.11</version.junit>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
+        <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
         <version.wagon>3.3.1</version.wagon>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -173,6 +176,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>${version.formatter-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
@@ -181,7 +196,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${version.maven-project-info-reports-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

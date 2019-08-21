@@ -13,23 +13,25 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
  */
 public final class WagonUtil {
 
-	private WagonUtil() {
-	}
+    private WagonUtil() {
+    }
 
-	/**
-	 * Get a text with all supported protocols for wagon
-	 *
-	 * @param plexusContainer the container for looking the {@link Wagon} implementation classes availables
-	 * @param logger for showing an error in case of exception
-	 * @return an empty text in case of error or a text with comma separated protocols
-	 */
-	public static String getSupportedProtocols( final PlexusContainer plexusContainer, final Log logger ) {
-		try {
-			return String.join( ",", plexusContainer.lookupMap( Wagon.class ).keySet() );
+    /**
+     * Get a text with all supported protocols for wagon
+     *
+     * @param plexusContainer
+     *            the container for looking the {@link Wagon} implementation classes availables
+     * @param logger
+     *            for showing an error in case of exception
+     * @return an empty text in case of error or a text with comma separated protocols
+     */
+    public static String getSupportedProtocols(final PlexusContainer plexusContainer, final Log logger) {
+        try {
+            return String.join(",", plexusContainer.lookupMap(Wagon.class).keySet());
 
-		} catch ( final ComponentLookupException cause ) {
-			logger.error( cause );
-		}
-		return "";
-	}
+        } catch (final ComponentLookupException cause) {
+            logger.error(cause);
+        }
+        return "";
+    }
 }
