@@ -28,6 +28,9 @@ import org.eclipse.aether.resolution.ArtifactResult;
 public final class ArtifactUtil {
 	private static final Pattern ARTIFACT_NAME_NORMALIZER_RE = Pattern.compile( "[^a-zA-Z0-9-]" );
 
+	private ArtifactUtil() {
+	}
+
 	/**
 	 * Download an artifact from a repository
 	 * <p>

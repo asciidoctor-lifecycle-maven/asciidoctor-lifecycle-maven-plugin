@@ -20,7 +20,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <themes>
-                        <theme>::3.3.3</theme>
+                        <theme>com.coutemeier.maven.plugins:theme-not-exists:zip:0.0.1</theme>
                     </themes>
                 </configuration>
             </plugin>
