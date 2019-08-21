@@ -20,8 +20,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <themes>
-                        <theme>com.coutemeier.maven.plugins:theme-not-exists:zip:0.0.1</theme>
+                        <theme>junit:junit:4.11</theme>
                     </themes>
+                    <themesBaseDir>/this$$$/path/does/not/exists/in/Linux</themesBaseDir>
                 </configuration>
             </plugin>
         </plugins>
