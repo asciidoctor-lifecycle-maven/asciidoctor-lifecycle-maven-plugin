@@ -1,4 +1,4 @@
-package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;

@@ -6,8 +6,6 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
-
 public class ZipUtilTestCase {
 
     @Test
@@ -34,7 +32,7 @@ public class ZipUtilTestCase {
 
 
     @Test( expected = IOException.class )
-    public void unzip_fileNotExistsTest()
+    public void unzipFileNotExistsTest()
     throws IOException {
         final File zipFile = new File( "src/test/resources/FileNotExists.zip" );
         final File outputDir = new File( "target/FileNotExists" );

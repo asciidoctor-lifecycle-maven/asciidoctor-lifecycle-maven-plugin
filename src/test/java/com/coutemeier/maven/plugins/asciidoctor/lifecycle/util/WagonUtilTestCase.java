@@ -21,23 +21,21 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
-
 
 public class WagonUtilTestCase {
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    PlexusContainer container;
+    private PlexusContainer container;
 
     @Mock
-    Wagon wagon;
+    private Wagon wagon;
 
     @Mock
-    Map<String, Wagon> supportedWagonProtocols;
+    private Map<String, Wagon> supportedWagonProtocols;
 
     @Mock
-    Log log;
+    private Log log;
 
     @Test
     public void getSupportedProtocolsTest()
@@ -51,7 +49,7 @@ public class WagonUtilTestCase {
     }
 
     @Test()
-    public void getSupportedProtocols_ComponentLookupExceptionTest()
+    public void getSupportedProtocolsThrowsComponentLookupExceptionTest()
     throws Exception {
         doNothing().when( log ).error( isA( ComponentLookupException.class ) );
         Mockito.when( container.lookupMap( Wagon.class ) ).thenThrow( ComponentLookupException.class );

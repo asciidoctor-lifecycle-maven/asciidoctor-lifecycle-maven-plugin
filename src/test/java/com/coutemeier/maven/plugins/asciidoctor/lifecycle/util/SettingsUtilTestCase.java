@@ -17,23 +17,21 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.SettingsUtil;
-
 
 public class SettingsUtilTestCase {
     @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    Settings settings;
+    private Settings settings;
 
     @Mock
-    SettingsDecrypter settingsDecrypter;
+    private SettingsDecrypter settingsDecrypter;
 
     @Mock
-    SettingsDecryptionResult settingsDecryptionResult;
+    private SettingsDecryptionResult settingsDecryptionResult;
 
     @Before
-    public void setup() {
+    public void setUp() {
         final Server server = new Server();
         server.setId( "snapshots" );
         server.setUsername(  "username" );
@@ -43,32 +41,28 @@ public class SettingsUtilTestCase {
         Mockito.when(  settingsDecryptionResult.getServer() ).thenReturn( server );
     }
 
-    public SettingsUtilTestCase() {
-        // TODO Auto-generated constructor stub
-    }
-
     @Test
-    public void getAuthenticationInfo_isNotNullTest() {
+    public void getAuthenticationInfoWhenServerIdIsNotNullTest() {
         final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( "snapshots", settings, settingsDecrypter );
 
         Assert.assertNotNull( authenticationInfo );
     }
 
     @Test
-    public void getAuthenticationInfo_isNullTest() {
+    public void getAuthenticationInfoWhenServerIdIsNullTest() {
         final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( null, settings, settingsDecrypter );
         Assert.assertNull( authenticationInfo );
     }
 
     @Test
-    public void getAuthenticationInfo_passwordTest() {
+    public void getAuthenticationInfoAndCheckPasswordTest() {
         final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( "snapshots", settings, settingsDecrypter );
 
         Assert.assertEquals( "password", authenticationInfo.getPassword() );
     }
 
     @Test
-    public void getAuthenticationInfo_userNameTest() {
+    public void getAuthenticationInfoAndCheckUserNameTest() {
         final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( "snapshots", settings, settingsDecrypter );
 
         Assert.assertEquals( "username", authenticationInfo.getUserName() );
