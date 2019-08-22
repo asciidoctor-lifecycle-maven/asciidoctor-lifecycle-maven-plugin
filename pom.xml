@@ -61,6 +61,7 @@
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
+        <version.mockito>2.25.0</version.mockito>
         <version.wagon>3.3.1</version.wagon>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -113,6 +114,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -176,6 +183,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
@@ -188,6 +196,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     
