@@ -34,7 +34,7 @@ ifdef::badges[]
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
 image:https://www.codefactor.io/repository/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin/badge[CodeFactor, link="https://www.codefactor.io/repository/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
 image:https://api.codacy.com/project/badge/Grade/f01251c7d205471d87060224bf354b66[Codacy,link="https://app.codacy.com/app/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin"]
-image:http://img.shields.io/coveralls/{project-repo}/master.svg["Coverage Status", link="https://coveralls.io/r/{project-repo}?branch=master"]
+image:https://coveralls.io/repos/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin?branch=master"]
 endif::[]
 
 A lifecycle and custom mojos to isolate the building of asciidoctor
