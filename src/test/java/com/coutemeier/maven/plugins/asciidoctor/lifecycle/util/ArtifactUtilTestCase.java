@@ -1,4 +1,4 @@
-package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
+package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.util.Arrays;
 import java.util.Collection;
