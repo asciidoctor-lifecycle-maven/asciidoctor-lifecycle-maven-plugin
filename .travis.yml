@@ -1,4 +1,7 @@
 language: java
 sudo: false # faster builds
 
-script: "mvn integration-test -Prun-it"
+script:
+        - "mvn integration-test -Prun-it jacoco:report"
+after_success:
+        - "mvn coveralls:report"
