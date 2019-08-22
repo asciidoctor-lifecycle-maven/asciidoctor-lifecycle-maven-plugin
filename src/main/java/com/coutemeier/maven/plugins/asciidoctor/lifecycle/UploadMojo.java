@@ -43,14 +43,14 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
  * @author rrialq
  * @since 1.0
  */
-@Mojo(name = "upload", requiresProject = true, threadSafe = true)
+@Mojo( name = "upload", requiresProject = true, threadSafe = true )
 public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Contextualizable {
     /**
      * The current user system settings for use in Maven.
      *
      * @since 1.0
      */
-    @Parameter(defaultValue = "${settings}", readonly = true)
+    @Parameter( defaultValue = "${settings}", readonly = true )
     private Settings settings;
 
     /**
@@ -74,8 +74,11 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX
-            + "outputDirectory", defaultValue = "${project.build.directory}/generated-docs", required = true)
+    @Parameter(
+        property = GOAL_PREFIX
+            + "outputDirectory",
+        defaultValue = "${project.build.directory}/generated-docs",
+        required = true )
     private File inputDirectory;
 
     /**
@@ -86,7 +89,7 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "upload.repository", required = true)
+    @Parameter( property = GOAL_PREFIX + "upload.repository", required = true )
     private String uploadToRepository;
 
     /**
@@ -94,8 +97,11 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX
-            + "upload.directory", defaultValue = "${project.artifactId}/${project.version}", required = true)
+    @Parameter(
+        property = GOAL_PREFIX
+            + "upload.directory",
+        defaultValue = "${project.artifactId}/${project.version}",
+        required = true )
     private String uploadToDirectory;
 
     /**
@@ -103,124 +109,131 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "upload.serverId", required = false)
+    @Parameter( property = GOAL_PREFIX + "upload.serverId", required = false )
     private String serverId;
 
     @Override
-    protected void doExecute() throws MojoExecutionException, MojoFailureException {
-        uploadTo(new Repository(this.serverId, this.uploadToRepository));
+    protected void doExecute()
+        throws MojoExecutionException,
+        MojoFailureException {
+        uploadTo( new Repository( this.serverId, this.uploadToRepository ) );
     }
 
-    private final void uploadTo(final Repository repository) throws MojoExecutionException {
-        if (!this.inputDirectory.exists()) {
+    private final void uploadTo( final Repository repository )
+        throws MojoExecutionException {
+        if ( !this.inputDirectory.exists() ) {
             throw new MojoExecutionException(
-                    "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first.");
+                "The Asciidoctor generated files directory does not exists. Please, run asciidoctor-lifecycle:build first." );
         }
 
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("Uploading to '" + this.uploadToRepository + "' , using credentials from server id '"
-                    + this.serverId + "'.");
+        if ( getLog().isDebugEnabled() ) {
+            getLog().debug( "Uploading to '" + this.uploadToRepository + "' , using credentials from server id '"
+                + this.serverId + "'." );
         }
 
-        upload(repository);
+        upload( repository );
     }
 
-    private final void upload(final Repository repository) throws MojoExecutionException {
-        final Wagon wagon = getWagon(repository);
+    private final void upload( final Repository repository )
+        throws MojoExecutionException {
+        final Wagon wagon = getWagon( repository );
 
         try {
             // TODO Review. Is this required in Maven 3.5?
-            configureWagon(wagon);
+            configureWagon( wagon );
             // TODO Need investigation for how get proxy info.
             // For the moment it will be null (no proxy info).
             final ProxyInfo proxyInfo = null;
 
-            uploadDirectory(repository, wagon, proxyInfo);
+            uploadDirectory( repository, wagon, proxyInfo );
 
-        } catch (TransferFailedException e) {
-            throw new MojoExecutionException("Unable to configure Wagon: '" + repository.getProtocol() + "'", e);
+        } catch ( TransferFailedException e ) {
+            throw new MojoExecutionException( "Unable to configure Wagon: '" + repository.getProtocol() + "'", e );
         }
     }
 
-    private Wagon getWagon(final Repository repository) throws MojoExecutionException {
+    private Wagon getWagon( final Repository repository )
+        throws MojoExecutionException {
         final Wagon wagon;
         try {
             // This seems the new way to get the wagon reference
-            wagon = (Wagon) this.container.lookup(Wagon.ROLE, repository.getProtocol());
+            wagon = ( Wagon ) this.container.lookup( Wagon.ROLE, repository.getProtocol() );
 
-        } catch (final ComponentLookupException cause) {
+        } catch ( final ComponentLookupException cause ) {
             final Throwable originalCause = cause.getCause();
 
-            if (originalCause instanceof NoSuchElementException) {
+            if ( originalCause instanceof NoSuchElementException ) {
                 final String message = "Unsupported protocol: '" + repository.getProtocol() + "' "
-                        + "for Asciidoctor upload to asciidoctor.lifecycle.deployToUrl = '" + repository.getUrl()
-                        + "'.";
+                    + "for Asciidoctor upload to asciidoctor.lifecycle.deployToUrl = '" + repository.getUrl()
+                    + "'.";
                 final String messageWithAvailableProtocols = message + "\nAvailable protocols are: "
-                        + WagonUtil.getSupportedProtocols(this.container, getLog()) + "."
-                        + "\nMore protocols may be added through wagon providers, see http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
-                getLog().error(messageWithAvailableProtocols);
-                throw new MojoExecutionException(message, cause.getCause());
+                    + WagonUtil.getSupportedProtocols( this.container, getLog() ) + "."
+                    + "\nMore protocols may be added through wagon providers, see http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
+                getLog().error( messageWithAvailableProtocols );
+                throw new MojoExecutionException( message, cause.getCause() );
             }
-            throw new MojoExecutionException("Error while configuring wagon: '" + repository.getProtocol() + "'.",
-                    cause);
+            throw new MojoExecutionException( "Error while configuring wagon: '" + repository.getProtocol() + "'.",
+                cause );
         }
 
-        if (!wagon.supportsDirectoryCopy()) {
+        if ( !wagon.supportsDirectoryCopy() ) {
             throw new MojoExecutionException(
-                    "Wagon protocol '" + repository.getProtocol() + "' does not supports directory copy.");
+                "Wagon protocol '" + repository.getProtocol() + "' does not supports directory copy." );
         }
         return wagon;
     }
 
-    private final void uploadDirectory(final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo)
-            throws MojoExecutionException {
-        final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo(this.serverId, this.settings,
-                this.settingsDecrypter);
+    private final void uploadDirectory( final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo )
+        throws MojoExecutionException {
+        final AuthenticationInfo authenticationInfo = SettingsUtil.getAuthenticationInfo( this.serverId, this.settings,
+            this.settingsDecrypter );
         try {
-            if (proxyInfo != null) {
-                wagon.connect(repository, authenticationInfo, proxyInfo);
-            } else if (authenticationInfo != null) {
-                wagon.connect(repository, authenticationInfo);
+            if ( proxyInfo != null ) {
+                wagon.connect( repository, authenticationInfo, proxyInfo );
+            } else if ( authenticationInfo != null ) {
+                wagon.connect( repository, authenticationInfo );
             } else {
-                wagon.connect(repository);
+                wagon.connect( repository );
             }
-            wagon.putDirectory(inputDirectory, this.uploadToDirectory);
-        } catch (final AuthorizationException | AuthenticationException | ConnectionException
-                | ResourceDoesNotExistException | TransferFailedException cause) {
-            throw new MojoExecutionException("Error uploading Asciidoctor documents to server: " + cause.getMessage(),
-                    cause);
+            wagon.putDirectory( inputDirectory, this.uploadToDirectory );
+        } catch ( final AuthorizationException | AuthenticationException | ConnectionException
+            | ResourceDoesNotExistException | TransferFailedException cause ) {
+            throw new MojoExecutionException( "Error uploading Asciidoctor documents to server: " + cause.getMessage(),
+                cause );
         } finally {
             try {
                 wagon.disconnect();
-            } catch (final ConnectionException cause) {
-                getLog().error("Error disconnecting wagon - ignored", cause);
+            } catch ( final ConnectionException cause ) {
+                getLog().error( "Error disconnecting wagon - ignored", cause );
             }
         }
     }
 
-    private final void configureWagon(final Wagon wagon) throws TransferFailedException {
-        final Server server = settings.getServer(this.serverId);
-        if (server != null && server.getConfiguration() != null) {
+    private final void configureWagon( final Wagon wagon )
+        throws TransferFailedException {
+        final Server server = settings.getServer( this.serverId );
+        if ( server != null && server.getConfiguration() != null ) {
             final PlexusConfiguration plexusConfiguration = new XmlPlexusConfiguration(
-                    (Xpp3Dom) server.getConfiguration());
+                ( Xpp3Dom ) server.getConfiguration() );
             ComponentConfigurator componentConfigurator = null;
 
             try {
-                componentConfigurator = (ComponentConfigurator) container.lookup(ComponentConfigurator.ROLE, "basic");
-                componentConfigurator.configureComponent(wagon, plexusConfiguration, container.getContainerRealm());
+                componentConfigurator =
+                    ( ComponentConfigurator ) container.lookup( ComponentConfigurator.ROLE, "basic" );
+                componentConfigurator.configureComponent( wagon, plexusConfiguration, container.getContainerRealm() );
 
-            } catch (final ComponentLookupException cause) {
-                throw new TransferFailedException("Unable to lookup wagon configurator for \'" + this.serverId + "\'",
-                        cause);
-            } catch (ComponentConfigurationException cause) {
-                throw new TransferFailedException("Unable to apply wagon configuration for \'" + this.serverId + "\'.",
-                        cause);
+            } catch ( final ComponentLookupException cause ) {
+                throw new TransferFailedException( "Unable to lookup wagon configurator for \'" + this.serverId + "\'",
+                    cause );
+            } catch ( ComponentConfigurationException cause ) {
+                throw new TransferFailedException( "Unable to apply wagon configuration for \'" + this.serverId + "\'.",
+                    cause );
             } finally {
-                if (componentConfigurator != null) {
+                if ( componentConfigurator != null ) {
                     try {
-                        container.release(componentConfigurator);
-                    } catch (ComponentLifecycleException e) {
-                        getLog().error("Problem releasing component configurator - ignoring: " + e.getMessage());
+                        container.release( componentConfigurator );
+                    } catch ( ComponentLifecycleException e ) {
+                        getLog().error( "Problem releasing component configurator - ignoring: " + e.getMessage() );
                     }
                 }
             }
@@ -231,7 +244,8 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      * {@inheritDoc}
      */
     @Override
-    public void contextualize(Context context) throws ContextException {
-        container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
+    public void contextualize( Context context )
+        throws ContextException {
+        container = ( PlexusContainer ) context.get( PlexusConstants.PLEXUS_KEY );
     }
 }

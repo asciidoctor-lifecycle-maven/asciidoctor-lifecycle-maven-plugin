@@ -18,22 +18,24 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
     /**
      * Skip plugin execution completely
      */
-    @Parameter(property = GOAL_PREFIX + "skip", defaultValue = "false", required = false)
+    @Parameter( property = GOAL_PREFIX + "skip", defaultValue = "false", required = false )
     private boolean skip;
 
     /**
      * The maven project
      */
-    @Parameter(readonly = true, defaultValue = "${project}")
+    @Parameter( readonly = true, defaultValue = "${project}" )
     protected MavenProject project;
 
     /*
      * @see org.apache.maven.plugin.Mojo#execute()
      */
     @Override
-    public final void execute() throws MojoExecutionException, MojoFailureException {
-        if (isSkip()) {
-            getLog().info("Skipping plugin execution");
+    public final void execute()
+        throws MojoExecutionException,
+        MojoFailureException {
+        if ( isSkip() ) {
+            getLog().info( "Skipping plugin execution" );
         } else {
             doExecute();
         }
@@ -55,20 +57,20 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
         return this.project;
     }
 
-    protected void setProperty(final String name, final String value) {
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("define property " + name + " = \"" + value + "\"");
+    protected void setProperty( final String name, final String value ) {
+        if ( getLog().isDebugEnabled() ) {
+            getLog().debug( "define property " + name + " = \"" + value + "\"" );
         }
-        this.project.getProperties().put(name, value);
+        this.project.getProperties().put( name, value );
     }
 
     /**
      * Write here the logic of the Mojo
      *
-     * @throws MojoExecutionException
-     *             {@link MojoExecutionException}
-     * @throws MojoFailureException
-     *             {@link MojoFailureException}
+     * @throws MojoExecutionException {@link MojoExecutionException}
+     * @throws MojoFailureException   {@link MojoFailureException}
      */
-    protected abstract void doExecute() throws MojoExecutionException, MojoFailureException;
+    protected abstract void doExecute()
+        throws MojoExecutionException,
+        MojoFailureException;
 }

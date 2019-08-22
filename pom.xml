@@ -54,14 +54,17 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         
+        <!-- Dependency version -->
+        <version.junit>4.11</version.junit>
+        <version.wagon>3.3.1</version.wagon>
+        
+        <!-- Plugin version -->
         <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
-        <version.junit>4.11</version.junit>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
-        <version.wagon>3.3.1</version.wagon>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -87,7 +90,6 @@
             <version>${mavenVersionShort}</version>
             <optional>true</optional>
         </dependency>
-        
         <!-- Wagon -->
         <dependency>
           <groupId>org.apache.maven.wagon</groupId>
@@ -180,6 +182,9 @@
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>${version.formatter-maven-plugin}</version>
+                <configuration>
+                    <configFile>${project.basedir}/src/formatter-maven-plugin/eclipse/java.xml</configFile>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
