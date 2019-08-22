@@ -17,7 +17,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -27,9 +26,6 @@ public class WagonUtilTestCase {
 
     @Mock
     private PlexusContainer container;
-
-    @Mock
-    private Wagon wagon;
 
     @Mock
     private Map<String, Wagon> supportedWagonProtocols;
@@ -52,7 +48,7 @@ public class WagonUtilTestCase {
     public void getSupportedProtocolsThrowsComponentLookupExceptionTest()
     throws Exception {
         doNothing().when( log ).error( isA( ComponentLookupException.class ) );
-        Mockito.when( container.lookupMap( Wagon.class ) ).thenThrow( ComponentLookupException.class );
+        when( container.lookupMap( Wagon.class ) ).thenThrow( ComponentLookupException.class );
 
         final String protocols = WagonUtil.getSupportedProtocols( container, log );
         Assert.assertEquals( "", protocols );
