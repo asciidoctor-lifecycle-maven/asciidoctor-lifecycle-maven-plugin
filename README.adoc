@@ -280,7 +280,7 @@ which at the time of writing this documentation is `docbook`.
 
 To avoid this additional execution you can write the corresponding one of the executions in the plugin configuration,
 together with the shared configuration,
-and the other formats in the configuration of their corresponding executors..
+and the other formats in the configuration of their corresponding executors.
 
 **If you follows the shared configuration convention you will write something similar to**:
 
