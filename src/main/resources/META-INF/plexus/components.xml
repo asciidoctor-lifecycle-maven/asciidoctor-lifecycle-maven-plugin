@@ -22,7 +22,7 @@
                         and the backend by default is docbook.
                         So at this moment the process-asciidoc goal is not configured in the build phase.
                     -->
-                    <!-- <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build> -->
+                    <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build>
                     <upload>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:upload</upload>
                 </default-phases>
             </configuration>
