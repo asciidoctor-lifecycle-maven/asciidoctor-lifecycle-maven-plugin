@@ -47,6 +47,11 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2019/08/23
+* Integration with coveralls.
+* Some unit tests developed.
+* `asciidoctor-maven-plugin:process-asciidoc` goal mapped to `build` phase.
+
 .2019/08/19
 * Initial support for uploading generated files to a wagon repository.
 You need to configure the wagon provider in `asciidoctor-lifecycle-maven-plugin` dependencies.
@@ -277,7 +282,7 @@ To avoid this additional execution you can write the corresponding one of the ex
 together with the shared configuration,
 and the other formats in the configuration of their corresponding executors..
 
-.If you follows the shared configuration convention you will write something similar to:
+**If you follows the shared configuration convention you will write something similar to**:
 
 [source,xml]
 ----
@@ -345,7 +350,7 @@ associated with `backend = docbook`.
 [TIP]
 Of course, you can continue to configure the plugin in this way if you wish.
 
-.If you want to avoid the default backend generation...
+**If you want to avoid the default backend generation:**
 
 Below we show you how to configure the `asciidoctor-maven-plugin` plugin to use it in conjunction
 with `asciidoctor-lifecycle-maven-plugin` and avoid additional backend generation by default.
