@@ -47,6 +47,11 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2019/08/23
+* Integration with coveralls.
+* Some unit tests developed.
+* `asciidoctor-maven-plugin:process-asciidoc` goal mapped to `build` phase.
+
 .2019/08/19
 * Initial support for uploading generated files to a wagon repository.
 You need to configure the wagon provider in `asciidoctor-lifecycle-maven-plugin` dependencies.
@@ -233,7 +238,7 @@ so you have to configure the dependency to the implementation provider (if neede
 I've tested it to upload files to a webdav server and to copy them to a directory in my filesystem,
 and it is possible that works with another wagon providers.
 
-It is planned the use of proxies, but at now it doesn't work yet with proxies.
+[WARNING] It is planned the use of proxies, but at now it doesn't work yet with proxies.
 
 This is a simple example to configure the upload to a directory in your filesystem:
 
@@ -258,6 +263,151 @@ If `${project.artifactId} = theArtifact` and `${project.version} = 1.0.0`
 then generated files will be copied to `${project.build.directory}/file-repository/theArtifact/1.0.0`directory.
 [source,shell]
 mvn upload
+
+=== About configuring multiple output formats
+
+[WARNING]
+====
+The `asciidoctor-maven-plugin:process-asciidoc` is mapped to the `build` phase of this lifecycle,
+and it causes the execution associated with the default configuration.
+====
+
+Therefore,
+if you follow the convention of writing a shared configuration in the plugin configuration,
+and an execution for each of the output formats, 
+you will also obtain the default format established by the plugin,
+which at the time of writing this documentation is `docbook`.
+
+To avoid this additional execution you can write the corresponding one of the executions in the plugin configuration,
+together with the shared configuration,
+and the other formats in the configuration of their corresponding executors..
+
+**If you follows the shared configuration convention you will write something similar to**:
+
+[source,xml]
+----
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>${asciidoctor.maven.plugin.version}</version>              
+    <configuration> <!--1-->
+        <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+        <sourceHighlighter>coderay</sourceHighlighter>
+        <attributes>
+            <!--  Shared attributes-->
+            <sourcedir>${project.build.sourceDirectory}</sourcedir>
+            <project-version>${project.version}</project-version>
+            <imagesdir>./images</imagesdir>
+            <icons>font</icons>
+        </attributes>
+    </configuration>
+    <executions>
+        <execution>
+            <id>generate-html5-doc</id> <!--2-->
+            <phase>build</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>html5</backend>
+                <attributes>
+                    <docinfo1>true</docinfo1>
+                    <idprefix/>
+                    <idseparator>-</idseparator>
+                    <sectanchors>true</sectanchors>
+                    <toc>left</toc>
+                </attributes>
+            </configuration>
+        </execution>
+        <execution>
+            <id>generate-pdf-doc</id> <!--3-->
+            <phase>build</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>pdf</backend>
+                <attributes>
+                    <idprefix/>
+                    <idseparator>-</idseparator>
+                    <pagenums/>
+                    <toc/>
+                    <sectanchors>false</sectanchors>
+                </attributes>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+<1> Shared configuration at plugin configuration.
+<2> Configuration for HTML5 output format at its own execution configuration.
+<3> Configuration for PDF output format at its own execution configuration.
+
+When executing `mvn build` it will also launch the execution associated with the configuration of the plugin,
+associated with `backend = docbook`.
+
+[TIP]
+Of course, you can continue to configure the plugin in this way if you wish.
+
+**If you want to avoid the default backend generation:**
+
+Below we show you how to configure the `asciidoctor-maven-plugin` plugin to use it in conjunction
+with `asciidoctor-lifecycle-maven-plugin` and avoid additional backend generation by default.
+
+[source,xml]
+----
+<plugin>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctor-maven-plugin</artifactId>
+    <version>${asciidoctor.maven.plugin.version}</version>              
+    <configuration>
+        <!-- Shared configuration -->
+        <sourceDirectory>src/docs/asciidoc</sourceDirectory> <!--1-->
+        <sourceHighlighter>coderay</sourceHighlighter> <!--1-->
+        <!-- Specificy HTML5 configuration -->
+        <backend>html5</backend> <!--2-->
+        <attributes>
+            <!--  Shared attributes-->
+            <sourcedir>${project.build.sourceDirectory}</sourcedir> <!--1-->
+            <project-version>${project.version}</project-version> <!--1-->
+            <imagesdir>./images</imagesdir> <!--1-->
+            <icons>font</icons> <!--1-->
+
+            <!-- HTML configuration -->
+            <docinfo1>true</docinfo1> <!--2-->
+            <idprefix/><!--2-->
+            <idseparator>-</idseparator> <!--2-->
+            <sectanchors>true</sectanchors> <!--2-->
+            <toc>left</toc> <!--2-->
+        </attributes>
+    </configuration>
+    <executions>
+        <execution>
+            <id>generate-pdf-doc</id> <!--3-->
+            <phase>build</phase>
+            <goals>
+                <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+                <backend>pdf</backend>
+                <attributes>
+                    <docinfo1>false</docinfo1>
+                    <idprefix/>
+                    <idseparator>-</idseparator>
+                    <pagenums/>
+                    <toc/>
+                    <sectanchors>false</sectanchors>
+                </attributes>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+<1> Shared configuration at plugin configuration.
+<2> Configuration for HTML5 output format at plugin configuration.
+<3> Configuration for PDF output format at its own execution configuration.
 
 == Some examples explained in detail
 
