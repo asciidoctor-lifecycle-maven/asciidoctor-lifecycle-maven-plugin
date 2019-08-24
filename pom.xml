@@ -49,14 +49,15 @@
     </issueManagement>
 
     <properties>
-        <mavenVersion>3.5.0</mavenVersion>
-        <mavenVersionShort>3.5</mavenVersionShort>
+        <mavenVersion>3.3.9</mavenVersion>
+        <mavenVersionShort>3.3</mavenVersionShort>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        
+
         <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
         <version.junit>4.11</version.junit>
+        <version.takari-plugin-testing>2.8.0</version.takari-plugin-testing>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
@@ -125,22 +126,10 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-plugin-plugin</artifactId>
-                    <version>${version.maven-plugin-plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${version.jacoco-maven-plugin}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
+                <version>${version.maven-plugin-plugin}</version>
                 <configuration>
                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                     <goalPrefix>asciidoctor-lifecycle</goalPrefix>
@@ -163,28 +152,47 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${version.jacoco-maven-plugin}</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-ut.exec</destFile>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>default-prepare-agent-integration</id>
-                        <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>prepare-agent-integration</goal>
                         </goals>
                         <configuration>
-                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
                             <propertyName>invoker.mavenOpts</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>merge</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>**/*/HelpMojo*</exclude>
+                        <exclude>**/*/HelpMojo.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -219,8 +227,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.1.1</version>
                 <reportSets>
-                    <reportSet><!-- by default, id = "default" -->
-                        <reports><!-- select non-aggregate reports -->
+                    <reportSet>
+                        <reports>
                             <report>javadoc</report>
                             <report>test-javadoc</report>
                         </reports>
@@ -230,14 +238,18 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*/HelpMojo.class</exclude>
+                    </excludes>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
-                          <!-- select non-aggregate reports -->
                             <report>report</report>
                             <report>report-integration</report>
                         </reports>
-                  </reportSet>
+                    </reportSet>
                 </reportSets>
             </plugin>
         </plugins>

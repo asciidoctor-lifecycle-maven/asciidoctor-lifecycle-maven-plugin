@@ -46,6 +46,13 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2019/08/24
+* Maven requirements reduced to 3.3.9.
+* Apache 2 license badge in `README.adoc`.
+* Improvements in coverage.
+* Mixin the it and unit test coverage.
+* Reduce number of branches in `ThemeMojo.java`.
+
 .2019/08/23
 * Integration with coveralls.
 * Some unit tests developed.
