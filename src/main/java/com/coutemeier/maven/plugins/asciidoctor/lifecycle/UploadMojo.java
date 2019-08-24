@@ -129,7 +129,6 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
         final Wagon wagon = getWagon(repository);
 
         try {
-            // TODO Review. Is this required in Maven 3.5?
             configureWagon(wagon);
             // TODO Need investigation for how get proxy info.
             // For the moment it will be null (no proxy info).
