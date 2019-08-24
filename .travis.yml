@@ -4,6 +4,6 @@ jdk:
 sudo: false # faster builds
 
 script:
-        - "mvn integration-test -Prun-it jacoco:report"
+        - "mvn clean verify  -Prun-it"
 after_success:
         - "mvn coveralls:report"
