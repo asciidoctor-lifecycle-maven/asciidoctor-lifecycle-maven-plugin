@@ -27,7 +27,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * The maven project
      */
     @Parameter(readonly = true, defaultValue = "${project}")
-    protected MavenProject project;
+    private MavenProject project;
 
 
     /**
