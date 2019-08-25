@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>@project.groupId@.test</groupId>
-    <artifactId>theme-phase</artifactId>
+    <groupId>com.coutemeier.maven.plugins.test</groupId>
+    <artifactId>theme-exists</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -14,11 +14,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <version>@project.version@</version>
+                <groupId>com.coutemeier.maven.plugins</groupId>
+                <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+                <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <disableUnzip>true</disableUnzip>
                     <themes>
                         <theme>org.apache.maven.wagon:wagon-provider-api:3.3.3</theme>
                     </themes>
