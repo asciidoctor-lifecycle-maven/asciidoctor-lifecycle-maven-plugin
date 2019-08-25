@@ -68,7 +68,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
         if (getLog().isDebugEnabled()) {
             getLog().debug("define property " + name + " = \"" + value + "\"");
         }
-        this.project.getProperties().put(name, value);
+        this.getProject().getProperties().put(name, value);
     }
 
     /**

@@ -6,11 +6,12 @@
 //
 ifdef::env-github,env-browser[]
 :toc: preamble
+:badges: true
 endif::[]
 //
 ifndef::env-github[:icons: font]
 //
-:project-repo: asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin
+:project-repo: asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin
 :uri-repo: https://github.com/{project-repo}
 :uri-asciidoc: http://asciidoc.org
 :uri-asciidoctor: http://asciidoctor.org
@@ -26,7 +27,6 @@ ifdef::env-github[]
 :caution-caption: :fire:
 :warning-caption: :warning:
 endif::[]
-:badges: true
 
 // Badges
 ifdef::badges[]
@@ -94,7 +94,7 @@ This project offers a new Maven plugin, with the following functionalities (this
 * A mojo for downloading themes for using with Asciidoctor Maven Plugin.
 * A mojo for publish generated files with the help of
 https://maven.apache.org/wagon/wagon-provider-api/[Maven Wagon API],
-in the same way as the 
+in the same way as the `maven-site-plugin`.
 
 I hope this plugin helps others to write a cleaner separation between the build of the asciidoc documentation 
 
@@ -553,7 +553,7 @@ mvn clean package
 You can launch the integration tests:
 
 [source,shell]
-mvn integration-test -Prun-it
+mvn -Prun-it clean integration-test
 
 == References
 
