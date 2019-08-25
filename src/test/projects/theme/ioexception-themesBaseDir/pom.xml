@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>@project.groupId@.test</groupId>
-    <artifactId>themesbasedir-parameter</artifactId>
+    <groupId>com.coutemeier.maven.plugins</groupId>
+    <artifactId>ioexception-themesBaseDir</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -14,15 +14,15 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <version>@project.version@</version>
+                <groupId>com.coutemeier.maven.plugins</groupId>
+                <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+                <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <themes>
-                        <theme>org.apache.maven.wagon:wagon-provider-api:3.3.3</theme>
+                        <theme>junit:junit:4.11</theme>
                     </themes>
-                    <themesBaseDir>${project.build.directory}/themes</themesBaseDir>
+                    <themesBaseDir>/this$$$/path/does/not/exists/in/Linux</themesBaseDir>
                 </configuration>
             </plugin>
         </plugins>

@@ -109,7 +109,7 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
         } catch (final IOException cause) {
             throw new MojoExecutionException("Error unpacking theme", cause);
         } catch (final ArtifactResolutionException cause) {
-            throw new MojoExecutionException("Error downloading theme", cause);
+            throw new MojoExecutionException("Error downloading theme: ", cause);
         }
     }
 
