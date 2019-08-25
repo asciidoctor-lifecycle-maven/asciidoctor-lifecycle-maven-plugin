@@ -7,7 +7,7 @@
     <groupId>com.coutemeier.maven.plugins</groupId>
     <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>maven-plugin</packaging>
+    <packaging>takari-maven-plugin</packaging>
 
     <name>Maven Lifecycle and mojos for building Asciidoctor documentation</name>
     <description>A lifecycle and custom mojos to isolate the building of asciidoctor documentation from the default lifecycle with the asciidoctor-maven-plugin</description>
@@ -53,12 +53,14 @@
         <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
         <version.junit>4.11</version.junit>
+        <version.takari-plugin-integration-testing>2.8.0</version.takari-plugin-integration-testing>
         <version.takari-plugin-testing>2.8.0</version.takari-plugin-testing>
         <version.maven-enforcer-plugin>3.0.0-M2</version.maven-enforcer-plugin>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
+        <version.takari-lifecycle-plugin>1.13.9</version.takari-lifecycle-plugin>
         <version.mockito>2.25.0</version.mockito>
         <version.wagon>3.3.1</version.wagon>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -68,6 +70,11 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
+            <version>${mavenVersion}</version>
+        </dependency>
+                <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
             <version>${mavenVersion}</version>
         </dependency>
         <dependency>
@@ -120,10 +127,32 @@
             <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.takari.maven.plugins</groupId>
+            <artifactId>takari-plugin-testing</artifactId>
+            <version>${version.takari-plugin-testing}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.takari.maven.plugins</groupId>
+            <artifactId>takari-plugin-integration-testing</artifactId>
+            <version>${version.takari-plugin-integration-testing}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>io.takari.maven.plugins</groupId>
+                <artifactId>takari-lifecycle-plugin</artifactId>
+                <version>${version.takari-lifecycle-plugin}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <proc>proc</proc>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -141,6 +170,19 @@
                                 </requireMavenVersion>
                             </rules>    
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

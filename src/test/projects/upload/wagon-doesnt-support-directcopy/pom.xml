@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>@project.groupId@.test</groupId>
-    <artifactId>sample-asciidoctor-build-phase-parent</artifactId>
+    <groupId>com.coutemeier.maven.plugins.test</groupId>
+    <artifactId>upload-doesnt-support-directcopy</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -14,29 +14,15 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>@project.groupId@</groupId>
-                <artifactId>@project.artifactId@</artifactId>
-                <version>@project.version@</version>
+                <groupId>com.coutemeier.maven.plugins</groupId>
+                <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+                <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>nexus-snapshots</serverId>
-                    <!--  
-                    <uploadTo>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo>
-                    -->
-                    <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository>
-                    <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory>
+                    <uploadToRepository>https://wagon-provider/doesnt/support/directcopy</uploadToRepository>
+                    <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
                 </configuration>
-                <!-- 
-                You need the wagon-webdav-jackrabbit dependency if you want to publish to a webdav server -->
-                <!--
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-webdav-jackrabbit</artifactId>
-                        <version>3.0.0</version>
-                    </dependency>
-                </dependencies>
-                -->
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
