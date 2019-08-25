@@ -11,7 +11,7 @@ endif::[]
 //
 ifndef::env-github[:icons: font]
 //
-:project-repo: asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin
+:project-repo: asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin
 :uri-repo: https://github.com/{project-repo}
 :uri-asciidoc: http://asciidoc.org
 :uri-asciidoctor: http://asciidoctor.org
