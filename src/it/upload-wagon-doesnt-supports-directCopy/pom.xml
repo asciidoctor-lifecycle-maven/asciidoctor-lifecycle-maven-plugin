@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>@project.groupId@.test</groupId>
+    <artifactId>sample-asciidoctor-build-phase-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>@project.groupId@</groupId>
+                <artifactId>@project.artifactId@</artifactId>
+                <version>@project.version@</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>nexus-snapshots</serverId>
+                    <!--  
+                    <uploadTo>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo>
+                    -->
+                    <uploadToRepository>https://nonexistant-url</uploadToRepository>
+                    <uploadToDirectory>@project.artifactId@/@project.version@</uploadToDirectory>
+                </configuration>
+                <!-- 
+                You need the wagon-webdav-jackrabbit dependency if you want to publish to a webdav server -->
+                <!--
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>
+                -->
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.8</version>
+                <executions>
+                    <execution>
+                        <id>output-html</id>              
+                        <phase>build</phase> 
+                        <goals>
+                            <goal>process-asciidoc</goal> 
+                        </goals>
+                        <configuration>
+                            <backend>html5</backend>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

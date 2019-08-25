@@ -54,6 +54,7 @@
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
         <version.junit>4.11</version.junit>
         <version.takari-plugin-testing>2.8.0</version.takari-plugin-testing>
+        <version.maven-enforcer-plugin>3.0.0-M2</version.maven-enforcer-plugin>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
@@ -126,7 +127,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M2</version>
+                <version>${version.maven-enforcer-plugin}</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -136,7 +137,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,3.6.1)</version>
+                                    <version>[3.3.9,3.6.1]</version>
                                 </requireMavenVersion>
                             </rules>    
                         </configuration>
