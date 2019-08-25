@@ -34,7 +34,7 @@ image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License, link="
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/{project-repo}"]
 image:https://www.codefactor.io/repository/github/{project-repo}/badge[CodeFactor, link="https://www.codefactor.io/repository/github/{project-repo}"]
 image:https://api.codacy.com/project/badge/Grade/f01251c7d205471d87060224bf354b66[Codacy,link="https://app.codacy.com/app/{project-repo}"]
-image:https://coveralls.io/repos/github/{project-repo}/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/{project-repo}?branch=master"]
+image:https://img.shields.io/coveralls/{project-repo}/master.svg["Coverage Status", link="https://coveralls.io/github/{project-repo}?branch=master"]
 endif::[]
 
 A lifecycle and custom mojos to isolate the building of asciidoctor
