@@ -22,7 +22,7 @@ public final class ZipUtil {
      * Decompress a zip file in a specific path
      * <p>
      * Decompresión is made in two steps, to avoid
-     * 
+     *
      * @param zipFile
      *            the file pointing to the zip
      * @param outputDir
@@ -74,7 +74,7 @@ public final class ZipUtil {
         final String destFilePath = destFile.getCanonicalPath();
 
         if (!destFilePath.startsWith(destDirPath)) {
-            throw new IOException("Zip Slip vulnerability: " + zipEntry.getName());
+            throw new IOException( "Zip Slip vulnerability: " + zipEntry.getName() );
         }
 
         return destFile;
