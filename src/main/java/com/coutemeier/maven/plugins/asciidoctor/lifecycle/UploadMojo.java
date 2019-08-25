@@ -75,7 +75,7 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
      * @since 1.0
      */
     @Parameter(property = GOAL_PREFIX
-            + "outputDirectory", defaultValue = "${project.build.directory}/generated-docs", required = true)
+            + "inputDirectory", defaultValue = "${project.build.directory}/generated-docs", required = true)
     private File inputDirectory;
 
     /**
