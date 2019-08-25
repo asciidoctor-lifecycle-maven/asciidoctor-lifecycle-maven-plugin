@@ -47,6 +47,11 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2019/08/25
+* Updated `README.adoc` to reflect Maven [3.3.9,3.6.1] versions supported.
+* Updated `invoker.properties` files for `invoker.maven.version`.
+* Updated `pom.xml` file to Maven [3.3.9,3.6.1] requirement.
+
 .2019/08/24
 * Maven requirements reduced to 3.3.9.
 * Apache 2 license badge in `README.adoc`.
@@ -87,6 +92,9 @@ This project offers a new Maven plugin, with the following functionalities (this
 
 * A new lifecycle, designed for resolving some of the needs I've found in my personal projects.
 * A mojo for downloading themes for using with Asciidoctor Maven Plugin.
+* A mojo for publish generated files with the help of
+https://maven.apache.org/wagon/wagon-provider-api/[Maven Wagon API],
+in the same way as the 
 
 I hope this plugin helps others to write a cleaner separation between the build of the asciidoc documentation 
 
@@ -239,7 +247,7 @@ mvn build
 === Upload the generated files
 
 At this moment the `upload` phase is implemented in its basic functionality.
-It uses the https://maven.apache.org/wagon/wagon-provider-api/[wagon-provider-api],
+It uses the https://maven.apache.org/wagon/wagon-provider-api/[Maven Wagon API],
 so you have to configure the dependency to the implementation provider (if needed).
 
 I've tested it to upload files to a webdav server and to copy them to a directory in my filesystem,
@@ -537,7 +545,7 @@ credentials to use to uploading the files to the server.
 
 == How can I build the plugin?
 
-You can build the project with Maven 3.5.0 and Java 8.
+You can build the project with Maven [3.3.9,3.6.1] versions and Java 8.
 
 [source,shell]
 mvn clean package
