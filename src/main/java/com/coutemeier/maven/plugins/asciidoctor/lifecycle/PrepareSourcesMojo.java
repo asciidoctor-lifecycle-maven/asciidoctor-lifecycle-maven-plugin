@@ -1,21 +1,12 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 
 /**
  * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped.
@@ -40,21 +31,9 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 @Mojo(name = "prepare-sources", requiresProject = true, threadSafe = true)
 public class PrepareSourcesMojo extends AbstractAsciidoctorLifecycleMojo {
     /**
-     * Prefix for this goal only properties
-     */
-    private final String THIS_GOAL_PREFIX = GOAL_PREFIX + "build.";
-
-    /**
      * Prefix to apply to properties created automatically to reflect where a theme was unzipped
      */
     private final String THEME_AUTOPROPERTY_PREFIX = "asciidoctor.theme.";
-
-    /**
-     * The current repository/network configuration of Maven.
-     */
-    @Parameter(readonly = true, defaultValue="${repositorySystemSession}")
-    private RepositorySystemSession repoSession;
-
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {

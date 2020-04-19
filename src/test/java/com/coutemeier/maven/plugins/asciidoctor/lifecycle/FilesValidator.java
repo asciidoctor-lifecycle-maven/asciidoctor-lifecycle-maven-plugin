@@ -16,7 +16,7 @@ public final class FilesValidator {
     public FilesValidator( final File basedir ) {
         super();
         this.basedir = basedir;
-        this.mavenBuildDirectory = new File( basedir, "target" );
+        this.mavenBuildDirectory = new File( this.basedir, "target" );
         this.buildDirectory = new File( this.mavenBuildDirectory, Constants.BUILDDIRECTORY );
         this.themesDirectory = new File( this.buildDirectory, "themes" );
         this.htmlBuildDirectory = new File( this.buildDirectory, "html5" );
