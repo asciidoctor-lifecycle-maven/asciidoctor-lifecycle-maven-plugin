@@ -1,4 +1,6 @@
 = asciidoctor-lifecycle-maven-plugin
+
+image:https://api.codacy.com/project/badge/Grade/ef4ac885fa44494b8b7ad41aa53d99b1[link="https://app.codacy.com/gh/asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin?utm_source=github.com&utm_medium=referral&utm_content=asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin&utm_campaign=Badge_Grade_Settings"]
 //
 :release-version: 1.0-SNAPSHOT
 :idprefix:
