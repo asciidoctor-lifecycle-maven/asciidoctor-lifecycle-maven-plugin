@@ -7,6 +7,7 @@
             <configuration>
                 <id>asciidoctor-lifecycle-build</id>
                 <phases>
+                    <phase>prepare-theme</phase>
                     <phase>theme</phase>
                     <phase>prepare-build</phase>
                     <phase>build</phase>
@@ -16,12 +17,13 @@
                 </phases>
                 <default-phases>
                     <theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:theme</theme>
-                    <!-- 
-                        This has the inconvenient of generating an extra xml, 
+                    <!--
+                        This has the inconvenient of generating an extra xml,
                         because it is invoked the default process-asciidoc goal, outside the executions,
                         and the backend by default is docbook.
                         So at this moment the process-asciidoc goal is not configured in the build phase.
                     -->
+                    <prepare-build>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:prepare-sources</prepare-build>
                     <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build>
                     <upload>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:upload</upload>
                 </default-phases>

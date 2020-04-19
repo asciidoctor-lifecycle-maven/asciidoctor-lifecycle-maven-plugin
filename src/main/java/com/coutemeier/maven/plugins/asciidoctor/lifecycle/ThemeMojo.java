@@ -14,6 +14,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 
 /**
@@ -49,61 +50,41 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
     private final String THEME_AUTOPROPERTY_PREFIX = "asciidoctor.theme.";
 
     /**
-     * The directory where themes should be unzipping
-     */
-    @Parameter(property = THIS_GOAL_PREFIX
-            + "themesBaseDir", defaultValue = "${project.build.directory}/asciidoctor-themes")
-    private File themesBaseDir;
-
-    /**
      * The list of themes to download and unzip
      */
     @Parameter(property = "themes", required = false)
     private List<String> themes;
 
     /**
-     * Disable the unzip of the themes
-     */
-    @Parameter(property = THIS_GOAL_PREFIX + "disableUnzip", defaultValue = "false")
-    private boolean disableUnzip;
-
-    /**
      * The current repository/network configuration of Maven.
      */
-    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    @Parameter(readonly = true, defaultValue="${repositorySystemSession}")
     private RepositorySystemSession repoSession;
 
     /**
      * Remote repositories which will be searched for themes.
      */
-    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    @Parameter(readonly=true, defaultValue="${project.remoteProjectRepositories}")
     protected List<RemoteRepository> remoteRepositories;
+
+    /**
+     * The directory where themes should be unzipping
+     */
+    private File getThemesDirectory() {
+        return new File( this.buildDirectory, "themes" );
+    }
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
-        final boolean infoEnabled = getLog().isInfoEnabled();
         try {
             for (final String theme : themes) {
-                if ( infoEnabled ) {
-                    getLog().info("Asciidoctor theme " + theme + ": downloading...");
-                }
-                final Artifact themeArtifact = ArtifactUtil.downloadByAether(theme, repositorySystem, repoSession,
-                        remoteRepositories);
-                if ( infoEnabled ) {
-                    getLog().info("Asciidoctor theme " + theme + ": downloaded");
-                }
-                if (!this.disableUnzip) {
-                    final File themeOutputDir = new File(this.themesBaseDir, themeArtifact.getArtifactId());
-                    ZipUtil.unzip(themeArtifact.getFile(), themeOutputDir);
-                    final String propertyName = createPropertyName(themeArtifact);
-                    final String propertyValue = themeOutputDir.getCanonicalPath();
-                    this.setProperty(propertyName, propertyValue);
-
-                    if ( infoEnabled ) {
-                        getLog().debug("Asciidoctor theme " + theme + " - property: " + propertyName + " = \""
-                                + propertyValue + "\"");
-                    }
-                }
+                // Download the theme artifact
+                final Artifact themeArtifact = downloadAction( theme );
+                // Unpack it to directory
+                final File outputDirectory = unpackAction( themeArtifact );
+                copyCommonThemeResources( outputDirectory );
+                // Create the property
+                final String propertyName = createPropertyAction( themeArtifact, outputDirectory );
             }
 
         } catch (final IOException cause) {
@@ -111,6 +92,61 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
         } catch (final ArtifactResolutionException cause) {
             throw new MojoExecutionException("Error downloading theme: ", cause);
         }
+    }
+
+    /**
+     * Download theme artifact from remote repository if needed.
+     */
+    private Artifact downloadAction( final String theme )
+    throws IOException, ArtifactResolutionException, MojoFailureException {
+        if ( this.infoEnabled ) {
+            getLog().info(String.format("Asciidoctor theme %s: Downloading...", theme ));
+        }
+        return ArtifactUtil.downloadByAether(theme, repositorySystem, repoSession, remoteRepositories);
+    }
+
+    /**
+     * Unpack the downloaded artifact theme to a folder.
+     * <p>
+     * Steps are:
+     * <ul>
+     *      <li>Extract the contents to the output folder.
+     *      <li>Copy the _asciidoctor/templates folder if exists to the ${asciidoctor.sources}
+     * </ul>
+     */
+    private File unpackAction( final Artifact theme )
+    throws IOException {
+        final File outputDirectory = new File(this.getThemesDirectory(), theme.getArtifactId());
+        if ( this.infoEnabled ) {
+            getLog().info( String.format("Asciidoctor theme %s - Unpacking in %s", theme.getArtifactId(), outputDirectory.toString() ) );
+        }
+        ZipUtil.unzip(theme.getFile(), outputDirectory);
+        return outputDirectory;
+    }
+
+    /**
+     * Copy all common resources to ${project.output.directory}/asciidoctor-build/asciidoc
+     * <p>
+     * Common resources are all resources under ${theme}/asciidoc directory.
+     */
+    private void copyCommonThemeResources(final File themeOutputDirectory)
+    throws IOException {
+        final File commonResources = new File( themeOutputDirectory, "asciidoc" );
+        if ( commonResources.isDirectory() ) {
+            FileUtil.copyDir( commonResources.toPath(), this.getBuildSourceDirectory().toPath() );
+        }
+    }
+
+    private String createPropertyAction( final Artifact theme, final File outputDirectory )
+    throws IOException {
+        final String propertyName = createPropertyName(theme);
+        final String propertyValue = outputDirectory.getCanonicalPath();
+        this.setProperty(propertyName, propertyValue);
+
+        if ( this.infoEnabled ) {
+            getLog().info(String.format("Asciidoctor theme %s - SetProperty: %s = %s", theme.getArtifactId(), propertyName, propertyValue ));
+        }
+        return propertyName;
     }
 
     /**
@@ -125,5 +161,4 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
     private String createPropertyName(final Artifact artifact) {
         return THEME_AUTOPROPERTY_PREFIX + ArtifactUtil.normalizeArtifactId(artifact) + ".path";
     }
-
 }

@@ -14,6 +14,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>install-theme-example</id>
+                        <phase>prepare-theme</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${theme.example.path}</file>
+                            <groupId>${theme.groupId}</groupId>
+                            <artifactId>${theme.artifactId}</artifactId>
+                            <version>${theme.version}</version>
+                            <packaging>zip</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>com.coutemeier.maven.plugins</groupId>
                 <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
                 <version>${it-plugin.version}</version>
@@ -21,7 +43,7 @@
                 <configuration>
                     <disableUnzip>true</disableUnzip>
                     <themes>
-                        <theme>org.apache.maven.wagon:wagon-provider-api:3.3.3</theme>
+                        <theme>${theme.artifact}</theme>
                     </themes>
                 </configuration>
             </plugin>

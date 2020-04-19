@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+        xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+
+    <profiles>
+        <profile>
+            <id>inject-theme-properties</id>
+            <properties>
+                <theme.groupId>com.coutemeier.asciidoctor.lifecycle.theme</theme.groupId>
+                <theme.artifactId>theme-example</theme.artifactId>
+                <theme.version>1.0.0</theme.version>
+                <theme.artifact>${theme.groupId}:${theme.artifactId}:zip:${theme.version}</theme.artifact>
+                <theme.artifact.path>${project.basedir}/${theme.artifactId}.zip</theme.artifact.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>inject-theme-properties</activeProfile>
+    </activeProfiles>
+</settings>

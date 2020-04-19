@@ -20,7 +20,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <themes>
-                        <theme>com.coutemeier.maven.plugins:theme-not-exists:zip:0.0.1</theme>
+                        <theme>${theme.artifact}-does-not-exists</theme>
                     </themes>
                 </configuration>
             </plugin>

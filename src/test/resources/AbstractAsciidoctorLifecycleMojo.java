@@ -2,8 +2,6 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
 import java.io.File;
 
-import static com.coutemeier.maven.plugins.asciidoctor.lifecycle.Constants.*;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -18,14 +16,18 @@ import org.eclipse.aether.RepositorySystem;
  * @author rrialq
  * @since 1.0
  */
-public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
+public abstract class AbstractAsciidoctorLifecycleMojo
+extends AbstractMojo {
     protected static final String ASCIIDOCTOR_GOAL_PREFIX = "asciidoctor.";
+
     protected static final String GOAL_PREFIX = "asciidoctor.lifecycle.";
+
+    protected static final String BUILDDIRECTORY_DEFAULT_VALUE = "asciidoctor-build";
 
     /**
      * Skip plugin execution completely
      */
-    @Parameter(property = ASCIIDOCTOR_GOAL_PREFIX + "skip", defaultValue = "false", required = false)
+    @Parameter(property = GOAL_PREFIX + "skip", defaultValue = "false", required = false)
     private boolean skip;
 
     /**
@@ -33,6 +35,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      */
     @Parameter(readonly = true, defaultValue="${project}")
     private MavenProject project;
+
 
     /**
      * The entry point to Aether, i.e. the component doing all the work.
@@ -44,18 +47,14 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * Directory where are source files
      */
     @Parameter(property = ASCIIDOCTOR_GOAL_PREFIX + "sourceDirectory", defaultValue="${project.basedir}/src/main/asciidoc", required=false)
-    protected File sourceDirectory;
+    private File sourceDirectory;
 
     /**
      * Directory used to store all source files allowing merging with theme resources,
      * without affecting original versioned files.
      */
-    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + Constants.BUILDDIRECTORY, required=false)
-    protected File buildDirectory;
-
-    protected final boolean infoEnabled = this.getLog().isInfoEnabled();
-    protected final boolean debugEnabled = this.getLog().isDebugEnabled();
-
+    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + BUILDDIRECTORY_DEFAULT_VALUE, required=false)
+    private File buildDirectory;
 
     /*
      * @see org.apache.maven.plugin.Mojo#execute()
@@ -87,21 +86,17 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
 
     protected void setProperty(final String name, final String value) {
         if (getLog().isDebugEnabled()) {
-            getLog().debug("[Asiidoctor Lifecycle] " + name + " = \"" + value + "\"");
+            getLog().debug("define property " + name + " = \"" + value + "\"");
         }
         this.getProject().getProperties().put(name, value);
     }
 
-    public File getBuildSourceDirectory() {
-        return new File( this.buildDirectory, "asciidoc");
+    public File getBuildDirectory() {
+        return this.buildDirectory;
     }
 
-    protected void debug( final String title, final File file ) {
-        if( this.debugEnabled ) {
-            this.getLog().debug(
-                String.format( "[Asciidoctor.lifecycle] %s(%s, %s)=%s", title, file.isDirectory(), file.isFile(), file.toString() )
-            );
-        }
+    public File getBuildSourceDirectory() {
+        return new File( this.buildDirectory, "asciidoc");
     }
 
     /**

@@ -24,7 +24,7 @@
             <timezone>UTC+1</timezone>
         </developer>
     </developers>
-    
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -53,17 +53,21 @@
         <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
         <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
         <version.junit>4.11</version.junit>
-        <version.takari-plugin-integration-testing>2.8.0</version.takari-plugin-integration-testing>
-        <version.takari-plugin-testing>2.8.0</version.takari-plugin-testing>
+        <version.takari-testing>2.9.2</version.takari-testing>
+        <version.takari-lifecycle-plugin>1.13.9</version.takari-lifecycle-plugin>
+<!--
+        <version.takari-plugin-integration-testing>2.9.2</version.takari-plugin-integration-testing>
+        <version.takari-plugin-testing>2.9.2</version.takari-plugin-testing>
+-->
         <version.maven-enforcer-plugin>3.0.0-M2</version.maven-enforcer-plugin>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
-        <version.takari-lifecycle-plugin>1.13.9</version.takari-lifecycle-plugin>
         <version.mockito>2.25.0</version.mockito>
         <version.wagon>3.3.1</version.wagon>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -93,7 +97,7 @@
             <version>${mavenVersionShort}</version>
             <optional>true</optional>
         </dependency>
-        
+
         <!-- Wagon -->
         <dependency>
           <groupId>org.apache.maven.wagon</groupId>
@@ -101,7 +105,7 @@
           <version>${version.wagon}</version>
         </dependency>
 
-    <!-- 
+    <!--
         <dependency>
           <groupId>org.apache.maven.wagon</groupId>
           <artifactId>wagon-webdav-jackrabbit</artifactId>
@@ -130,13 +134,13 @@
         <dependency>
             <groupId>io.takari.maven.plugins</groupId>
             <artifactId>takari-plugin-testing</artifactId>
-            <version>${version.takari-plugin-testing}</version>
+            <version>${version.takari-testing}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.takari.maven.plugins</groupId>
             <artifactId>takari-plugin-integration-testing</artifactId>
-            <version>${version.takari-plugin-integration-testing}</version>
+            <version>${version.takari-testing}</version>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
@@ -166,13 +170,14 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,3.6.1]</version>
+                                    <version>[3.3.9,4.0)</version>
                                 </requireMavenVersion>
-                            </rules>    
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -183,9 +188,19 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <!--
+                        <configuration>
+                            <systemPropertyVariables>
+                                <buildDirectory>${project.build.directory}</buildDirectory>
+                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
+                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
+                            </systemPropertyVariables>
+                        </configuration>
+                    -->
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>${version.maven-plugin-plugin}</version>
@@ -262,7 +277,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -313,29 +328,34 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <profiles>
         <profile>
             <id>run-it</id>
             <build>
                 <plugins>
+                    <!--
                     <plugin>
                         <artifactId>maven-invoker-plugin</artifactId>
                         <version>${version.maven-invoker-plugin}</version>
                         <configuration>
+                            <settingsFile>src/it/settings.xml</settingsFile>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <projectsDirectory>src/it</projectsDirectory>
                             <postBuildHookScript>verify</postBuildHookScript>
                             <showVersion>true</showVersion>
                             <streamLogs>true</streamLogs>
-                            <debug>true</debug>
+                            <debug>false</debug>
                             <noLog>false</noLog>
                             <showErrors>true</showErrors>
                             <scriptVariables>
-                                <projectGroupId>${project.groupId</projectGroupId>
-                                <projectArtifactId>${project.artifactId}</projectArtifactId>
-                                <projectVersion>${project.version}</projectVersion>
+                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
                             </scriptVariables>
+                            <systemPropertyVariables>
+                                <buildDirectory>${project.build.directory}</buildDirectory>
+                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
+                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
+                            </systemPropertyVariables>
                         </configuration>
                         <executions>
                             <execution>
@@ -347,6 +367,26 @@
                             </execution>
                         </executions>
                     </plugin>
+                -->
+                <!--
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.0.0-M4</version>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>global.testOutputDirectory</name>
+                                    <value>${project.build.testOutputDirectory}</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <systemPropertyVariables>
+                                <buildDirectory>${project.build.directory}</buildDirectory>
+                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
+                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                -->
                 </plugins>
             </build>
         </profile>

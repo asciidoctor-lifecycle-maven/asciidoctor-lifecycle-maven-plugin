@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.coutemeier.maven.plugins.test.multimodule</groupId>
+        <artifactId>build-phase</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>prepare-build</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <artifactId>asciidoctor-module</artifactId>
 
     <build>
         <plugins>
@@ -19,13 +19,13 @@
                 <version>3.0.0-M1</version>
                 <executions>
                     <execution>
-                        <id>install-theme-example</id>
+                        <id>install-theme-example-in-local-repository</id>
                         <phase>prepare-theme</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${theme.example.path}</file>
+                            <file>${theme.artifact.path}</file>
                             <groupId>${theme.groupId}</groupId>
                             <artifactId>${theme.artifactId}</artifactId>
                             <version>${theme.version}</version>
@@ -34,7 +34,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.coutemeier.maven.plugins</groupId>
                 <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
@@ -52,15 +51,23 @@
                 <executions>
                     <execution>
                         <id>dependency-copy-to-folder</id>
-                        <phase>prepare-build</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <artifact>org.apache.maven.wagon:wagon-provider-api:3.3.3</artifact>
+                            <artifact>junit:junit:4.11</artifact>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <configuration>
+                    <backend>html5</backend>
+                    <outputDirectory>${project.build.directory}/asciidoctor-build/html5</outputDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>

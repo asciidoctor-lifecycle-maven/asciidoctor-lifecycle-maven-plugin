@@ -47,6 +47,10 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2020/04/17
+* Source code refactorization in order to support more features.
+* Test code refactorization; it is more easily create a new integration test now, with the AbstractMojoIT.
+
 .2019/08/25
 * Updated `README.adoc` to reflect Maven [3.3.9,3.6.1] versions supported.
 * Updated `invoker.properties` files for `invoker.maven.version`.
@@ -96,7 +100,7 @@ This project offers a new Maven plugin, with the following functionalities (this
 https://maven.apache.org/wagon/wagon-provider-api/[Maven Wagon API],
 in the same way as the `maven-site-plugin`.
 
-I hope this plugin helps others to write a cleaner separation between the build of the asciidoc documentation 
+I hope this plugin helps others to write a cleaner separation between the build of the asciidoc documentation
 
 === Why this project?
 
@@ -106,7 +110,7 @@ What are this aspects?
 * When a project contains asciidoc documentation and code, you need a complicated configuration to build only asciidoc or only code.
 Profiles here may be a solution, specifying modules to build in every one, but...
 * The default lifecycle seems oriented to code building;
-this is not something negative in itself, 
+this is not something negative in itself,
 but the name of the phases are confusing enough if we think about documentation and not code (`compile`, `test`, `verify`).
 * If you want to build the site documentation, Maven offers you another lifecycle: the *site* lifecycle.
 * If you need to download a theme for generating a pdf (for example) you need to use the `dependency:get` as a solution,
@@ -132,10 +136,10 @@ without the use of profiles. These are the phases of this lifecycle (in sequenti
 
 [%header%autowidth.spread,cols="h,,"]
 |===
-|Phase          |Description |Mojo   
+|Phase          |Description |Mojo
 //----------------------
 |theme          |In this phase the themes are downloaded from remote repositories,
-if required, and then unzipped. | ThemeMojo
+if required, unzipped and copying common resources to a folder. | ThemeMojo
 |prepare-build  |Actions required before the build.
 Copy the theme to another location, modify it contents...|
 |build          |The `process-asciidoc` should be attached to this phase, to build the documentation|
@@ -178,7 +182,7 @@ The Asciidoctor Lifecycle Maven Pluging does the following operations for every 
 
 . Tries to download the artifact (theme).
 . Tries to unzip the contents of the artifact downloaded to a directory,
-specified by the configuration property `themesBaseDir` as parent directory,
+specified by the configuration property `asciidoctor.lifecycle.outputDirectory` as parent directory,
 and the directory child name is the same as its `artifactId`.
 . Creates a property with the value of the path of the directory where the theme
 was unzipped.
@@ -221,10 +225,10 @@ attaching the `process-asciidoc` goal to the `build` phase.
     <executions>
     <!-- So many executions as you need -->
         <execution>
-            <id>output-html</id>              
+            <id>output-html</id>
             <phase>build</phase> <!--1-->
             <goals>
-                <goal>process-asciidoc</goal> 
+                <goal>process-asciidoc</goal>
             </goals>
             <configuration>
                 <backend>html5</backend>
@@ -234,7 +238,7 @@ attaching the `process-asciidoc` goal to the `build` phase.
 </plugin>
 ----
 
-<1> We attach the `asciidoctor-maven-plugin:process-asciidoc` goal 
+<1> We attach the `asciidoctor-maven-plugin:process-asciidoc` goal
 to the build phase of the `asciidoctor-lifecycle-build` lifecycle.
 
 We are ready to generate our documentation separate of the normal build of our code.
@@ -274,7 +278,7 @@ This is a simple example to configure the upload to a directory in your filesyst
 <1> The base path for storing (uploading) the files.
 <2> The directory in the base path where you want to store the files.
 
-If `${project.artifactId} = theArtifact` and `${project.version} = 1.0.0` 
+If `${project.artifactId} = theArtifact` and `${project.version} = 1.0.0`
 then generated files will be copied to `${project.build.directory}/file-repository/theArtifact/1.0.0`directory.
 [source,shell]
 mvn upload
@@ -289,7 +293,7 @@ and it causes the execution associated with the default configuration.
 
 Therefore,
 if you follow the convention of writing a shared configuration in the plugin configuration,
-and an execution for each of the output formats, 
+and an execution for each of the output formats,
 you will also obtain the default format established by the plugin,
 which at the time of writing this documentation is `docbook`.
 
@@ -304,7 +308,7 @@ and the other formats in the configuration of their corresponding executors.
 <plugin>
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoctor-maven-plugin</artifactId>
-    <version>${asciidoctor.maven.plugin.version}</version>              
+    <version>${asciidoctor.maven.plugin.version}</version>
     <configuration> <!--1-->
         <sourceDirectory>src/docs/asciidoc</sourceDirectory>
         <sourceHighlighter>coderay</sourceHighlighter>
@@ -375,7 +379,7 @@ with `asciidoctor-lifecycle-maven-plugin` and avoid additional backend generatio
 <plugin>
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoctor-maven-plugin</artifactId>
-    <version>${asciidoctor.maven.plugin.version}</version>              
+    <version>${asciidoctor.maven.plugin.version}</version>
     <configuration>
         <!-- Shared configuration -->
         <sourceDirectory>src/docs/asciidoc</sourceDirectory> <!--1-->
@@ -471,7 +475,7 @@ as (I show you only the relevant configuration for this purpose):
                 <sourceHighlighter>coderay</sourceHighlighter>
                 <doctype>book</doctype>
                 <attributes>
-                    <!-- 
+                    <!--
                         The property "asciidoctor.theme.theme-example-1.path" is created at `theme` phase,
                         so it is not needed to define it in the pom.xml.
                     -->
@@ -490,7 +494,7 @@ as (I show you only the relevant configuration for this purpose):
 ----
 
 <1> The directory where themes will be unzipped (this is the default value).
-<2> You need the plugin whose coordinates are `com.coutemeier.maven.plugins:theme-example-1:zip:1.2.0`. 
+<2> You need the plugin whose coordinates are `com.coutemeier.maven.plugins:theme-example-1:zip:1.2.0`.
 <3> You configure the path of the theme using the property `asciidoctor.theme.theme-example-1.path`,
 created at `theme` phase.
 
@@ -524,8 +528,8 @@ Let's see an example to upload files to a webdav repository:
         <uploadToRepository>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo> <!--2-->
         <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory> <!--3-->
     </configuration>
-    <!-- 
-        You need the wagon-webdav-jackrabbit dependency 
+    <!--
+        You need the wagon-webdav-jackrabbit dependency
         if you want to publish to a webdav server
     -->
     <dependencies>
@@ -545,7 +549,7 @@ credentials to use to uploading the files to the server.
 
 == How can I build the plugin?
 
-You can build the project with Maven [3.3.9,3.6.1] versions and Java 8.
+You can build the project with Maven [3.3.9,4.0) versions and Java 8.
 
 [source,shell]
 mvn clean package
