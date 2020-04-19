@@ -33,7 +33,7 @@ ifdef::badges[]
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License, link="https://www.apache.org/licenses/LICENSE-2.0"]
 image:https://travis-ci.com/{project-repo}.svg?branch=master[Build status (Travis CI)",link="https://travis-ci.com/{project-repo}"]
 image:https://www.codefactor.io/repository/github/{project-repo}/badge[CodeFactor, link="https://www.codefactor.io/repository/github/{project-repo}"]
-image:https://api.codacy.com/project/badge/Grade/5b57464da7c24dd4879215c76c7ac257["Codacy code quality", link="https://www.codacy.com/gh/asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin?utm_source=github.com&utm_medium=referral&utm_content=asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin&utm_campaign=Badge_Grade"]
+image:https://api.codacy.com/project/badge/Grade/ef4ac885fa44494b8b7ad41aa53d99b1[link="https://app.codacy.com/gh/asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin?utm_source=github.com&utm_medium=referral&utm_content=asciidoctor-lifecycle-maven/asciidoctor-lifecycle-maven-plugin&utm_campaign=Badge_Grade_Settings"]
 image:https://img.shields.io/coveralls/{project-repo}/master.svg["Coverage Status", link="https://coveralls.io/github/{project-repo}?branch=master"]
 endif::[]
 
