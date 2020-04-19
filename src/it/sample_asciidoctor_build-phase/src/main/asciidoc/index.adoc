@@ -1,9 +1,0 @@
-= Sample guide
-
-== Section 1
-
-Sample guide 1
-
-== Section 2
-
-Sample guide 2
