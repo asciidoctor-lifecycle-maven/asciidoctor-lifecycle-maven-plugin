@@ -2,7 +2,7 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
 import java.io.File;
 
-import static com.coutemeier.maven.plugins.asciidoctor.lifecycle.Constants.*;
+import static com.coutemeier.maven.plugins.asciidoctor.lifecycle.Constants.BUILDDIRECTORY;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -50,7 +50,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * Directory used to store all source files allowing merging with theme resources,
      * without affecting original versioned files.
      */
-    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + Constants.BUILDDIRECTORY, required=false)
+    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + BUILDDIRECTORY, required=false)
     protected File buildDirectory;
 
     protected final boolean infoEnabled = this.getLog().isInfoEnabled();

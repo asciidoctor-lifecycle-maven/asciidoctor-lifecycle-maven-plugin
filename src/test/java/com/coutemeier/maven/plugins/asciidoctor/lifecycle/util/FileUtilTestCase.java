@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import org.apache.maven.plugin.MojoFailureException;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.junit.Assert;
 import org.junit.Test;
 
