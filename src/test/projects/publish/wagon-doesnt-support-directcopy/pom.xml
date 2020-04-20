@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>publish-to-folder</artifactId>
+    <artifactId>publish-doesnt-support-directcopy</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -19,19 +19,10 @@
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>nexus</serverId>
--                    <uploadToRepository>file://${project.build.directory}/publish-repository</uploadToRepository>
-                    <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
+                    <serverId>nexus-snapshots</serverId>
+                    <publishToRepository>https://wagon-provider/doesnt/support/directcopy</publishToRepository>
+                    <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
-<!--
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-webdav-jackrabbit</artifactId>
-                        <version>3.2.0</version>
-                    </dependency>
-                </dependencies>
--->
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>

@@ -15,7 +15,7 @@ extends AbstractMojoIT {
     @Test
     public void noThemesConfigured()
     throws Exception {
-        forProject( "no-themes-configured" )
+        forProject( "theme/theme-no-themes-configured" )
             .execute( "theme" )
             .assertErrorFreeLog();
         Assert.assertTrue( validator.themeNotExists() );

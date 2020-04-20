@@ -20,8 +20,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>nexus-snapshots</serverId>
-                    <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository>
-                    <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
+                    <publishToRepository>file://${project.build.directory}/file-repository</publishToRepository>
+                    <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                     <inputDirectory>${project.build.directory}/directory-does-not-exists</inputDirectory>
                 </configuration>
             </plugin>
@@ -31,10 +31,10 @@
                 <version>1.5.8</version>
                 <executions>
                     <execution>
-                        <id>output-html</id>              
-                        <phase>build</phase> 
+                        <id>output-html</id>
+                        <phase>build</phase>
                         <goals>
-                            <goal>process-asciidoc</goal> 
+                            <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
                             <backend>html5</backend>

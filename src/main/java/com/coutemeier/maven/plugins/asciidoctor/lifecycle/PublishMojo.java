@@ -36,14 +36,14 @@ import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
- * Uploads the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the
- * Asciidoctor repository URL specified by the {@link #uploadToRepository} parameter.
+ * Publish the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the
+ * Asciidoctor repository URL specified by the {@link #publishToRepository} parameter.
  *
  * @author rrialq
  * @since 1.0
  */
-@Mojo(name = "upload", requiresProject = true, threadSafe = true)
-public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Contextualizable {
+@Mojo(name = "asciidoctor-publish", requiresProject = true, threadSafe = true)
+public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Contextualizable {
     /**
      * The current user system settings for use in Maven.
      *
@@ -80,51 +80,51 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
     private File inputDirectory;
 
     /**
-     * The repository to which you want to upload the files
+     * The repository to which you want to publish the files
      * <p>
      * The repository can be any URL supported by wagon, for example:
      * {@code dav:http://localhost:8081/nexus/content/sites/test-site/} or {@code file:///tmp/file-repository}
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "upload.repository", required = true)
-    private String uploadToRepository;
+    @Parameter(property = GOAL_PREFIX + "publish.repository", required = true)
+    private String publishToRepository;
 
     /**
-     * The directory in the repository to which upload the files
+     * The directory in the repository to which publish the files
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "upload.directory", defaultValue = "${project.artifactId}/${project.version}", required = true)
-    private String uploadToDirectory;
+    @Parameter(property = GOAL_PREFIX + "publish.directory", defaultValue = "${project.artifactId}/${project.version}", required = true)
+    private String publishToDirectory;
 
     /**
      * The id of the server for providing credentials
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "upload.serverId", required = false)
+    @Parameter(property = GOAL_PREFIX + "publish.serverId", required = false)
     private String serverId;
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
-        uploadTo(new Repository(this.serverId, this.uploadToRepository));
+        publishTo(new Repository(this.serverId, this.publishToRepository));
     }
 
-    private final void uploadTo( final Repository repository ) throws MojoExecutionException {
+    private final void publishTo( final Repository repository ) throws MojoExecutionException {
         if (!this.inputDirectory.exists()) {
             throw new MojoExecutionException("The Asciidoctor generated files directory does not exists. Please, run build first.");
         }
 
         if (this.debugEnabled) {
-            getLog().debug("Uploading to '" + this.uploadToRepository + "' , using credentials from server id '"
+            getLog().debug("Publishing to '" + this.publishToRepository + "' , using credentials from server id '"
                     + this.serverId + "'.");
         }
 
-        upload(inputDirectory, repository);
+        publish(inputDirectory, repository);
     }
 
-    private final void upload(final File directory, final Repository repository) throws MojoExecutionException {
+    private final void publish(final File directory, final Repository repository) throws MojoExecutionException {
         final Wagon wagon = WagonUtil.getWagon(container, getLog(), repository, wagonManager);
 
         try {
@@ -163,7 +163,7 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
             }
             getLog().info( "Pushing " + directory );
 
-            wagon.putDirectory( directory, this.uploadToDirectory );
+            wagon.putDirectory( directory, this.publishToDirectory );
 
         } catch (
             final ResourceDoesNotExistException
@@ -171,7 +171,7 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
                 | AuthorizationException
                 | ConnectionException
                 |  AuthenticationException cause ) {
-            throw new MojoExecutionException("Error uploading Asciidoctor documents to server: ", cause );
+            throw new MojoExecutionException("Error publishing Asciidoctor documents to server: ", cause );
         } finally {
             try {
                 wagon.disconnect();

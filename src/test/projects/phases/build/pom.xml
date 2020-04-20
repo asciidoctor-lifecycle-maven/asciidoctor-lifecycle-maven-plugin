@@ -45,8 +45,8 @@
                     <themes>
                         <theme>${theme.artifact}</theme>
                     </themes>
-                    <uploadToRepository>file://${project.build.directory}/publish-repository</uploadToRepository>
-                    <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
+                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
+                    <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
             </plugin>
             <plugin>
