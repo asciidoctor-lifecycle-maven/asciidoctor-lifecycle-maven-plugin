@@ -3,19 +3,13 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
 
 import java.io.File;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
