@@ -161,9 +161,9 @@ public class UploadMojo extends AbstractAsciidoctorLifecycleMojo implements Cont
                 getLog().debug( "connect without authenticationInfo and without proxyInfo" );
                 wagon.connect( repository );
             }
-            getLog().info( "Pushing " + inputDirectory );
+            getLog().info( "Pushing " + directory );
 
-            wagon.putDirectory( inputDirectory, this.uploadToDirectory );
+            wagon.putDirectory( directory, this.uploadToDirectory );
 
         } catch (
             final ResourceDoesNotExistException
