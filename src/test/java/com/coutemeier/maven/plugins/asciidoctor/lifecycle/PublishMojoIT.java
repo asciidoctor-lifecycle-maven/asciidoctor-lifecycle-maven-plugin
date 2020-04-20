@@ -1,9 +1,5 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import static io.takari.maven.testing.TestResources.assertFilesPresent;
-
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
 

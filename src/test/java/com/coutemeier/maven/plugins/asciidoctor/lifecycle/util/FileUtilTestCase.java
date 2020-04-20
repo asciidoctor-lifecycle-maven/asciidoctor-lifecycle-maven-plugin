@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class FileUtilTestCase {
     @Test
-    public void walkRegularFiles_emptyDirsAreIgnoredTest()
+    public void walkRegularFilesTest()
     throws IOException {
         final Path copyDir = new File( FileUtilTestCase.class.getClassLoader().getResource( "copy-dir" ).getFile() ).toPath();
         final Path emptyDir = new File( "empty-dir" ).toPath();
