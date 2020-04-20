@@ -4,6 +4,7 @@ import static io.takari.maven.testing.TestResources.assertFilesPresent;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.takari.maven.testing.executor.MavenRuntime.MavenRuntimeBuilder;
@@ -18,29 +19,28 @@ extends AbstractMojoIT {
     @Test
     public void inputDirectoryDoesntExistsTest()
     throws Exception {
-        final File basedirFile = resources.getBasedir( "upload/inputDirectory-doesnt-exists" );
-        forProject(basedirFile) //
+        this.forProject("upload/inputDirectory-doesnt-exists") //
             .execute( "upload" ) //
             .assertLogText( "The Asciidoctor generated files directory does not exists" );
+        Assert.assertTrue( this.validator.publishedFilesNotExists() );
     }
 
     @Test
     public void publishToDirectory()
     throws Exception {
-        final File basedirFile = resources.getBasedir( "upload/publish-to-folder" );
-        final String expectedFile = "target/publish-repository/publish-to-folder/0.0.1-SNAPSHOT/index.html";
-        forProject(basedirFile) //
+        this.forProject("upload/publish-to-folder") //
             .execute( "upload" )
             .assertErrorFreeLog();
-        assertFilesPresent( basedirFile, expectedFile );
+
+        Assert.assertTrue( this.validator.publishedFilesExists() );
     }
 
     @Test
     public void wagonDoesntSupportDirectCopy()
     throws Exception {
-        final File basedirFile = resources.getBasedir( "upload/wagon-doesnt-support-directcopy" );
-        forProject(basedirFile) //
+        this.forProject("upload/wagon-doesnt-support-directcopy") //
             .execute( "upload" ) //
-            .assertLogText( "Wagon protocol 'https' does not supports directory copy" );
+            .assertLogText( "Wagon protocol 'https' doesn't support directory copying" );
+        Assert.assertTrue( this.validator.publishedFilesNotExists() );
     }
 }

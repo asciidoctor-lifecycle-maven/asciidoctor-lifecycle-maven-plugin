@@ -19,10 +19,19 @@
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>nexus-snapshots</serverId>
-                    <uploadToRepository>file://${project.build.directory}/publish-repository</uploadToRepository>
+                    <serverId>nexus</serverId>
+-                    <uploadToRepository>file://${project.build.directory}/publish-repository</uploadToRepository>
                     <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
                 </configuration>
+<!--
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>3.2.0</version>
+                    </dependency>
+                </dependencies>
+-->
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -30,10 +39,10 @@
                 <version>1.5.8</version>
                 <executions>
                     <execution>
-                        <id>output-html</id>              
-                        <phase>build</phase> 
+                        <id>output-html</id>
+                        <phase>build</phase>
                         <goals>
-                            <goal>process-asciidoc</goal> 
+                            <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
                             <backend>html5</backend>

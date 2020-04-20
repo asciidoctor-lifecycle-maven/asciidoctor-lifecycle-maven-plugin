@@ -12,6 +12,8 @@ public final class FilesValidator {
     private final File dependencyFile;
     private final File indexFile;
     private final File themeDirectory;
+    private final File publishedDirectory;
+    private final File publishedIndexFile;
 
     public FilesValidator( final File basedir ) {
         super();
@@ -24,6 +26,9 @@ public final class FilesValidator {
         this.readmeFile = new File( this.themeDirectory, "asciidoc/_templates/readme.adoc" );
         this.dependencyFile = new File( this.mavenBuildDirectory, "dependency/junit-4.11.jar" );
         this.indexFile = new File( this.htmlBuildDirectory, "index.html" );
+
+        this.publishedDirectory = new File( this.mavenBuildDirectory, "publish-repository/publish-to-folder/0.0.1-SNAPSHOT" );
+        this.publishedIndexFile = new File( this.publishedDirectory, "index.html" );
     }
 
     public FilesValidator( final File basedir, String moduleName ) {
@@ -35,7 +40,7 @@ public final class FilesValidator {
     }
 
     public boolean indexNotExists() {
-        return !this.indexFile.exists();
+        return !this.indexExists();
     }
 
     public boolean dependencyExists() {
@@ -43,7 +48,7 @@ public final class FilesValidator {
     }
 
     public boolean dependencyNotExists() {
-        return !this.dependencyFile.exists();
+        return !this.dependencyExists();
     }
 
     public boolean readmeExists() {
@@ -51,7 +56,7 @@ public final class FilesValidator {
     }
 
     public boolean readmeNotExists() {
-        return !this.readmeFile.exists();
+        return !this.readmeExists();
     }
 
     public boolean themeExists() {
@@ -59,7 +64,7 @@ public final class FilesValidator {
     }
 
     public boolean themeNotExists() {
-        return !this.themeDirectory.exists();
+        return !this.themeExists();
     }
 
     public boolean themeFilesExists() {
@@ -67,7 +72,7 @@ public final class FilesValidator {
     }
 
     public boolean themeFilesNotExists() {
-        return this.themeNotExists() && this.readmeNotExists();
+        return !this.themeFilesExists();
     }
 
     public boolean generatedFilesExists() {
@@ -75,6 +80,14 @@ public final class FilesValidator {
     }
 
     public boolean generatedFilesNotExists() {
-        return this.indexNotExists();
+        return ! this.generatedFilesExists();
+    }
+
+    public boolean publishedFilesExists() {
+        return this.publishedDirectory.exists() && this.publishedIndexFile.exists();
+    }
+
+    public boolean publishedFilesNotExists() {
+        return ! this.publishedFilesExists();
     }
 }
