@@ -36,12 +36,12 @@ public class WagonUtilTestCase {
     @Test
     public void getSupportedProtocolsTest()
     throws Exception {
-        Set<String> supportedProtocols = Stream.of( "http", "https", "file" ).collect( Collectors.toSet() );
+        final Set<String> supportedProtocols = Stream.of( "http", "https", "file" ).collect( Collectors.toSet() );
         when( supportedWagonProtocols.keySet() ).thenReturn( supportedProtocols );
         when( container.lookupMap( Wagon.class ) ).thenReturn( supportedWagonProtocols );
 
-        final String protocols = WagonUtil.getSupportedProtocols( container, null );
-        Assert.assertEquals( "file,http,https", protocols );
+        final String protocols = WagonUtil.getSupportedProtocols( container, log );
+        Assert.assertEquals( "file, http, https", protocols );
     }
 
     @Test()

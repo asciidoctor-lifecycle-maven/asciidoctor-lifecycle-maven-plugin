@@ -11,8 +11,8 @@
                     <phase>theme</phase>
                     <phase>prepare-build</phase>
                     <phase>build</phase>
-                    <phase>prepare-upload</phase>
-                    <phase>upload</phase>
+                    <phase>asciidoctor-prepare-publish</phase>
+                    <phase>asciidoctor-publish</phase>
                     <phase>notify</phase>
                 </phases>
                 <default-phases>
@@ -25,7 +25,7 @@
                     -->
                     <prepare-build>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:prepare-sources</prepare-build>
                     <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build>
-                    <upload>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:upload</upload>
+                    <asciidoctor-publish>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-publish</asciidoctor-publish>
                 </default-phases>
             </configuration>
         </component>

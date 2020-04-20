@@ -4,6 +4,7 @@ import java.io.File;
 
 import static com.coutemeier.maven.plugins.asciidoctor.lifecycle.Constants.BUILDDIRECTORY;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -32,7 +33,10 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * The maven project
      */
     @Parameter(readonly = true, defaultValue="${project}")
-    private MavenProject project;
+    protected MavenProject project;
+
+    @Parameter( defaultValue = "${session}", readonly = true )
+    protected MavenSession mavenSession;
 
     /**
      * The entry point to Aether, i.e. the component doing all the work.

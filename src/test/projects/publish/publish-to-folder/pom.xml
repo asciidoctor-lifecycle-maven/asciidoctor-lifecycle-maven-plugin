@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>inputDirectory-doesnt-exists</artifactId>
+    <artifactId>publish-to-folder</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -19,10 +19,9 @@
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>nexus-snapshots</serverId>
-                    <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository>
-                    <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory>
-                    <inputDirectory>${project.build.directory}/directory-does-not-exists</inputDirectory>
+                    <serverId>nexus</serverId>
+-                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
+                    <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -31,10 +30,10 @@
                 <version>1.5.8</version>
                 <executions>
                     <execution>
-                        <id>output-html</id>              
-                        <phase>build</phase> 
+                        <id>output-html</id>
+                        <phase>build</phase>
                         <goals>
-                            <goal>process-asciidoc</goal> 
+                            <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
                             <backend>html5</backend>
@@ -44,5 +43,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

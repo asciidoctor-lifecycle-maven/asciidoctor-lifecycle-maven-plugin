@@ -47,6 +47,10 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2020/04/20
+* Big redesign of `UploadMojo` code (now called `PublishMojo`).
+* `upload` phase renamed to `asciidoctor-publish`.
+
 .2020/04/17
 * Source code refactorization in order to support more features.
 * Test code refactorization; it is more easily create a new integration test now, with the AbstractMojoIT.
@@ -248,16 +252,16 @@ We are ready to generate our documentation separate of the normal build of our c
 [source,shell]
 mvn build
 
-=== Upload the generated files
+=== Publish the generated files
 
-At this moment the `upload` phase is implemented in its basic functionality.
+At this moment the `asciidoctor-publish` phase is implemented in its basic functionality.
 It uses the https://maven.apache.org/wagon/wagon-provider-api/[Maven Wagon API],
 so you have to configure the dependency to the implementation provider (if needed).
 
-I've tested it to upload files to a webdav server and to copy them to a directory in my filesystem,
+I've tested it to publish files to a webdav server and to copy them to a directory in filesystem,
 and it is possible that works with another wagon providers.
 
-[WARNING] It is planned the use of proxies, but at now it doesn't work yet with proxies.
+With last changes proxy feature was implemented as in maven-site-plugin.
 
 This is a simple example to configure the upload to a directory in your filesystem:
 
@@ -269,19 +273,22 @@ This is a simple example to configure the upload to a directory in your filesyst
     <version>1.0-SNAPSHOT</version>
     <extensions>true</extensions>
     <configuration>
-        <uploadToRepository>file://${project.build.directory}/file-repository</uploadToRepository> <!--1-->
-        <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory> <!--2-->
+        <serverId>nexus</serverId> <!--1-->
+        <publishToRepository>dav://http://my-own-webdav-server/file-repository</publishToRepository> <!--2-->
+        <publishToRepository>file://${project.build.directory}/file-repository</publishToRepository> <!--2-->
+        <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory> <!--3-->
     </configuration>
     <!-- No dependency needed -->
 </plugin>
 ----
-<1> The base path for storing (uploading) the files.
-<2> The directory in the base path where you want to store the files.
+<1> `server` identifier in `settings.xml` for authorization.
+<2> The base path for storing the files in http webdav server or filesystem (choose one).
+<3> The directory in the base path where you want to store the files.
 
 If `${project.artifactId} = theArtifact` and `${project.version} = 1.0.0`
 then generated files will be copied to `${project.build.directory}/file-repository/theArtifact/1.0.0`directory.
 [source,shell]
-mvn upload
+mvn asciidoctor-publish
 
 === About configuring multiple output formats
 
@@ -512,9 +519,9 @@ In the `build` phase execution:
 . The property `asciidoctor.theme.theme-example-1.path` and `asciidoctor.theme.theme-example-2.path` are defined,
 so you can use them as a property to configure the path of the YAML file.
 
-=== How to configure wagon for uploading
+=== How to configure wagon for publishing
 
-Let's see an example to upload files to a webdav repository:
+Let's see an example to publish files to a webdav repository:
 
 [source,xml]
 ----
@@ -525,8 +532,8 @@ Let's see an example to upload files to a webdav repository:
     <extensions>true</extensions>
     <configuration>
         <serverId>webdav-snapshots</serverId> <!--1-->
-        <uploadToRepository>dav:http://localhost:8081/nexus/content/sites/test-site/</uploadTo> <!--2-->
-        <uploadToDirectory>${project.artifactId}/${project.version}</uploadToDirectory> <!--3-->
+        <publishToRepository>dav:http://localhost:8081/nexus/content/sites/test-site/</publishToRepository> <!--2-->
+        <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory> <!--3-->
     </configuration>
     <!--
         You need the wagon-webdav-jackrabbit dependency
@@ -541,10 +548,10 @@ Let's see an example to upload files to a webdav repository:
     </dependencies>
 </plugin>
 ----
-<1> The server id corresponding to a `server` entry in `settings.xml`, with
-credentials to use to uploading the files to the server.
-<2> The url to which you want to upload the files.
-<3> The directory where you want to upload the files.
+<1> The server id corresponding to a `server` entry in `settings.xml`,
+with credentials to publishing the files to the server.
+<2> The url to which you want to publish the files.
+<3> The directory where you want to publish the files.
 <4> The dependency for wagon webdav support.
 
 == How can I build the plugin?
