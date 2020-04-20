@@ -20,9 +20,16 @@
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>nexus</serverId>
--                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
+                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
                     <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId> <!--4-->
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>

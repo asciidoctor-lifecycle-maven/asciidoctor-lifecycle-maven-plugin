@@ -30,11 +30,6 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
  */
 @Mojo(name = "prepare-sources", requiresProject = true, threadSafe = true)
 public class PrepareSourcesMojo extends AbstractAsciidoctorLifecycleMojo {
-    /**
-     * Prefix to apply to properties created automatically to reflect where a theme was unzipped
-     */
-    private final String THEME_AUTOPROPERTY_PREFIX = "asciidoctor.theme.";
-
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
         try {
