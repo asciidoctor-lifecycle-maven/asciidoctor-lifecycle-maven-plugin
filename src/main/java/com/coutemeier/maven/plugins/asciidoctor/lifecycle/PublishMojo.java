@@ -24,7 +24,6 @@ import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
@@ -123,14 +122,11 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
 
         try {
             WagonUtil.configureWagon( wagon, repository.getId(), settings, container, getLog() );
-//            final SettingsDecrypter settingsDecrypter = (SettingsDecrypter) container.lookup( SettingsDecrypter.class );
             final ProxyInfo proxyInfo = WagonUtil.getProxyInfo( this.mavenSession, this.getLog(), repository, this.settingsDecrypter );
             push( directory, repository, wagon, proxyInfo );
 
         } catch (TransferFailedException cause) {
             throw new MojoExecutionException("Unable to configure Wagon: '" + repository.getProtocol() + "'", cause);
-        } catch (ComponentLookupException cause ) {
-            throw new MojoExecutionException( "Unable to lookup SettingsDecrypter: " + cause.getMessage(), cause );
         }
     }
 
