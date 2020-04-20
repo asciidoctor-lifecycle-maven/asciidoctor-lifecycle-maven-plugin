@@ -50,29 +50,4 @@ extends AbstractMojoIT {
         );
     }
 
-    @Test
-    public void themeExistsTest()
-    throws Exception {
-        multimoduleForProject()
-            .execute( "theme" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.subValidator.themeFilesExists()
-            && this.subValidator.generatedFilesNotExists()
-            && this.subValidator.dependencyNotExists()
-        );
-    }
-
-    @Test
-    public void noThemesConfigured()
-    throws Exception {
-        forProject( "no-themes-configured" )
-            .execute( "theme" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.validator.themeFilesNotExists()
-            && this.validator.generatedFilesNotExists()
-            && this.validator.dependencyNotExists()
-        );
-    }
 }
