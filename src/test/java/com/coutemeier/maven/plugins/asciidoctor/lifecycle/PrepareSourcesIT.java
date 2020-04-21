@@ -18,5 +18,6 @@ extends AbstractMojoIT {
         forProject( "prepareSources-ioexception" ) //
             .execute( "prepare-build" ) //
             .assertLogText( Messages.PREPARE_SOURCES_ERROR_PREPARING );
+        Assert.assertTrue( this.validator.buildDirectoryNotExists() );
     }
 }

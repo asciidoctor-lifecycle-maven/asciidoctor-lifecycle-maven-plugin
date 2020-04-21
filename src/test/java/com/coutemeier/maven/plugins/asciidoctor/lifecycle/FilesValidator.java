@@ -35,6 +35,14 @@ public final class FilesValidator {
         this ( new File( basedir, moduleName ) );
     }
 
+    public boolean buildDirectoryExists() {
+        return this.buildDirectory.exists();
+    }
+
+    public boolean buildDirectoryNotExists() {
+        return ! this.buildDirectory.exists();
+    }
+
     public boolean indexExists() {
         return this.indexFile.exists();
     }

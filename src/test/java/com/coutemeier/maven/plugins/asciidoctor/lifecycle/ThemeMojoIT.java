@@ -45,6 +45,8 @@ extends AbstractMojoIT {
         forProject( "theme/theme-buildDirectory-ioexception" )
             .execute( "theme" )
             .assertLogText( Messages.THEME_ERROR_UNPACKING );
+
+        Assert.assertTrue( this.validator.buildDirectoryNotExists() );
     }
 
     @Test
