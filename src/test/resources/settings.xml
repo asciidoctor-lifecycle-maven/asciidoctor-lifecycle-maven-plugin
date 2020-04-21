@@ -20,7 +20,6 @@
                 <theme.artifactId>theme-example</theme.artifactId>
                 <theme.version>1.0.0</theme.version>
                 <theme.artifact>${theme.groupId}:${theme.artifactId}:zip:${theme.version}</theme.artifact>
-                <theme.artifact.path>${project.basedir}/${theme.artifactId}.zip</theme.artifact.path>
             </properties>
         </profile>
     </profiles>

@@ -33,16 +33,17 @@ public class PrepareSourcesMojo extends AbstractAsciidoctorLifecycleMojo {
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
         try {
-            debug( "sourceDirectory", this.sourceDirectory );
+            this.getLog().info( String.format( "Build directory=%s", this.getBuildSourceDirectory().toString() ) );
+            this.debugFormatted( Messages.PREPARE_SOURCES_SOURCE_DIRECTORY, this.sourceDirectory );
+            
             if ( this.sourceDirectory.isDirectory() ) {
                 FileUtil.copyDir( this.sourceDirectory.toPath(), this.getBuildSourceDirectory().toPath() );
                 // We update the new Asciidoctor.sourceDirectory value
             }
-            debug( "getBuildSourceDirectory", this.getBuildSourceDirectory() );
             this.setProperty( "asciidoctor.sourceDirectory", this.getBuildSourceDirectory().toString() );
 
         } catch (final IOException cause) {
-            throw new MojoExecutionException("Error preparing asciidoctor sources", cause);
+            throw new MojoExecutionException( Messages.PREPARE_SOURCES_ERROR_PREPARING, cause );
         }
     }
 }

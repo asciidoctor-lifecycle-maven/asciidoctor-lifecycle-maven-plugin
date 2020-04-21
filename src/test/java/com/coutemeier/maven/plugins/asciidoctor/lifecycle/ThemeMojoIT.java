@@ -38,4 +38,21 @@ extends AbstractMojoIT {
             && this.validator.dependencyNotExists()
         );
     }
+
+    @Test
+    public void themeBuildDirectoryDoesntExistsTest()
+    throws Exception {
+        forProject( "theme/theme-buildDirectory-ioexception" )
+            .execute( "theme" )
+            .assertLogText( Messages.THEME_ERROR_UNPACKING );
+    }
+
+    @Test
+    public void themeDoesntExistsTest()
+    throws Exception {
+        forProject( "theme/theme-doesnt-exists" )
+            .execute( "theme" )
+            .assertLogText( Messages.THEME_ERROR_DOWNLOADING );
+    }
+
 }

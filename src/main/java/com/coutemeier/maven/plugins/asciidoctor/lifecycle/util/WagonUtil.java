@@ -43,13 +43,15 @@ public final class WagonUtil {
     private WagonUtil() {
     }
 
-    public static Wagon getWagon( final PlexusContainer container, final Log log, final Repository repository, final WagonManager wagonManager ) throws MojoExecutionException {
+/*
+    public static Wagon getWagon( final PlexusContainer container, final Log log, final Repository repository, final WagonManager wagonManager )
+    throws MojoExecutionException {
         try {
             final Wagon wagon = wagonManager.getWagon( repository );
             if ( !wagon.supportsDirectoryCopy() ) {
-            throw new MojoExecutionException(
-                "Wagon protocol '" + repository.getProtocol() + "' doesn't support directory copying" );
-            }
+                throw new MojoExecutionException(
+                    "Wagon protocol '" + repository.getProtocol() + "' doesn't support directory copying" );
+                }
             return wagon;
 
         } catch ( final UnsupportedProtocolException cause ) {
@@ -68,7 +70,7 @@ public final class WagonUtil {
             throw new MojoExecutionException( "Unable to configure Wagon: '" + repository.getProtocol() + "'", e );
         }
     }
-
+*/
     /**
      * Configure the Wagon with the information from serverConfigurationMap ( which comes from settings.xml )
      *

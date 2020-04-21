@@ -188,15 +188,6 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
-                        <!--
-                        <configuration>
-                            <systemPropertyVariables>
-                                <buildDirectory>${project.build.directory}</buildDirectory>
-                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
-                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
-                            </systemPropertyVariables>
-                        </configuration>
-                    -->
                     </execution>
                 </executions>
             </plugin>
@@ -268,6 +259,15 @@
                     <excludes>
                         <exclude>**/*/HelpMojo.class</exclude>
                     </excludes>
+                    <rules>
+                        <rule>
+                            <element>CLASS</element>
+                            <excludes>
+                                <exclude>JAVAC.SYNTHCLASS</exclude>
+                                <exclude>JAVAC.SYNTHMETH</exclude>
+                            </excludes>
+                        </rule>
+                    </rules>
                 </configuration>
             </plugin>
             <plugin>
@@ -328,67 +328,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <profiles>
-        <profile>
-            <id>run-it</id>
-            <build>
-                <plugins>
-                    <!--
-                    <plugin>
-                        <artifactId>maven-invoker-plugin</artifactId>
-                        <version>${version.maven-invoker-plugin}</version>
-                        <configuration>
-                            <settingsFile>src/it/settings.xml</settingsFile>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <projectsDirectory>src/it</projectsDirectory>
-                            <postBuildHookScript>verify</postBuildHookScript>
-                            <showVersion>true</showVersion>
-                            <streamLogs>true</streamLogs>
-                            <debug>false</debug>
-                            <noLog>false</noLog>
-                            <showErrors>true</showErrors>
-                            <scriptVariables>
-                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
-                            </scriptVariables>
-                            <systemPropertyVariables>
-                                <buildDirectory>${project.build.directory}</buildDirectory>
-                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
-                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
-                            </systemPropertyVariables>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>integration-test</id>
-                                <goals>
-                                    <goal>install</goal>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                -->
-                <!--
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.0.0-M4</version>
-                        <configuration>
-                            <systemProperties>
-                                <systemProperty>
-                                    <name>global.testOutputDirectory</name>
-                                    <value>${project.build.testOutputDirectory}</value>
-                                </systemProperty>
-                            </systemProperties>
-                            <systemPropertyVariables>
-                                <buildDirectory>${project.build.directory}</buildDirectory>
-                                <theme.artifact.path>${project.build.testOutputDirectory}/theme-example.zip</theme.artifact.path>
-                                <global.testOutputDirectory>${project.build.testOutputDirectory}</global.testOutputDirectory>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                -->
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

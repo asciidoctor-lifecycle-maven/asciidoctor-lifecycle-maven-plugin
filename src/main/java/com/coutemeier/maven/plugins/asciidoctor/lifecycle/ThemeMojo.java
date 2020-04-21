@@ -77,15 +77,15 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
                 final Artifact themeArtifact = downloadAction( theme );
                 // Unpack it to directory
                 final File outputDirectory = unpackAction( themeArtifact );
-                copyCommonThemeResources( outputDirectory );
+                copyCommonThemeResources( themeArtifact, outputDirectory );
                 // Create the property
-                final String propertyName = createPropertyAction( themeArtifact, outputDirectory );
+                createPropertyAction( themeArtifact, outputDirectory );
             }
 
-        } catch (final IOException cause) {
-            throw new MojoExecutionException("Error unpacking theme", cause);
-        } catch (final ArtifactResolutionException cause) {
-            throw new MojoExecutionException("Error downloading theme: ", cause);
+        } catch ( final IOException cause ) {
+            throw new MojoExecutionException( Messages.THEME_ERROR_UNPACKING, cause );
+        } catch ( final ArtifactResolutionException cause ) {
+            throw new MojoExecutionException( Messages.THEME_ERROR_DOWNLOADING, cause );
         }
     }
 
@@ -94,9 +94,7 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
      */
     private Artifact downloadAction( final String theme )
     throws IOException, ArtifactResolutionException, MojoFailureException {
-        if ( this.infoEnabled ) {
-            getLog().info(String.format("Asciidoctor theme %s: Downloading...", theme ));
-        }
+        this.debugMessage( Messages.THEME_DOWNLOADING, theme );
         return ArtifactUtil.downloadByAether(theme, repositorySystem, repoSession, remoteRepositories);
     }
 
@@ -112,9 +110,7 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
     private File unpackAction( final Artifact theme )
     throws IOException {
         final File outputDirectory = new File(this.getThemesDirectory(), theme.getArtifactId());
-        if ( this.infoEnabled ) {
-            getLog().info( String.format("Asciidoctor theme %s - Unpacking in %s", theme.getArtifactId(), outputDirectory.toString() ) );
-        }
+        this.debugMessage( Messages.THEME_UNPACKING, theme.getArtifactId(), outputDirectory.toString() );
         ZipUtil.unzip(theme.getFile(), outputDirectory);
         return outputDirectory;
     }
@@ -124,10 +120,11 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
      * <p>
      * Common resources are all resources under ${theme}/asciidoc directory.
      */
-    private void copyCommonThemeResources(final File themeOutputDirectory)
+    private void copyCommonThemeResources(final Artifact theme, final File themeOutputDirectory)
     throws IOException {
-        final File commonResources = new File( themeOutputDirectory, "asciidoc" );
+        final File commonResources = new File( themeOutputDirectory, Constants.THEME_COMMON_RESOURCES_DEFAULT_DIRECTORY );
         if ( commonResources.isDirectory() ) {
+            this.debugFormatted( Messages.THEME_COPY_RESOURCES, theme.getArtifactId() );
             FileUtil.copyDir( commonResources.toPath(), this.getBuildSourceDirectory().toPath() );
         }
     }
@@ -137,10 +134,6 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
         final String propertyName = createPropertyName(theme);
         final String propertyValue = outputDirectory.getCanonicalPath();
         this.setProperty(propertyName, propertyValue);
-
-        if ( this.infoEnabled ) {
-            getLog().info(String.format("Asciidoctor theme %s - SetProperty: %s = %s", theme.getArtifactId(), propertyName, propertyValue ));
-        }
         return propertyName;
     }
 
