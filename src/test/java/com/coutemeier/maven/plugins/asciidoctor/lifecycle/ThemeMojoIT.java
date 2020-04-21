@@ -55,6 +55,8 @@ extends AbstractMojoIT {
         forProject( "theme/theme-doesnt-exists" )
             .execute( "theme" )
             .assertLogText( Messages.THEME_ERROR_DOWNLOADING );
+
+        Assert.assertTrue( this.validator.themeFilesNotExists() );
     }
 
 }
