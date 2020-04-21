@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>build</artifactId>
+    <artifactId>theme-builddirectory-ioexception</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -34,39 +34,18 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.coutemeier.maven.plugins</groupId>
                 <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>nexus-snapshots</serverId>
+                    <buildDirectory>/dir-doesnt-exists</buildDirectory>
                     <themes>
                         <theme>${theme.artifact}</theme>
                     </themes>
-                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
-                    <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.8</version>
-                <executions>
-                    <execution>
-                        <id>output-html</id>
-                        <phase>build</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>

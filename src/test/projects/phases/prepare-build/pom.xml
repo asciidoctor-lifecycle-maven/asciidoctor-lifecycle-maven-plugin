@@ -25,7 +25,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>${theme.example.path}</file>
+                            <file>${project.basedir}/${theme.artifactId}.zip</file>
                             <groupId>${theme.groupId}</groupId>
                             <artifactId>${theme.artifactId}</artifactId>
                             <version>${theme.version}</version>

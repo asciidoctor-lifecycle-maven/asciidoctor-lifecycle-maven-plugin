@@ -15,6 +15,7 @@ import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
+import org.apache.maven.wagon.UnsupportedProtocolException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
@@ -96,63 +97,80 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "publish.serverId", required = false)
+    @Parameter(property = GOAL_PREFIX + "publish.serverId", defaultValue="", required = false)
     private String serverId;
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
-        publishTo(new Repository(this.serverId, this.publishToRepository));
+        publishTo( new Repository(this.serverId, this.publishToRepository));
     }
 
     private final void publishTo( final Repository repository ) throws MojoExecutionException {
         if (!this.inputDirectory.exists()) {
-            throw new MojoExecutionException("The Asciidoctor generated files directory does not exists. Please, run build first.");
+            throw new MojoExecutionException( Messages.PUBLISH_ERROR_MISSING_GENERATED_FILES );
         }
 
-        if (this.debugEnabled) {
-            getLog().debug("Publishing to '" + this.publishToRepository + "' , using credentials from server id '"
-                    + this.serverId + "'.");
-        }
+        this.debugFormatted( Messages.PUBLISH_PUBLISHING_TO, this.publishToRepository, this.publishToDirectory, this.serverId );
 
         publish(inputDirectory, repository);
     }
 
-    private final void publish(final File directory, final Repository repository) throws MojoExecutionException {
-        final Wagon wagon = WagonUtil.getWagon(container, getLog(), repository, wagonManager);
-
+    private final void publish( final File directory, final Repository repository )
+    throws MojoExecutionException {
         try {
+            final Wagon wagon = wagonManager.getWagon( repository );
+            if ( !wagon.supportsDirectoryCopy() ) {
+                throw new MojoExecutionException(
+                    "Wagon protocol '" + repository.getProtocol() + "' doesn't support directory copying" );
+            }
             WagonUtil.configureWagon( wagon, repository.getId(), settings, container, getLog() );
             final ProxyInfo proxyInfo = WagonUtil.getProxyInfo( this.mavenSession, this.getLog(), repository, this.settingsDecrypter );
             push( directory, repository, wagon, proxyInfo );
 
-        } catch (TransferFailedException cause) {
-            throw new MojoExecutionException("Unable to configure Wagon: '" + repository.getProtocol() + "'", cause);
+        } catch ( final TransferFailedException cause ) {
+            final String message = String.format( Messages.PUBLISH_ERROR_UNABLE_TO_CONFIGURE_WAGON, repository.getProtocol() );
+            this.getLog().error( message, cause );
+            throw new MojoExecutionException( message, cause);
+        } catch ( final UnsupportedProtocolException cause ) {
+            final String shortMessage = "Unsupported protocol: '" + repository.getProtocol() + "' for documentation deployment to "
+                + "url=" + repository.getUrl() + ".";
+            final String longMessage =
+                "\n" + shortMessage + "\n" + "Currently supported protocols are: "
+                    + WagonUtil.getSupportedProtocols(container, this.getLog()) + ".\n"
+                    + "    Protocols may be added through wagon providers.\n" + "    For more information, see "
+                    + "http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
+
+            this.getLog().error( longMessage, cause );
+            throw new MojoExecutionException( shortMessage );
         }
     }
 
     private final void push(final File directory, final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo)
             throws MojoExecutionException {
-        final AuthenticationInfo authenticationInfo = wagonManager.getAuthenticationInfo( repository.getId() );
+        final String repositoryId = repository.getId();
+        final AuthenticationInfo authenticationInfo;
+        if ( repositoryId == null ) {
+            authenticationInfo = null;
+        } else {
+            authenticationInfo = wagonManager.getAuthenticationInfo( repositoryId );
+        }
         try {
-            if( this.debugEnabled ) {
-                getLog().debug( "authenticationInfo with id '" + repository.getId() + "': "
-                                + ( ( authenticationInfo == null ) ? "-" : authenticationInfo.getUserName() ) );
+            if( this.getLog().isDebugEnabled() ) {
                 Debug debug = new Debug();
                 wagon.addSessionListener( debug );
                 wagon.addTransferListener( debug );
             }
             if ( proxyInfo != null ) {
-                getLog().debug( "connect with proxyInfo" );
+                this.debugMessage( Messages.PUBLISH_CONNECT_WITH_PROXY );
                 wagon.connect( repository, authenticationInfo, proxyInfo );
-            } else if ( proxyInfo == null && authenticationInfo != null ) {
-                getLog().debug( "connect with authenticationInfo and without proxyInfo" );
+            } else if ( authenticationInfo != null ) {
+                this.debugMessage( Messages.PUBLISH_CONNECT_WITH_AUTHENTICATION );
                 wagon.connect( repository, authenticationInfo );
             } else {
-                getLog().debug( "connect without authenticationInfo and without proxyInfo" );
+                this.debugMessage( Messages.PUBLISH_CONNECT_NOAUTHENTICATION_AND_NOPROXY );
                 wagon.connect( repository );
             }
-            getLog().info( "Pushing " + directory );
-
+            this.debugFormatted( Messages.PUBLISH_PUSHING_DIRECTORY, directory );
             wagon.putDirectory( directory, this.publishToDirectory );
 
         } catch (
@@ -161,12 +179,12 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
                 | AuthorizationException
                 | ConnectionException
                 |  AuthenticationException cause ) {
-            throw new MojoExecutionException("Error publishing Asciidoctor documents to server: ", cause );
+            throw new MojoExecutionException( Messages.PUBLISH_ERROR_PUBLISHING_TO_SERVER, cause );
         } finally {
             try {
                 wagon.disconnect();
             } catch (final ConnectionException cause) {
-                getLog().error("Error disconnecting wagon - ignored", cause);
+                getLog().error( Messages.PUBLISH_ERROR_DISCONNECTING_WAGON, cause);
             }
         }
     }

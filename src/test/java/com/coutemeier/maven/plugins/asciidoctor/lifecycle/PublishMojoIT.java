@@ -17,16 +17,39 @@ extends AbstractMojoIT {
     throws Exception {
         this.forProject("publish/inputDirectory-doesnt-exists") //
             .execute( "asciidoctor-publish" ) //
-            .assertLogText( "The Asciidoctor generated files directory does not exists" );
+            .assertLogText( Messages.PUBLISH_ERROR_MISSING_GENERATED_FILES );
         Assert.assertTrue( this.validator.publishedFilesNotExists() );
     }
 
     @Test
-    public void publishToDirectory()
+    public void toDirectory()
     throws Exception {
-        this.forProject("publish/publish-to-folder") //
+        this.forProject("publish/publish-to-folder")
+            .withCliOptions( "-Dasciidoctor.lifecycle.publish.serverId=nexus" )
             .execute( "asciidoctor-publish" )
             .assertErrorFreeLog();
+
+        Assert.assertTrue( this.validator.publishedFilesExists() );
+    }
+
+    public void toDirectoryNoProxyNoAuthentication()
+    throws Exception {
+        this.forProject("publish/publish-to-folder")
+            .execute( "asciidoctor-publish" )
+            .assertErrorFreeLog()
+            .assertLogText( Messages.PUBLISH_CONNECT_NOAUTHENTICATION_AND_NOPROXY );
+
+        Assert.assertTrue( this.validator.publishedFilesExists() );
+    }
+
+    @Test
+    public void toDirectoryProxy()
+    throws Exception {
+        this.forProject("publish/publish-to-folder")
+            .withCliOptions( "-Dasciidoctor.lifecycle.publish.serverId=nexus" )
+            .execute( "asciidoctor-publish" )
+            .assertErrorFreeLog()
+            .assertLogText( Messages.PUBLISH_CONNECT_WITH_AUTHENTICATION );
 
         Assert.assertTrue( this.validator.publishedFilesExists() );
     }

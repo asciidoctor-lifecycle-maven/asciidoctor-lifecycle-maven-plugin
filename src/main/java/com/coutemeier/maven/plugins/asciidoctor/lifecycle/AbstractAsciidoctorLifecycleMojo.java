@@ -54,12 +54,8 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * Directory used to store all source files allowing merging with theme resources,
      * without affecting original versioned files.
      */
-    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + BUILDDIRECTORY, required=false)
+    @Parameter(property = GOAL_PREFIX + "buildDirectory", defaultValue="${project.build.directory}/" + BUILDDIRECTORY, required=true)
     protected File buildDirectory;
-
-    protected final boolean infoEnabled = this.getLog().isInfoEnabled();
-    protected final boolean debugEnabled = this.getLog().isDebugEnabled();
-
 
     /*
      * @see org.apache.maven.plugin.Mojo#execute()
@@ -67,7 +63,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
         if (isSkip()) {
-            getLog().info("Skipping plugin execution");
+            getLog().info( Messages.SKIPPING_PLUGIN_EXECUTION );
         } else {
             doExecute();
         }
@@ -90,22 +86,12 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
     }
 
     protected void setProperty(final String name, final String value) {
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("[Asiidoctor Lifecycle] " + name + " = \"" + value + "\"");
-        }
+        this.debugFormatted( Messages.SET_PROPERTY, name, value);
         this.getProject().getProperties().put(name, value);
     }
 
     public File getBuildSourceDirectory() {
         return new File( this.buildDirectory, "asciidoc");
-    }
-
-    protected void debug( final String title, final File file ) {
-        if( this.debugEnabled ) {
-            this.getLog().debug(
-                String.format( "[Asciidoctor.lifecycle] %s(%s, %s)=%s", title, file.isDirectory(), file.isFile(), file.toString() )
-            );
-        }
     }
 
     /**
@@ -117,4 +103,28 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      *             {@link MojoFailureException}
      */
     protected abstract void doExecute() throws MojoExecutionException, MojoFailureException;
+
+    /**
+     * Show a debug message text.
+     *
+     * @parameter values an array of strings that will be joined with space separator
+     */
+    protected void debugMessage( final String ... values ) {
+        if ( this.getLog().isDebugEnabled() ) {
+            this.getLog().debug( String.join( " ", values ) );
+        }
+    }
+
+    /**
+     * Show a debug message text, formatting with object array
+     *
+     * @parameter formatter formatter for the message
+     * @parameter objects an array of objects used for formatting the message
+     */
+    protected void debugFormatted( final String formatter, final Object ... objects ) {
+        if ( this.getLog().isDebugEnabled() ) {
+            final String message = String.format( formatter, objects );
+            this.getLog().debug( message );
+        }
+    }
 }
