@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
@@ -17,7 +16,6 @@ import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.settings.crypto.SettingsDecryptionResult;
 import org.apache.maven.wagon.TransferFailedException;
-import org.apache.maven.wagon.UnsupportedProtocolException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
@@ -43,34 +41,6 @@ public final class WagonUtil {
     private WagonUtil() {
     }
 
-/*
-    public static Wagon getWagon( final PlexusContainer container, final Log log, final Repository repository, final WagonManager wagonManager )
-    throws MojoExecutionException {
-        try {
-            final Wagon wagon = wagonManager.getWagon( repository );
-            if ( !wagon.supportsDirectoryCopy() ) {
-                throw new MojoExecutionException(
-                    "Wagon protocol '" + repository.getProtocol() + "' doesn't support directory copying" );
-                }
-            return wagon;
-
-        } catch ( final UnsupportedProtocolException cause ) {
-            final String shortMessage = "Unsupported protocol: '" + repository.getProtocol() + "' for documentation deployment to "
-                + "url=" + repository.getUrl() + ".";
-            final String longMessage =
-                "\n" + shortMessage + "\n" + "Currently supported protocols are: "
-                    + WagonUtil.getSupportedProtocols(container, log) + ".\n"
-                    + "    Protocols may be added through wagon providers.\n" + "    For more information, see "
-                    + "http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
-
-            log.error( longMessage );
-            throw new MojoExecutionException( shortMessage );
-
-        } catch ( TransferFailedException e ) {
-            throw new MojoExecutionException( "Unable to configure Wagon: '" + repository.getProtocol() + "'", e );
-        }
-    }
-*/
     /**
      * Configure the Wagon with the information from serverConfigurationMap ( which comes from settings.xml )
      *
