@@ -2,7 +2,6 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
 
-import io.takari.maven.testing.TestResources;
 import io.takari.maven.testing.executor.MavenExecution;
 import io.takari.maven.testing.executor.MavenRuntime.MavenRuntimeBuilder;
 
@@ -12,7 +11,6 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class PublishToWebdavIT
