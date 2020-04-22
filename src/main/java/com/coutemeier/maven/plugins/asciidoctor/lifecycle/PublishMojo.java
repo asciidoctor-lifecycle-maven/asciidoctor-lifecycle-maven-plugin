@@ -70,7 +70,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "inputDirectory", defaultValue = "${project.build.directory}/generated-docs", required = true)
+    @Parameter(property = GOAL_PREFIX + "inputDirectory", defaultValue = "${project.build.directory}/generated-docs", required = false)
     private File inputDirectory;
 
     /**
@@ -89,7 +89,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
      *
      * @since 1.0
      */
-    @Parameter(property = GOAL_PREFIX + "publish.directory", defaultValue = "${project.artifactId}/${project.version}", required = true)
+    @Parameter(property = GOAL_PREFIX + "publish.directory", defaultValue = "${project.artifactId}/${project.version}", required = false)
     private String publishToDirectory;
 
     /**
@@ -148,12 +148,8 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
     private final void push(final File directory, final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo)
             throws MojoExecutionException {
         final String repositoryId = repository.getId();
-        final AuthenticationInfo authenticationInfo;
-        if ( repositoryId == null ) {
-            authenticationInfo = null;
-        } else {
-            authenticationInfo = wagonManager.getAuthenticationInfo( repositoryId );
-        }
+        final AuthenticationInfo authenticationInfo = wagonManager.getAuthenticationInfo( repositoryId );
+
         try {
             if( this.getLog().isDebugEnabled() ) {
                 Debug debug = new Debug();
@@ -163,12 +159,9 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
             if ( proxyInfo != null ) {
                 this.debugMessage( Messages.PUBLISH_CONNECT_WITH_PROXY );
                 wagon.connect( repository, authenticationInfo, proxyInfo );
-            } else if ( authenticationInfo != null ) {
-                this.debugMessage( Messages.PUBLISH_CONNECT_WITH_AUTHENTICATION );
-                wagon.connect( repository, authenticationInfo );
             } else {
-                this.debugMessage( Messages.PUBLISH_CONNECT_NOAUTHENTICATION_AND_NOPROXY );
-                wagon.connect( repository );
+                this.debugMessage( Messages.PUBLISH_CONNECT_WITHOUT_PROXY );
+                wagon.connect( repository, authenticationInfo );
             }
             this.debugFormatted( Messages.PUBLISH_PUSHING_DIRECTORY, directory );
             wagon.putDirectory( directory, this.publishToDirectory );

@@ -9,7 +9,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <asciidoctor.lifecycle.publish.repository>file://${project.build.directory}/publish-repository</asciidoctor.lifecycle.publish.repository>
     </properties>
 
     <build>
@@ -20,7 +19,9 @@
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <publishToRepository>dav:${webdav.server.url}</publishToRepository>
                     <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
+                    <serverId>nexus</serverId>
                 </configuration>
                 <dependencies>
                     <dependency>

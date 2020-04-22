@@ -31,6 +31,7 @@ public abstract class AbstractMojoIT {
     protected final MavenRuntime maven;
 
     protected File basedirFile;
+    protected File webdavPath;
 
     protected FilesValidator validator;
     protected FilesValidator subValidator;
@@ -43,7 +44,7 @@ public abstract class AbstractMojoIT {
     }
 
     public MavenExecution forProject( final String basedir )
-    throws IOException {
+    throws Exception {
         this.basedirFile = resources.getBasedir( basedir );
         this.validator = new FilesValidator( this.basedirFile );
         this.subValidator = new FilesValidator( this.basedirFile, SUBMODULE_NAME );
@@ -51,23 +52,16 @@ public abstract class AbstractMojoIT {
     }
 
     public MavenExecution forProject( final File basedirFile )
-    throws IOException {
+    throws Exception {
         return maven.forProject( basedirFile )
         .withCliOptions(
             "-B",
-            "-e",
-            "-X"
+            "-e"
         );
     }
 
     public MavenExecution multimoduleForProject()
-    throws IOException {
+    throws Exception {
         return forProject( "multimodule" );
-    }
-
-    protected void debug( final String title, final File file ) {
-        System.out.println(
-            String.format( "[Asciidoctor.lifecycle] %s(%s, %s)=%s", title, file.isDirectory(), file.isFile(), file.toString() )
-        );
     }
 }
