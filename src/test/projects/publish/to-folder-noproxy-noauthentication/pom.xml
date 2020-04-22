@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>publish-to-folder</artifactId>
+    <artifactId>publish-to</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

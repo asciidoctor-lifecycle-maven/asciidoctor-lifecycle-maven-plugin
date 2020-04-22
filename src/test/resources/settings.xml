@@ -12,6 +12,19 @@
         </server>
     </servers>
 
+    <proxies>
+        <proxy>
+            <id>nexus</id>
+            <active>false</active>
+            <protocol>http</protocol>
+            <host>proxy.example.com</host>
+            <port>8080</port>
+            <username>proxyuser</username>
+            <password>somepassword</password>
+            <nonProxyHosts>www.google.com|*.example.com</nonProxyHosts>
+        </proxy>
+    </proxies>
+
     <profiles>
         <profile>
             <id>inject-theme-properties</id>
@@ -20,6 +33,7 @@
                 <theme.artifactId>theme-example</theme.artifactId>
                 <theme.version>1.0.0</theme.version>
                 <theme.artifact>${theme.groupId}:${theme.artifactId}:zip:${theme.version}</theme.artifact>
+                <webdav.server.url>http://localhost:41000/</webdav.server.url>
             </properties>
         </profile>
     </profiles>

@@ -144,6 +144,13 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>de.bitinsomnia</groupId>
+            <artifactId>webdav-embedded-server</artifactId>
+            <version>0.1.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -328,4 +335,16 @@
             </plugin>
         </plugins>
     </reporting>
+    <repositories>
+        <repository>
+          <id>bintray</id>
+          <name>bintray</name>
+          <url>https://jcenter.bintray.com</url>
+        </repository>
+        <repository>
+          <id>milton</id>
+          <name>milton</name>
+          <url>https://dl.bintray.com/milton/Milton</url>
+        </repository>
+    </repositories>
 </project>

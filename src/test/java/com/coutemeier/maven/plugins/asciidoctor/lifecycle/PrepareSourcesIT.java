@@ -20,4 +20,13 @@ extends AbstractMojoIT {
             .assertLogText( Messages.PREPARE_SOURCES_ERROR_PREPARING );
         Assert.assertTrue( this.validator.buildDirectoryNotExists() );
     }
+
+    @Test
+    public void prepareSourcesSourceDirectoryNotExistsTest()
+    throws Exception {
+        forProject( "prepareSources-sourceDirectoryNotExists" ) //
+            .execute( "prepare-build" ) //
+            .assertErrorFreeLog();
+        Assert.assertTrue( this.validator.indexNotExists() );
+    }
 }

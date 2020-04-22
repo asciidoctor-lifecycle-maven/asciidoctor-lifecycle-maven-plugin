@@ -15,8 +15,13 @@ public final class FilesValidator {
     private final File publishedDirectory;
     private final File publishedIndexFile;
 
+    private final File webdavDirectory;
+    private final File webdavIndexFile;
+
     public FilesValidator( final File basedir ) {
         super();
+        final String publishTo = "publish-to/0.0.1-SNAPSHOT";
+        final String indexFile = publishTo + File.separator + "index.html";
         this.basedir = basedir;
         this.mavenBuildDirectory = new File( this.basedir, "target" );
         this.buildDirectory = new File( this.mavenBuildDirectory, Constants.BUILDDIRECTORY );
@@ -26,9 +31,12 @@ public final class FilesValidator {
         this.readmeFile = new File( this.themeDirectory, "asciidoc/_templates/readme.adoc" );
         this.dependencyFile = new File( this.mavenBuildDirectory, "dependency/junit-4.11.jar" );
         this.indexFile = new File( this.htmlBuildDirectory, "index.html" );
+        this.publishedDirectory = new File( this.mavenBuildDirectory, "publish-repository" );
+        this.publishedIndexFile = new File( this.publishedDirectory, indexFile );
 
-        this.publishedDirectory = new File( this.mavenBuildDirectory, "publish-repository/publish-to-folder/0.0.1-SNAPSHOT" );
-        this.publishedIndexFile = new File( this.publishedDirectory, "index.html" );
+        this.webdavDirectory = new File( this.mavenBuildDirectory, "webdav" );
+        this.webdavIndexFile = new File( this.webdavDirectory, indexFile );
+
     }
 
     public FilesValidator( final File basedir, String moduleName ) {
@@ -97,5 +105,16 @@ public final class FilesValidator {
 
     public boolean publishedFilesNotExists() {
         return ! this.publishedFilesExists();
+    }
+
+    public File getWebdavDirectory() {
+        return this.webdavDirectory;
+    }
+
+    public boolean webdavFilesExists() {
+        return this.webdavDirectory.exists() && this.webdavIndexFile.exists();
+    }
+    public boolean webdavFilesNotExists() {
+        return ! this.webdavFilesExists();
     }
 }

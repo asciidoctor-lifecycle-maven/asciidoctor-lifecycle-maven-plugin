@@ -11,10 +11,8 @@ public final class Messages {
     protected static final String PREPARE_SOURCES_SOURCE_DIRECTORY = "Prepare sources: preparing sources in %s";
 
     protected static final String PUBLISH_CONNECT_WITH_PROXY = "Publish: connect with proxyInfo";
-    protected static final String PUBLISH_CONNECT_WITH_AUTHENTICATION =
+    protected static final String PUBLISH_CONNECT_WITHOUT_PROXY =
         "Publish: connect with authenticationInfo and without proxyInfo";
-    protected static final String PUBLISH_CONNECT_NOAUTHENTICATION_AND_NOPROXY =
-        "Publish: connect without authenticationInfo and without proxyInfo";
     protected static final String PUBLISH_REPOSITORY_AUTHENTICATION_INFO = "Publish: authenticationInfo with id '%s': %s";
     protected static final String PUBLISH_PUBLISHING_TO = "Publish: Publishing to '%s/%s', using credentials from server id '%s'.";
     protected static final String PUBLISH_PUSHING_DIRECTORY = "Publish: Pushing %s";

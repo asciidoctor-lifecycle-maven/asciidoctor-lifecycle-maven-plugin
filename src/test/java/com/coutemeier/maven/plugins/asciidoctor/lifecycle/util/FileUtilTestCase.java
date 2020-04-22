@@ -1,7 +1,10 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -26,5 +29,18 @@ public class FileUtilTestCase {
                 )
                 .count() == 0;
         Assert.assertTrue( containsEmptyDir );
+    }
+
+    @Test
+    public void deleteDirTest()
+    throws Exception {
+        Path path = Files.createTempDirectory( "directory-test" + File.pathSeparator );
+        Files.createDirectories( path );
+        if ( Files.exists( path ) ) {
+            FileUtil.deleteDir( path );
+            Assert.assertFalse( Files.exists( path ) );
+        } else {
+            Assert.fail( "Unable to create temporary path: " + path.toString() );
+        }
     }
 }

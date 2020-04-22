@@ -4,12 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>publish-to</artifactId>
+    <artifactId>build</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <asciidoctor.lifecycle.publish.repository>file://${project.build.directory}/publish-repository</asciidoctor.lifecycle.publish.repository>
     </properties>
 
     <build>
@@ -20,15 +19,11 @@
                 <version>${it-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <buildDirectory>/dir-doesnt-exists</buildDirectory>
+                    <serverId>nexus-snapshots</serverId>
+                    <publishToRepository>file://${project.build.directory}/publish-repository</publishToRepository>
                     <publishToDirectory>${project.artifactId}/${project.version}</publishToDirectory>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-webdav-jackrabbit</artifactId> <!--4-->
-                        <version>3.0.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -49,4 +44,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
