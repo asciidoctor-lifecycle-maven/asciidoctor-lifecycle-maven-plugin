@@ -20,7 +20,7 @@
                 <executions>
                     <execution>
                         <id>install-theme-example</id>
-                        <phase>prepare-theme</phase>
+                        <phase>asciidoctor-prepare-theme</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>

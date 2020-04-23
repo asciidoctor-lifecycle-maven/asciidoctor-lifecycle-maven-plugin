@@ -3,8 +3,8 @@
 [%header%autowidth.spread,cols="h,,"]
 |===
 |Phase                       |Description |Mojo
-//----------------------
-|theme                       |In this phase the themes are downloaded from remote repositories,
+|asciidoctor-prepare-theme   |Prepare the theme download
+|asciidoctor-theme           |In this phase the themes are downloaded from remote repositories,
 if required, unzipped and copying common resources to a folder. | ThemeMojo
 |prepare-build               |Actions required before the build.
 Copy the theme to another location, modify it contents...|

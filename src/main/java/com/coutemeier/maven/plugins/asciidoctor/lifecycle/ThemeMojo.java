@@ -37,7 +37,7 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
  * @author rrialq
  * @since 1.0
  */
-@Mojo(name = "theme", requiresProject = true, threadSafe = true)
+@Mojo(name = "asciidoctor-theme", requiresProject = true, threadSafe = true)
 public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
         /**
      * Prefix to apply to properties created automatically to reflect where a theme was unzipped
