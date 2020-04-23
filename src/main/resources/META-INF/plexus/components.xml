@@ -14,7 +14,8 @@
                     <phase>asciidoctor-post-convert</phase>
                     <phase>asciidoctor-prepare-publish</phase>
                     <phase>asciidoctor-publish</phase>
-                    <phase>notify</phase>
+                    <phase>asciidoctor-prepare-notify</phase>
+                    <phase>asciidoctor-notify</phase>
                 </phases>
                 <default-phases>
                     <asciidoctor-theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-theme</asciidoctor-theme>

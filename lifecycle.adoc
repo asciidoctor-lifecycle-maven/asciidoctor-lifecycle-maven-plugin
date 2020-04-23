@@ -10,5 +10,6 @@ if required, unzipped and copying common resources to a folder. | ThemeMojo
 |asciidoctor-convert         |The `process-asciidoc` is attached to this phase, to build the documentation. |
 |asciidoctor-prepare-publish |Actions required before publishing documents. |
 |asciidoctor-publish         |Publishing generated content in a remote webdav server, a local filesystem... | PublishMojo
-|notice                      |Actions required for notifying users new documentation version. |
+|asciidoctor-prepare-notice  |Actions required before notifying users new documentation version. |
+|asciidoctor-notice          |Actions required for notifying users new documentation version. |
 |===
