@@ -17,7 +17,7 @@ extends AbstractMojoIT {
     public void themeExistsTest()
     throws Exception {
         multimoduleForProject()
-            .execute( "theme" )
+            .execute( "asciidoctor-theme" )
             .assertErrorFreeLog();
         Assert.assertTrue(
             this.subValidator.themeFilesExists()
@@ -30,7 +30,7 @@ extends AbstractMojoIT {
     public void noThemesConfigured()
     throws Exception {
         forProject( "theme/theme-no-themes-configured" )
-            .execute( "theme" )
+            .execute( "asciidoctor-theme" )
             .assertErrorFreeLog();
         Assert.assertTrue(
             this.validator.themeFilesNotExists()
@@ -43,7 +43,7 @@ extends AbstractMojoIT {
     public void themeBuildDirectoryDoesntExistsTest()
     throws Exception {
         forProject( "theme/theme-buildDirectory-ioexception" )
-            .execute( "theme" )
+            .execute( "asciidoctor-theme" )
             .assertLogText( Messages.THEME_ERROR_UNPACKING );
 
         Assert.assertTrue( this.validator.buildDirectoryNotExists() );
@@ -53,10 +53,9 @@ extends AbstractMojoIT {
     public void themeDoesntExistsTest()
     throws Exception {
         forProject( "theme/theme-doesnt-exists" )
-            .execute( "theme" )
+            .execute( "asciidoctor-theme" )
             .assertLogText( Messages.THEME_ERROR_DOWNLOADING );
 
         Assert.assertTrue( this.validator.themeFilesNotExists() );
     }
-
 }
