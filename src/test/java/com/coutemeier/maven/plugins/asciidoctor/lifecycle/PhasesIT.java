@@ -13,10 +13,10 @@ extends AbstractMojoIT {
     }
 
     @Test
-    public void prepareBuildTest()
+    public void perpareConvertBuildTest()
     throws Exception {
         multimoduleForProject() //
-            .execute( "prepare-build" ) //
+            .execute( "asciidoctor-prepare-convert" ) //
             .assertErrorFreeLog();
         Assert.assertTrue(
             this.subValidator.themeFilesExists()
@@ -25,10 +25,10 @@ extends AbstractMojoIT {
     }
 
     @Test
-    public void buildTest()
+    public void convertTest()
     throws Exception {
         multimoduleForProject()
-            .execute( "build" )
+            .execute( "asciidoctor-convert" )
             .assertErrorFreeLog();
         Assert.assertTrue(
             this.subValidator.themeFilesExists()
@@ -49,5 +49,4 @@ extends AbstractMojoIT {
             && this.subValidator.generatedFilesNotExists()
         );
     }
-
 }

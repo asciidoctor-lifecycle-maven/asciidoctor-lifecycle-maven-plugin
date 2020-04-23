@@ -9,16 +9,17 @@
                 <phases>
                     <phase>asciidoctor-prepare-theme</phase>
                     <phase>asciidoctor-theme</phase>
-                    <phase>prepare-build</phase>
-                    <phase>build</phase>
+                    <phase>asciidoctor-prepare-convert</phase>
+                    <phase>asciidoctor-convert</phase>
+                    <phase>asciidoctor-post-convert</phase>
                     <phase>asciidoctor-prepare-publish</phase>
                     <phase>asciidoctor-publish</phase>
                     <phase>notify</phase>
                 </phases>
                 <default-phases>
                     <asciidoctor-theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-theme</asciidoctor-theme>
-                    <prepare-build>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:prepare-sources</prepare-build>
-                    <build>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</build>
+                    <asciidoctor-prepare-convert>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:prepare-sources</asciidoctor-prepare-convert>
+                    <asciidoctor-convert>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</asciidoctor-convert>
                     <asciidoctor-publish>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-publish</asciidoctor-publish>
                 </default-phases>
             </configuration>

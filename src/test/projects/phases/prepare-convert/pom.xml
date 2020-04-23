@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>prepare-build</artifactId>
+    <artifactId>prepare-convert</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -52,7 +52,7 @@
                 <executions>
                     <execution>
                         <id>dependency-copy-to-folder</id>
-                        <phase>prepare-build</phase>
+                        <phase>asciidoctor-prepare-convert</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
