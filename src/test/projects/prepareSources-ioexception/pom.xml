@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>build</artifactId>
+    <artifactId>prepare-sources-ioexception</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -32,7 +32,7 @@
                 <executions>
                     <execution>
                         <id>output-html</id>
-                        <phase>build</phase>
+                        <phase>asciidoctor-convert</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>

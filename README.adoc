@@ -47,6 +47,13 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2020/04/23
+* Renamed phase `prepare-build` to `asciidoctor-prepare-convert`.
+* Renamed phase `build` to `asciidoctor-convert`.
+* Renamed phase `prepare-theme` to `asciidoctor-prepare-theme`.
+* Renamed phase `theme` to `asciidoctor-theme`.
+* Renamed all files and examples to conform to new names.
+
 .2020/04/20
 * Big redesign of `UploadMojo` code (now called `PublishMojo`).
 * `upload` phase renamed to `asciidoctor-publish`.
@@ -140,23 +147,16 @@ without the use of profiles. These are the phases of this lifecycle (in sequenti
 
 [%header%autowidth.spread,cols="h,,"]
 |===
-|Phase          |Description |Mojo
-//----------------------
-|theme          |In this phase the themes are downloaded from remote repositories,
+|Phase                       |Description |Mojo
+|asciidoctor-prepare-theme   |Prepare the theme download. |
+|asciidoctor-theme           |In this phase the themes are downloaded from remote repositories,
 if required, unzipped and copying common resources to a folder. | ThemeMojo
-|prepare-build  |Actions required before the build.
-Copy the theme to another location, modify it contents...|
-|build          |The `process-asciidoc` should be attached to this phase, to build the documentation|
-|prepare-upload |Actions required before the upload phase|
-|upload         |Actions required for uploading generated content|UploadMojo
-|notice         |Actions required for notifying users new documentation version|
+|asciidoctor-prepare-convert |Actions required before the asciidoctor conversion. |
+|asciidoctor-convert         |The `process-asciidoc` is attached to this phase, to build the documentation. |
+|asciidoctor-prepare-publish |Actions required before publishing documents. |
+|asciidoctor-publish         |Publishing generated content in a remote webdav server, a local filesystem... | PublishMojo
+|notice                      |Actions required for notifying users new documentation version. |
 |===
-
-You will notice that the `asciidoctor-lifecycle@build` goal is not bound by default to the `asciidoctor@process-asciidoc` goal.
-
-The main reason is that if you define a shared configuration and several executions,
-an additional document corresponding to the default backend (dockbook) will be generated.
-This is by design of the `asciidoctor-maven-plugin`.
 
 == Themes
 === What is a theme?

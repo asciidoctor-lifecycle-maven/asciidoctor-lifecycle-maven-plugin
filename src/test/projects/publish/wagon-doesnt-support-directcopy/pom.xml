@@ -31,7 +31,7 @@
                 <executions>
                     <execution>
                         <id>output-html</id>
-                        <phase>build</phase>
+                        <phase>asciidoctor-convert</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>

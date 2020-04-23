@@ -17,7 +17,7 @@ extends AbstractMojoIT{
     throws Exception {
         multimoduleForProject()
             .withCliOptions( SKIP )
-            .execute( "build" )
+            .execute( "asciidoctor-convert" )
             .assertErrorFreeLog();
         Assert.assertTrue( subValidator.themeNotExists() && subValidator.dependencyNotExists() );
     }

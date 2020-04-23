@@ -16,7 +16,7 @@ extends AbstractMojoIT {
     public void prepareSourcesIOExceptionTest()
     throws Exception {
         forProject( "prepareSources-ioexception" ) //
-            .execute( "prepare-build" ) //
+            .execute( "asciidoctor-prepare-convert" ) //
             .assertLogText( Messages.PREPARE_SOURCES_ERROR_PREPARING );
         Assert.assertTrue( this.validator.buildDirectoryNotExists() );
     }
@@ -25,7 +25,7 @@ extends AbstractMojoIT {
     public void prepareSourcesSourceDirectoryNotExistsTest()
     throws Exception {
         forProject( "prepareSources-sourceDirectoryNotExists" ) //
-            .execute( "prepare-build" ) //
+            .execute( "asciidoctor-prepare-convert" ) //
             .assertErrorFreeLog();
         Assert.assertTrue( this.validator.indexNotExists() );
     }
