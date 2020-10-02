@@ -1,32 +1,48 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
-import io.takari.maven.testing.executor.MavenRuntime.MavenRuntimeBuilder;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-public class PrepareSourcesIT
-extends AbstractMojoIT {
-    public PrepareSourcesIT( final MavenRuntimeBuilder builder )
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
+import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenGoal;
+import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
+import com.soebes.itf.jupiter.extension.MavenOption;
+import com.soebes.itf.jupiter.extension.MavenTest;
+import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+
+@MavenJupiterExtension
+@Execution( ExecutionMode.CONCURRENT )
+public class PrepareSourcesIT {
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-prepare-convert" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void missingBuildDirectory( MavenExecutionResult result )
     throws Exception {
-        super( builder );
+        assertThat( result )
+            .isFailure()
+            .out()
+            .plain()
+            .containsSequence( "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:prepare-sources (default-prepare-sources) on project prepare-sources-ioexception: " + Messages.PREPARE_SOURCES_ERROR_PREPARING )
+        ;
     }
 
-    @Test
-    public void prepareSourcesIOExceptionTest()
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-prepare-convert" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void missingSourceDirectory( MavenExecutionResult result )
     throws Exception {
-        forProject( "prepareSources-ioexception" ) //
-            .execute( "asciidoctor-prepare-convert" ) //
-            .assertLogText( Messages.PREPARE_SOURCES_ERROR_PREPARING );
-        Assert.assertTrue( this.validator.buildDirectoryNotExists() );
-    }
-
-    @Test
-    public void prepareSourcesSourceDirectoryNotExistsTest()
-    throws Exception {
-        forProject( "prepareSources-sourceDirectoryNotExists" ) //
-            .execute( "asciidoctor-prepare-convert" ) //
-            .assertErrorFreeLog();
-        Assert.assertTrue( this.validator.indexNotExists() );
+        final ProjectValidator validator = new ProjectValidator( result );
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() ).as( "Build successful" );
+        assertions.assertThat( validator.getBuildSources().doesNotContainsIndex() ).as( "'index.adoc' file doesn't exists" );
+        assertions.assertAll();
     }
 }

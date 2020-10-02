@@ -1,8 +1,8 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import java.io.File;
-
 import static com.coutemeier.maven.plugins.asciidoctor.lifecycle.Constants.BUILDDIRECTORY;
+
+import java.io.File;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -62,10 +62,10 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      */
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
-        if (isSkip()) {
-            getLog().info( Messages.SKIPPING_PLUGIN_EXECUTION );
+        if (this.isSkip()) {
+            this.getLog().info( Messages.SKIPPING_PLUGIN_EXECUTION );
         } else {
-            doExecute();
+            this.doExecute();
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
      * @return {@link #skip}
      */
     public boolean isSkip() {
-        return skip;
+        return this.skip;
     }
 
     /**
@@ -126,5 +126,10 @@ public abstract class AbstractAsciidoctorLifecycleMojo extends AbstractMojo {
             final String message = String.format( formatter, objects );
             this.getLog().debug( message );
         }
+    }
+
+    protected void infoFormatted(  final String formatter, final Object ... objects ) {
+        final String message = String.format( formatter, objects );
+        this.getLog().debug( message );
     }
 }

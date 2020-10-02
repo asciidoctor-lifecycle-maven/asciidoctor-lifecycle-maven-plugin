@@ -15,7 +15,7 @@ public final class Messages {
         "Publish: connect with authenticationInfo and without proxyInfo";
     protected static final String PUBLISH_REPOSITORY_AUTHENTICATION_INFO = "Publish: authenticationInfo with id '%s': %s";
     protected static final String PUBLISH_PUBLISHING_TO = "Publish: Publishing to '%s/%s', using credentials from server id '%s'.";
-    protected static final String PUBLISH_PUSHING_DIRECTORY = "Publish: Pushing %s";
+    protected static final String PUBLISH_PUSHING_DIRECTORY = "Publish: Pushing %s to %s";
 
     protected static final String THEME_COPY_RESOURCES = "Theme %s: Copying resources...";
     protected static final String THEME_CREATE_PROPERTY = "Theme %s: SetProperty: %s = %s";

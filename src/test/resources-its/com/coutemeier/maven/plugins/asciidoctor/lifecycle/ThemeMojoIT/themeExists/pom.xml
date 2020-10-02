@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.coutemeier.maven.plugins.test</groupId>
+    <artifactId>theme-exists</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <theme.groupId>${project.groupId}.skip.system.property</theme.groupId>
+        <theme.artifactId>theme-example</theme.artifactId>
+        <theme.version>1.0.0</theme.version>
+        <theme.artifact>${theme.groupId}:${theme.artifactId}:zip:${theme.version}</theme.artifact>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>install-theme-example</id>
+                        <phase>asciidoctor-prepare-theme</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${theme.artifactId}.zip</file>
+                            <groupId>${theme.groupId}</groupId>
+                            <artifactId>${theme.artifactId}</artifactId>
+                            <version>${theme.version}</version>
+                            <packaging>zip</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coutemeier.maven.plugins</groupId>
+                <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
+                <version>@project.version@</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <themes>
+                        <theme>${theme.artifact}</theme>
+                    </themes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

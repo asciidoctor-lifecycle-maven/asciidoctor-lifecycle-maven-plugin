@@ -47,6 +47,13 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
+.2020/10/01
+* Takari tests were replaced with https://github.com/khmarbaise/maven-it-extension[Integration Testing Framework].
+* JUnit4 was replaced with https://junit.org/junit5/[JUnit5] and AssertJ.
+* Some tests now owns their own IT class.
+* Removed one ignored test (publishWithProxy) and one redundant test (publishWithoutProxy).
+* Now all the tests can be executed in CONCURRENT.
+
 .2020/04/23
 * Files `README.adoc` and `lifecycle.adoc` updated.
 * Added phases `asciidoctor-prepare-notify` and `asciidoctor-notify`.
@@ -569,7 +576,24 @@ You can launch the integration tests:
 [source,shell]
 mvn -Prun-it clean integration-test
 
+== Warnings
+
+Tests were redesigned using JUnit5 to run in CONCURRENT mode, so the reports are affected by the bug
+https://issues.apache.org/jira/browse/SUREFIRE-1643[JUnit 5 in parallel execution mode confuses Surefire reports].
+
+So please, ignore for the moment the wrong number of tests in surefire report, like:
+
+[source]
+----
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.214 s - in com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtilTestCase
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.266 s - in com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtilTestCase
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.21 s - in com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtilOtherTestCase
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.418 s - in com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtilTestCase
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.925 s - in com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtilTestCase
+----
+
 == References
 
 * https://asciidoctor.org/[Asciidoctor home page]
 * https://github.com/asciidoctor/asciidoctor-maven-plugin[asciidoctor-maven-plugin in Github]
+

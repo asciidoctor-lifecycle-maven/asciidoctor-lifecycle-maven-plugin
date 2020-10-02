@@ -16,3 +16,4 @@ target/
 .factorypath
 .project
 .settings
+/bin/

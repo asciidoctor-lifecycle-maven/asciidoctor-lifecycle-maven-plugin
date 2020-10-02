@@ -24,7 +24,6 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
@@ -69,7 +68,6 @@ public final class WagonUtil {
 
             if ( id != null && id.equals( repositoryId ) && ( server.getConfiguration() != null ) ) {
                 final PlexusConfiguration plexusConf = new XmlPlexusConfiguration( (Xpp3Dom) server.getConfiguration() );
-
                 ComponentConfigurator componentConfigurator = null;
                 try {
                     componentConfigurator = (ComponentConfigurator) container.lookup( ComponentConfigurator.ROLE, "basic" );
