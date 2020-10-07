@@ -93,7 +93,7 @@ public class ProjectValidator {
         return this.published;
     }
 
-    static String getThemeBaseDir( final MavenProjectResult result ) {
+    private static String getThemeBaseDir( final MavenProjectResult result ) {
         if ( result.getModel().getModules().isEmpty() ) {
             return result.getBaseDir().getAbsolutePath();
         }

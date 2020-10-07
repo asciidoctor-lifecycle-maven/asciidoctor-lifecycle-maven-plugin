@@ -60,8 +60,8 @@ public class ThemeMojoIT {
             .out()
                 .plain()
                     .containsSequence(
-                        "[ERROR] Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectory-ioexception: Theme: Error unpacking theme: /dir-doesnt-exists/themes/theme-example/asciidoc/snippets/inprogress.adoc -> [Help 1]",
-                        "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectory-ioexception: Theme: Error unpacking theme"
+                        "[ERROR] Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectorydoesnotexists: Theme: Error unpacking theme: /dir-doesnt-exists/themes/theme-example/asciidoc/snippets/inprogress.adoc -> [Help 1]",
+                        "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectorydoesnotexists: Theme: Error unpacking theme"
                     );
 
         assertions.assertThat( result.isSuccesful() ).isFalse();
@@ -83,8 +83,8 @@ public class ThemeMojoIT {
             .out()
                 .plain()
                     .containsSequence(
-                        "[ERROR] Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-exists: Theme: Error downloading theme: Could not find artifact com.coutemeier.maven.plugins.skip.system.property:theme-example:zip:1.0.0-does-not-exists in central (https://repo.maven.apache.org/maven2) -> [Help 1]",
-                            "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-exists: Theme: Error downloading theme"
+                        "[ERROR] Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-doesnotexists: Theme: Error downloading theme: Could not find artifact com.coutemeier.maven.plugins.skip.system.property:theme-example:zip:1.0.0-does-not-exists in central (https://repo.maven.apache.org/maven2) -> [Help 1]",
+                            "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-doesnotexists: Theme: Error downloading theme"
                     );
 
         assertions.assertThat( result.isSuccesful() ).isFalse();
