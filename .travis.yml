@@ -4,6 +4,6 @@ jdk:
 sudo: false # faster builds
 
 script:
-        - "mvn clean verify jacoco:report -Prun-it"
+        - "mvn clean verify jacoco:report jacoco:report-integration -Pquality -Pparallel"
 after_success:
-        - "mvn coveralls:report"
+        - "mvn coveralls:report -Pquality"
