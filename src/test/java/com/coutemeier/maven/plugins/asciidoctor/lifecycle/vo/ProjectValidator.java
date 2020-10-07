@@ -7,7 +7,6 @@ import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 import com.soebes.itf.jupiter.maven.MavenProjectResult;
 
 public class ProjectValidator {
-    private static final String MULTIMODULE_EXAMPLE_THEME_DIR = "asciidoctor-module/target/asciidoctor-build/themes/theme-example";
     private final MyFile root;
     /*
      * Points to the basedir module that contains the asciidoctor sources

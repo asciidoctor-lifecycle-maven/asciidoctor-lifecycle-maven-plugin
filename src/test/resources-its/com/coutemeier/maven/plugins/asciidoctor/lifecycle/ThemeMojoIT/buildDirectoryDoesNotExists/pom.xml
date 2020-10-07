@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>theme-builddirectory-ioexception</artifactId>
+    <artifactId>theme-builddirectorydoesnotexists</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
