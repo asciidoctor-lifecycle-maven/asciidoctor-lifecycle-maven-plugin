@@ -4,11 +4,13 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import de.bitinsomnia.webdav.server.MiltonWebDAVFileServer;
 
 public class SimpleDavServer
 implements Closeable {
+    private static final Logger LOGGER = Logger.getLogger( SimpleDavServer.class.getName() );
     private final MiltonWebDAVFileServer server;
     private final File rootFolder;
 
@@ -51,7 +53,7 @@ implements Closeable {
         try {
             this.stop();
         } catch ( final Exception cause ) {
-
+            LOGGER.warning( "Error stopping server: " + cause.getMessage() );
         }
     }
 

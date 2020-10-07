@@ -47,7 +47,10 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
-.2020/10/01
+.2020/10/07
+* Renamed ```asciidoctor-prepare-notify``` to ```asciidoctor-pre-notify```.
+* Renamed ```asciidoctor-prepare-publish``` to ```asciidoctor-pre-publish```.
+* Renamed ```asciidoctor-prepare-theme``` to ```asciidoctor-pre-theme```.
 * Takari tests were replaced with https://github.com/khmarbaise/maven-it-extension[Integration Testing Framework].
 * JUnit4 was replaced with https://junit.org/junit5/[JUnit5] and AssertJ.
 * Some tests now owns their own IT class.
@@ -157,14 +160,14 @@ without the use of profiles. These are the phases of this lifecycle (in sequenti
 [%header%autowidth.spread,cols="h,,"]
 |===
 |Phase                       |Description |Mojo
-|asciidoctor-prepare-theme   |Prepare the theme download. |
+|asciidoctor-pre-theme       |Prepare the theme download. |
 |asciidoctor-theme           |In this phase the themes are downloaded from remote repositories,
 if required, unzipped and copying common resources to a folder. | ThemeMojo
 |asciidoctor-prepare-convert |Actions required before the asciidoctor conversion. |
 |asciidoctor-convert         |The `process-asciidoc` is attached to this phase, to build the documentation. |
-|asciidoctor-prepare-publish |Actions required before publishing documents. |
+|asciidoctor-pre-publish     |Actions required before publishing documents. |
 |asciidoctor-publish         |Publishing generated content in a remote webdav server, a local filesystem... | PublishMojo
-|asciidoctor-prepare-notice  |Actions required before notifying users new documentation version. |
+|asciidoctor-pre-notice      |Actions required before notifying users new documentation version. |
 |asciidoctor-notice          |Actions required for notifying users new documentation version. |
 |===
 

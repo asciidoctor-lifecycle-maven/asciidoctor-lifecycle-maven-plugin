@@ -27,7 +27,7 @@
                 <executions>
                     <execution>
                         <id>install-theme-example-in-local-repository</id>
-                        <phase>asciidoctor-prepare-theme</phase>
+                        <phase>asciidoctor-pre-theme</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>

@@ -14,6 +14,8 @@
                     <phase>asciidoctor-pre-publish</phase>
                     <phase>asciidoctor-publish</phase>
                     <phase>asciidoctor-post-publish</phase>
+                    <phase>asciidoctor-pre-notify</phase>
+                    <phase>asciidoctor-notify</phase>
                 </phases>
                 <default-phases>
                     <asciidoctor-theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-theme</asciidoctor-theme>
