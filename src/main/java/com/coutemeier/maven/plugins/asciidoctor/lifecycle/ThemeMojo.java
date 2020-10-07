@@ -20,14 +20,15 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ZipUtil;
 /**
  * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped.
  * <p>
- * This mojo follows the following steps for each theme configured:
+ * This mojo performs the following steps for each theme:
  * <ol>
- * <li>Download the theme (an artifact with type zip).
- * <li>Unzip the theme.
- * <li>Create a property to reflect where this theme has been unzipped.
+ *      <li>Download the theme (an artifact with type zip).
+ *      <li>Unzip the theme.
+ *      <li>Copy all theme common resources (under asciidoc) to ${asciidoctor.lifecycle.buildDirectory}/asciidoc.
+ *      <li>Create a property to reflect where this theme has been unzipped.
  * </ol>
  *
- * <b>Pattern for property names created in step 3</b>
+ * <b>Pattern for property names created in step 4</b>
  * <p>
  * <code>asciidoctor.theme.${normalizedArtifactId}.path</code>
  * <p>
@@ -72,14 +73,14 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
         try {
-            for (final String theme : themes) {
+            for (final String theme : this.themes) {
                 // Download the theme artifact
-                final Artifact themeArtifact = downloadAction( theme );
+                final Artifact themeArtifact = this.downloadAction( theme );
                 // Unpack it to directory
-                final File outputDirectory = unpackAction( themeArtifact );
-                copyCommonThemeResources( themeArtifact, outputDirectory );
+                final File outputDirectory = this.unpackAction( themeArtifact );
+                this.copyCommonThemeResources( themeArtifact, outputDirectory );
                 // Create the property
-                createPropertyAction( themeArtifact, outputDirectory );
+                this.createPropertyAction( themeArtifact, outputDirectory );
             }
 
         } catch ( final IOException cause ) {
@@ -95,7 +96,7 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
     private Artifact downloadAction( final String theme )
     throws IOException, ArtifactResolutionException, MojoFailureException {
         this.debugMessage( Messages.THEME_DOWNLOADING, theme );
-        return ArtifactUtil.downloadByAether(theme, repositorySystem, repoSession, remoteRepositories);
+        return ArtifactUtil.downloadByAether(theme, this.repositorySystem, this.repoSession, this.remoteRepositories);
     }
 
     /**
@@ -131,7 +132,7 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
 
     private String createPropertyAction( final Artifact theme, final File outputDirectory )
     throws IOException {
-        final String propertyName = createPropertyName(theme);
+        final String propertyName = this.createPropertyName(theme);
         final String propertyValue = outputDirectory.getCanonicalPath();
         this.setProperty(propertyName, propertyValue);
         return propertyName;
@@ -147,6 +148,6 @@ public class ThemeMojo extends AbstractAsciidoctorLifecycleMojo {
      * @see #THEME_AUTOPROPERTY_PREFIX
      */
     private String createPropertyName(final Artifact artifact) {
-        return THEME_AUTOPROPERTY_PREFIX + ArtifactUtil.normalizeArtifactId(artifact) + ".path";
+        return this.THEME_AUTOPROPERTY_PREFIX + ArtifactUtil.normalizeArtifactId(artifact) + ".path";
     }
 }

@@ -181,9 +181,6 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contextualize( final Context context ) throws ContextException {
         this.container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);

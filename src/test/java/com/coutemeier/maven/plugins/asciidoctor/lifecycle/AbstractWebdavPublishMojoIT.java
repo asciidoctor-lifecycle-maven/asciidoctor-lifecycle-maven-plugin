@@ -24,9 +24,8 @@ public abstract class AbstractWebdavPublishMojoIT {
 
         if ( rootFolder.exists() ) {
             FileUtil.deleteDir( rootFolder.toPath() );
-        } else {
-            rootFolder.mkdirs();
         }
+        rootFolder.mkdirs();
 
         this.serverId = "http://localhost:" + this.getPort() + " at " + rootFolder.getAbsolutePath();
         this.server = new SimpleDavServer( rootFolder, this.getPort() );

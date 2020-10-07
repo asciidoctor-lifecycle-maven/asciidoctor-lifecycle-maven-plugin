@@ -9,21 +9,22 @@ import org.apache.maven.plugins.annotations.Mojo;
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
 
 /**
- * Manages the themes by downloading them, unziping them and creating a property to reflect where has been unzipped.
+ * Prepare sources for build.
  * <p>
- * This mojo follows the following steps for each theme configured:
+ * In corporate environments it may be necessary to reuse files whose content is common (for example, images, writing conventions, legal notices ...).
+ * It may even be necessary to generate new files "on the fly" (images, new content, ...), or even solve other problems in a more simple and controlled way.
+ * <p>
+ * Don't forget that it is a bad idea to mix the documentation sources with the files generated or added during build preparation,
+ * because other build processes may require working only with the original sources.
+ * <p>
+ * This mojo solves the problem by copying the original files to a new location,
+ * and updating the value of the {@code asciidoctor.sourceDirectory} property.
+ * <p>
+ * This mojo performs the following steps:
  * <ol>
- * <li>Download the theme (an artifact with type zip).
- * <li>Unzip the theme.
- * <li>Create a property to reflect where this theme has been unzipped.
+ *      <li>Copy sources to directory specified by the {@code asciidoctor.lifecycle.outputDirectory} property.
+ *      <li>Update the value of the {@code asciidoctor.outputDirectory} property.
  * </ol>
- *
- * <b>Pattern for property names created in step 3</b>
- * <p>
- * <code>asciidoctor.theme.${normalizedArtifactId}.path</code>
- * <p>
- * The <code>normalizedArtifactId</code> is the name of the <code>artifactId</code> theme, but removing chars not in
- * [A-Za-z0-9-].
  *
  * @author rrialq
  * @since 1.0
@@ -35,7 +36,7 @@ public class PrepareSourcesMojo extends AbstractAsciidoctorLifecycleMojo {
         try {
             this.getLog().info( String.format( "Build directory=%s", this.getBuildSourceDirectory().toString() ) );
             this.debugFormatted( Messages.PREPARE_SOURCES_SOURCE_DIRECTORY, this.sourceDirectory );
-            
+
             if ( this.sourceDirectory.isDirectory() ) {
                 FileUtil.copyDir( this.sourceDirectory.toPath(), this.getBuildSourceDirectory().toPath() );
                 // We update the new Asciidoctor.sourceDirectory value

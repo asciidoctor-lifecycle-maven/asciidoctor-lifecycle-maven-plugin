@@ -566,6 +566,8 @@ with credentials to publishing the files to the server.
 
 == How can I build the plugin?
 
+=== Conventional build
+
 You can build the project with Maven [3.3.9,4.0) versions and Java 8.
 
 [source,shell]
@@ -574,7 +576,28 @@ mvn clean package
 You can launch the integration tests:
 
 [source,shell]
-mvn -Prun-it clean integration-test
+mvn clean verify -Prun-it
+
+=== Run tests in parallel
+
+The profile with `id=parallel` allows running tests in parallel,
+so you can launch the tests as:
+
+[source,shell]
+mvn clean test -Pparallel
+
+or
+
+[source,shell]
+mvn clean verify -Pparallel
+
+=== Measure coverage
+
+The profile with `id=quality` configure some additional actions,
+such as measuring coverage and submitting Java code coverage to the coveralls service.
+
+[source,shell]
+mvn clean verify -Pparallel -Pquality 
 
 == Warnings
 
@@ -596,4 +619,3 @@ So please, ignore for the moment the wrong number of tests in surefire report, l
 
 * https://asciidoctor.org/[Asciidoctor home page]
 * https://github.com/asciidoctor/asciidoctor-maven-plugin[asciidoctor-maven-plugin in Github]
-
