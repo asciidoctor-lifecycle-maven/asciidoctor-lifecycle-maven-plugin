@@ -23,7 +23,7 @@ public class ArtifactUtilTestCase {
         assertEquals( expectedPropertyName, propertyName );
     }
 
-    private static Stream< Arguments > artifactToArtifactIdProvider() {
+    public static Stream< Arguments > artifactToArtifactIdProvider() {
         return Stream.of(
             Arguments.of(   new DefaultArtifact( "com.coutemeier.maven.plugins:asciidoctor-create-theme-example:zip:1.0.0-SNAPSHOT"),
                             "asciidoctor-create-theme-example" ),
