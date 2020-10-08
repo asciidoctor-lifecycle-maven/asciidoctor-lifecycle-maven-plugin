@@ -47,7 +47,8 @@ documentation from the default lifecycle with the asciidoctor-maven-plugin.
 In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
-.2020/10/07
+.2020/10/08
+* Added ```asciidoctor-verify``` phase after ```asciidoctor-post-publish``` phase.
 * Renamed ```asciidoctor-prepare-notify``` to ```asciidoctor-pre-notify```.
 * Renamed ```asciidoctor-prepare-publish``` to ```asciidoctor-pre-publish```.
 * Renamed ```asciidoctor-prepare-theme``` to ```asciidoctor-pre-theme```.
