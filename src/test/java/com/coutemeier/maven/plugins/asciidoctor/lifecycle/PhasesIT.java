@@ -18,7 +18,7 @@ public class PhasesIT {
 
     @MavenTest
     @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-prepare-convert" )
+    @MavenGoal( "asciidoctor-pre-convert" )
     @MavenOption( MavenCLIOptions.DEBUG )
     @Execution( ExecutionMode.CONCURRENT )
     public void prepareConvertGoal( MavenExecutionResult result )

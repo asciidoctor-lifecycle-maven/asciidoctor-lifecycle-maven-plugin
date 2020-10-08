@@ -19,7 +19,7 @@ import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 public class PrepareSourcesIT {
     @MavenTest
     @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-prepare-convert" )
+    @MavenGoal( "asciidoctor-pre-convert" )
     @MavenOption( MavenCLIOptions.DEBUG )
     @Execution( ExecutionMode.CONCURRENT )
     public void missingBuildDirectory( MavenExecutionResult result )
@@ -34,7 +34,7 @@ public class PrepareSourcesIT {
 
     @MavenTest
     @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-prepare-convert" )
+    @MavenGoal( "asciidoctor-pre-convert" )
     @MavenOption( MavenCLIOptions.DEBUG )
     @Execution( ExecutionMode.CONCURRENT )
     public void missingSourceDirectory( MavenExecutionResult result )

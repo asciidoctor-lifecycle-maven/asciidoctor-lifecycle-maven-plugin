@@ -48,7 +48,9 @@ In this section I will tell you the most recent changes.
 This section will disappear with the final release.
 
 .2020/10/08
+* Added ```asciidoctor-prepare-resources``` phase before ```asciidoctor-theme```
 * Added ```asciidoctor-verify``` phase after ```asciidoctor-post-publish``` phase.
+* Renamed ```asciidoctor-prepare-convert``` to ```asciidoctor-pre-convert```.
 * Renamed ```asciidoctor-prepare-notify``` to ```asciidoctor-pre-notify```.
 * Renamed ```asciidoctor-prepare-publish``` to ```asciidoctor-pre-publish```.
 * Renamed ```asciidoctor-prepare-theme``` to ```asciidoctor-pre-theme```.
@@ -164,7 +166,7 @@ without the use of profiles. These are the phases of this lifecycle (in sequenti
 |asciidoctor-pre-theme       |Prepare the theme download. |
 |asciidoctor-theme           |In this phase the themes are downloaded from remote repositories,
 if required, unzipped and copying common resources to a folder. | ThemeMojo
-|asciidoctor-prepare-convert |Actions required before the asciidoctor conversion. |
+|asciidoctor-pre-convert     |Actions required before the asciidoctor conversion. |
 |asciidoctor-convert         |The `process-asciidoc` is attached to this phase, to build the documentation. |
 |asciidoctor-pre-publish     |Actions required before publishing documents. |
 |asciidoctor-publish         |Publishing generated content in a remote webdav server, a local filesystem... | PublishMojo

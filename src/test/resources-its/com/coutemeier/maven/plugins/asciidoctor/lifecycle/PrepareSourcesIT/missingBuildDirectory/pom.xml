@@ -12,7 +12,7 @@
     </properties>
 
     <build>
-        <defaultGoal>clean asciidoctor-prepare-convert</defaultGoal>
+        <defaultGoal>clean asciidoctor-pre-convert</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>com.coutemeier.maven.plugins</groupId>
