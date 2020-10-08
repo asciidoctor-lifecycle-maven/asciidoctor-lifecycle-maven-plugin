@@ -1,52 +1,68 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import io.takari.maven.testing.executor.MavenRuntime.MavenRuntimeBuilder;
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
+import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenGoal;
+import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
+import com.soebes.itf.jupiter.extension.MavenOption;
+import com.soebes.itf.jupiter.extension.MavenTest;
+import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 
-public class PhasesIT
-extends AbstractMojoIT {
-    public PhasesIT( final MavenRuntimeBuilder builder )
+@MavenJupiterExtension
+@Execution( ExecutionMode.CONCURRENT )
+public class PhasesIT {
+
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-pre-convert" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void prepareConvertGoal( MavenExecutionResult result )
     throws Exception {
-        super( builder );
+        final ProjectValidator validator = new ProjectValidator( result );
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() );
+        assertions.assertThat( validator.getTarget().exists() );
+        assertions.assertThat( validator.getModule().containsIndex() );
+        assertions.assertThat( validator.getHtml5().doesNotContainsIndexHtml() );
+        assertions.assertAll();
     }
 
-    @Test
-    public void perpareConvertBuildTest()
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-convert" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void convertGoal( final MavenExecutionResult result )
     throws Exception {
-        multimoduleForProject() //
-            .execute( "asciidoctor-prepare-convert" ) //
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.subValidator.themeFilesExists()
-            && this.subValidator.generatedFilesNotExists()
-            && this.subValidator.dependencyNotExists() );
+        final ProjectValidator validator = new ProjectValidator( result );
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() );
+        assertions.assertThat( validator.getTarget().exists() );
+        assertions.assertThat( validator.getBuildSources().containsIndex() );
+        assertions.assertThat( validator.getHtml5().containsIndexHtml() );
+        assertions.assertThat( validator.getDependencies().doesNotContainsDependency() );
+        assertions.assertAll();
     }
 
-    @Test
-    public void convertTest()
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "package" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void packageGoal( final MavenExecutionResult result )
     throws Exception {
-        multimoduleForProject()
-            .execute( "asciidoctor-convert" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.subValidator.themeFilesExists()
-            && this.subValidator.generatedFilesExists()
-            && this.subValidator.dependencyNotExists()
-        );
-    }
-
-    @Test
-    public void packageTest()
-    throws Exception {
-        multimoduleForProject()
-            .execute( "package" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.subValidator.dependencyExists()
-            && this.subValidator.themeFilesNotExists()
-            && this.subValidator.generatedFilesNotExists()
-        );
+        final ProjectValidator validator = new ProjectValidator( result );
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() );
+        assertions.assertThat( validator.getTarget().exists() );
+        assertions.assertThat( validator.getBuildSources().doesNotExists() );
+        assertions.assertThat( validator.getHtml5().doesNotExists() );
+        assertions.assertThat( validator.getDependencies().containsDependency() );
+        assertions.assertAll();
     }
 }

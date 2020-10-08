@@ -7,9 +7,9 @@
     <groupId>com.coutemeier.maven.plugins</groupId>
     <artifactId>asciidoctor-lifecycle-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>takari-maven-plugin</packaging>
+    <packaging>maven-plugin</packaging>
 
-    <name>Maven Lifecycle and mojos for building Asciidoctor documentation</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>A lifecycle and custom mojos to isolate the building of asciidoctor documentation from the default lifecycle with the asciidoctor-maven-plugin</description>
     <url>https://github.com/asciidoctor-lifecycle-maven-plugin/asciidoctor-lifecycle-maven-plugin</url>
 
@@ -50,25 +50,34 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <version.assertj>3.17.2</version.assertj>
         <version.formatter-maven-plugin>2.10.0</version.formatter-maven-plugin>
-        <version.jacoco-maven-plugin>0.8.4</version.jacoco-maven-plugin>
-        <version.junit>4.11</version.junit>
-        <version.takari-testing>2.9.2</version.takari-testing>
-        <version.takari-lifecycle-plugin>1.13.9</version.takari-lifecycle-plugin>
-<!--
-        <version.takari-plugin-integration-testing>2.9.2</version.takari-plugin-integration-testing>
-        <version.takari-plugin-testing>2.9.2</version.takari-plugin-testing>
--->
+        <version.itf>0.9.0</version.itf>
+        <version.jacoco-maven-plugin>0.8.6</version.jacoco-maven-plugin>
+        <version.junit>5.7.0</version.junit>
         <version.maven-enforcer-plugin>3.0.0-M2</version.maven-enforcer-plugin>
         <version.maven-invoker-plugin>3.0.1</version.maven-invoker-plugin>
         <version.maven-plugin-plugin>3.6.0</version.maven-plugin-plugin>
         <version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
         <version.maven-site-plugin>3.8.2</version.maven-site-plugin>
-        <version.mockito>2.25.0</version.mockito>
+        <version.mockito>3.5.13</version.mockito>
         <version.wagon>3.3.1</version.wagon>
+        <version.webdav-embedded-server>0.1.2</version.webdav-embedded-server>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${version.junit}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -91,6 +100,7 @@
             <artifactId>maven-plugin-api</artifactId>
             <version>${mavenVersion}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
@@ -120,75 +130,96 @@
         </dependency>
     -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
+ 
         <dependency>
-            <groupId>io.takari.maven.plugins</groupId>
-            <artifactId>takari-plugin-testing</artifactId>
-            <version>${version.takari-testing}</version>
+            <groupId>de.bitinsomnia</groupId>
+            <artifactId>webdav-embedded-server</artifactId>
+            <version>${version.webdav-embedded-server}</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- New test dependencies -->
         <dependency>
-            <groupId>io.takari.maven.plugins</groupId>
-            <artifactId>takari-plugin-integration-testing</artifactId>
-            <version>${version.takari-testing}</version>
-            <type>pom</type>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>de.bitinsomnia</groupId>
-            <artifactId>webdav-embedded-server</artifactId>
-            <version>0.1.2</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+            <scope>test</scope>
+        </dependency>
+                
+
+        <dependency>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-extension-maven</artifactId>
+            <version>${version.itf}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-jupiter-extension</artifactId>
+            <version>${version.itf}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.soebes.itf.jupiter.extension</groupId>
+            <artifactId>itf-assertj</artifactId>
+            <version>${version.itf}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${version.assertj}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.github.stephenc.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+            <version>1.0-1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>io.takari.maven.plugins</groupId>
-                <artifactId>takari-lifecycle-plugin</artifactId>
-                <version>${version.takari-lifecycle-plugin}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <proc>proc</proc>
-                </configuration>
-            </plugin>
-            <plugin>
+             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${version.maven-enforcer-plugin}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>[3.3.9,4.0)</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <argLine>${surefireArgLine}</argLine>
+                </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <propertyName>failsafeArgLine</propertyName>
+                    <systemProperties>
+                        <failsafe.argLine>${failsafeArgLine}</failsafe.argLine>
+                        <maven.version>${maven.version}</maven.version>
+                        <maven.home>${maven.home}</maven.home>
+                    </systemProperties>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -209,7 +240,7 @@
                 <executions>
                     <!-- if you want to generate help goal -->
                     <execution>
-                        <id>help-goal</id>
+                        <id>helpmojo-goal</id>
                         <goals>
                             <goal>helpmojo</goal>
                         </goals>
@@ -222,67 +253,43 @@
                 <version>${version.maven-site-plugin}</version>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${version.jacoco-maven-plugin}</version>
+                <groupId>com.soebes.itf.jupiter.extension</groupId>
+                <artifactId>itf-maven-plugin</artifactId>
+                <version>0.9.0</version>
                 <executions>
                     <execution>
-                        <id>default-prepare-agent</id>
+                        <id>installing</id>
+                        <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>install</goal>
                         </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/jacoco-ut.exec</destFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                        <configuration>
-                            <propertyName>invoker.mavenOpts</propertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>merge</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>merge</goal>
-                        </goals>
-                        <configuration>
-                            <fileSets>
-                                <fileSet>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>*.exec</include>
-                                    </includes>
-                                </fileSet>
-                            </fileSets>
-                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*/HelpMojo.class</exclude>
-                    </excludes>
-                    <rules>
-                        <rule>
-                            <element>CLASS</element>
-                            <excludes>
-                                <exclude>JAVAC.SYNTHCLASS</exclude>
-                                <exclude>JAVAC.SYNTHMETH</exclude>
-                            </excludes>
-                        </rule>
-                    </rules>
-                </configuration>
             </plugin>
             <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
-            </plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <escapeString>\</escapeString>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>zip</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>            
         </plugins>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources-its</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
     </build>
 
     <reporting>
@@ -303,36 +310,6 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                            <report>test-javadoc</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*/HelpMojo.class</exclude>
-                    </excludes>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>report</report>
-                            <report>report-integration</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
         </plugins>
     </reporting>
     <repositories>
@@ -347,4 +324,173 @@
           <url>https://dl.bintray.com/milton/Milton</url>
         </repository>
     </repositories>
+    
+    <profiles>
+        <profile>
+            <id>quality</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>${version.maven-enforcer-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-maven</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireMavenVersion>
+                                            <version>[3.3.9,4.0)</version>
+                                        </requireMavenVersion>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${version.jacoco-maven-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <propertyName>surefireArgLine</propertyName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>default-prepare-agent-integration</id>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <dataFile>${project.build.diretory}/jacoco-it.jacoco</dataFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>merge</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>merge</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${project.build.directory}/jacoco-merged.jacoco</destFile>
+                                    <fileSets>
+                                        <fileSet>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>*.exec</include>
+                                            </includes>
+                                        </fileSet>
+                                    </fileSets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*/HelpMojo.class</exclude>
+                            </excludes>
+                            <rules>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <excludes>
+                                        <exclude>JAVAC.SYNTHCLASS</exclude>
+                                        <exclude>JAVAC.SYNTHMETH</exclude>
+                                    </excludes>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>4.3.0</version>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*/HelpMojo.class</exclude>
+                            </excludes>
+                        </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <reports>
+                                    <report>report</report>
+                                    <report>report-integration</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <reportSets>
+                            <reportSet>
+                                <reports>
+                                    <report>javadoc</report>
+                                    <report>test-javadoc</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <profile>
+            <id>parallel</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <properties>
+                                <configurationParameters>
+                                    junit.jupiter.conditions.deactivate = *
+                                    junit.jupiter.extensions.autodetection.enabled = true
+                                    junit.jupiter.testinstance.lifecycle.default = per_method
+                                    junit.jupiter.execution.parallel.enabled=true
+                                    junit.jupiter.execution.parallel.mode.default = same_thread
+                                    junit.jupiter.execution.parallel.mode.classes.default = concurrent
+                                    junit.jupiter.execution.parallel.config.strategy = dynamic
+                                    junit.jupiter.execution.parallel.config.dynamic.factor = 3
+                                </configurationParameters>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <properties>
+                                <configurationParameters>
+                                    junit.jupiter.conditions.deactivate = *
+                                    junit.jupiter.extensions.autodetection.enabled = true
+                                    junit.jupiter.testinstance.lifecycle.default = per_class
+                                    junit.jupiter.execution.parallel.enabled = true
+                                    junit.jupiter.execution.parallel.mode.default = same_thread
+                                    junit.jupiter.execution.parallel.mode.classes.default = concurrent
+                                    junit.jupiter.execution.parallel.config.strategy = dynamic
+                                    junit.jupiter.execution.parallel.config.dynamic.factor = 3
+                                </configurationParameters>
+                                <propertyName>failsafeArgLine</propertyName>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -1,7 +1,5 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
-
 import java.io.File;
 
 import org.apache.maven.artifact.manager.WagonManager;
@@ -28,6 +26,8 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.WagonUtil;
 
 /**
  * Publish the generate files using <a href="https://maven.apache.org/wagon/">wagon supported protocols</a> to the
@@ -102,7 +102,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
 
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
-        publishTo( new Repository(this.serverId, this.publishToRepository));
+        this.publishTo( new Repository(this.serverId, this.publishToRepository));
     }
 
     private final void publishTo( final Repository repository ) throws MojoExecutionException {
@@ -111,21 +111,20 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
         }
 
         this.debugFormatted( Messages.PUBLISH_PUBLISHING_TO, this.publishToRepository, this.publishToDirectory, this.serverId );
-
-        publish(inputDirectory, repository);
+        this.publish( this.inputDirectory, repository );
     }
 
     private final void publish( final File directory, final Repository repository )
     throws MojoExecutionException {
         try {
-            final Wagon wagon = wagonManager.getWagon( repository );
+            final Wagon wagon = this.wagonManager.getWagon( repository );
             if ( !wagon.supportsDirectoryCopy() ) {
                 throw new MojoExecutionException(
                     "Wagon protocol '" + repository.getProtocol() + "' doesn't support directory copying" );
             }
-            WagonUtil.configureWagon( wagon, repository.getId(), settings, container, getLog() );
+            WagonUtil.configureWagon( wagon, repository.getId(), this.settings, this.container, this.getLog() );
             final ProxyInfo proxyInfo = WagonUtil.getProxyInfo( this.mavenSession, this.getLog(), repository, this.settingsDecrypter );
-            push( directory, repository, wagon, proxyInfo );
+            this.push( directory, repository, wagon, proxyInfo );
 
         } catch ( final TransferFailedException cause ) {
             final String message = String.format( Messages.PUBLISH_ERROR_UNABLE_TO_CONFIGURE_WAGON, repository.getProtocol() );
@@ -136,7 +135,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
                 + "url=" + repository.getUrl() + ".";
             final String longMessage =
                 "\n" + shortMessage + "\n" + "Currently supported protocols are: "
-                    + WagonUtil.getSupportedProtocols(container, this.getLog()) + ".\n"
+                    + WagonUtil.getSupportedProtocols(this.container, this.getLog()) + ".\n"
                     + "    Protocols may be added through wagon providers.\n" + "    For more information, see "
                     + "http://maven.apache.org/plugins/maven-site-plugin/examples/adding-deploy-protocol.html";
 
@@ -148,7 +147,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
     private final void push(final File directory, final Repository repository, final Wagon wagon, final ProxyInfo proxyInfo)
             throws MojoExecutionException {
         final String repositoryId = repository.getId();
-        final AuthenticationInfo authenticationInfo = wagonManager.getAuthenticationInfo( repositoryId );
+        final AuthenticationInfo authenticationInfo = this.wagonManager.getAuthenticationInfo( repositoryId );
 
         try {
             if( this.getLog().isDebugEnabled() ) {
@@ -163,7 +162,7 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
                 this.debugMessage( Messages.PUBLISH_CONNECT_WITHOUT_PROXY );
                 wagon.connect( repository, authenticationInfo );
             }
-            this.debugFormatted( Messages.PUBLISH_PUSHING_DIRECTORY, directory );
+            this.infoFormatted( Messages.PUBLISH_PUSHING_DIRECTORY, directory, this.publishToDirectory );
             wagon.putDirectory( directory, this.publishToDirectory );
 
         } catch (
@@ -171,22 +170,19 @@ public class PublishMojo extends AbstractAsciidoctorLifecycleMojo implements Con
                 | TransferFailedException
                 | AuthorizationException
                 | ConnectionException
-                |  AuthenticationException cause ) {
+                | AuthenticationException cause ) {
             throw new MojoExecutionException( Messages.PUBLISH_ERROR_PUBLISHING_TO_SERVER, cause );
         } finally {
             try {
                 wagon.disconnect();
             } catch (final ConnectionException cause) {
-                getLog().error( Messages.PUBLISH_ERROR_DISCONNECTING_WAGON, cause);
+                this.getLog().error( Messages.PUBLISH_ERROR_DISCONNECTING_WAGON, cause);
             }
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void contextualize( final Context context ) throws ContextException {
-        container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
+        this.container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+        xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <servers>
+        <server>
+            <id>nexus</id>
+            <username>deployment</username>
+            <password>deployment123</password>
+        </server>
+        <server>
+            <id>nexus-wrong-credentials</id>
+            <username>wrong-user</username>
+            <password>wrong-password</password>
+        </server>
+    </servers>
+
+    <proxies>
+        <proxy>
+            <id>nexus</id>
+            <active>false</active>
+            <protocol>http</protocol>
+            <host>proxy.example.com</host>
+            <port>8080</port>
+            <username>proxyuser</username>
+            <password>somepassword</password>
+            <nonProxyHosts>www.google.com|*.example.com</nonProxyHosts>
+        </proxy>
+    </proxies>
+</settings>

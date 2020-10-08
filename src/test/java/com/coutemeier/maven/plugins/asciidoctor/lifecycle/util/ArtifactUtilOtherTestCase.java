@@ -1,16 +1,22 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.ArtifactUtil;
-
+@Execution( ExecutionMode.CONCURRENT)
 public class ArtifactUtilOtherTestCase {
 
-    @Test(expected = MojoFailureException.class)
+    @Test
+    @Execution( ExecutionMode.CONCURRENT)
     public void invalidCoordinatesTest() throws ArtifactResolutionException, MojoFailureException {
-        ArtifactUtil.downloadByAether("", null, null, null);
+        assertThrows( MojoFailureException.class, () ->
+            ArtifactUtil.downloadByAether("", null, null, null)
+        );
     }
 
 }

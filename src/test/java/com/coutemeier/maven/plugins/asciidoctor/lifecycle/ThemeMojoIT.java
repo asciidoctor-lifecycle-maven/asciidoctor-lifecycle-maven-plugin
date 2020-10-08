@@ -1,61 +1,93 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import io.takari.maven.testing.executor.MavenRuntime.MavenRuntimeBuilder;
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-public class ThemeMojoIT
-extends AbstractMojoIT {
-    public ThemeMojoIT( final MavenRuntimeBuilder builder )
+import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
+import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenGoal;
+import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
+import com.soebes.itf.jupiter.extension.MavenOption;
+import com.soebes.itf.jupiter.extension.MavenTest;
+import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+
+@MavenJupiterExtension
+@Execution( ExecutionMode.CONCURRENT )
+public class ThemeMojoIT {
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-theme" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void themeExists( final MavenExecutionResult result )
     throws Exception {
-        super( builder );
+        final ProjectValidator validator = new ProjectValidator( result );
+        final SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() ).isTrue().as( "Result" );
+        assertions.assertThat( validator.getThemeExample().exists() ).isTrue().as( "themes/theme-example" );
+        assertions.assertThat( validator.getDependencies().containsDependency() ).isFalse().as( "dependency" );
+        assertions.assertAll();
     }
 
-
-    @Test
-    public void themeExistsTest()
-    throws Exception {
-        multimoduleForProject()
-            .execute( "asciidoctor-theme" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.subValidator.themeFilesExists()
-            && this.subValidator.generatedFilesNotExists()
-            && this.subValidator.dependencyNotExists()
-        );
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-theme" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void noThemesConfigured( final MavenExecutionResult result ) {
+        final ProjectValidator validator = new ProjectValidator( result );
+        final SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat( result.isSuccesful() ).isTrue();
+        assertions.assertThat( validator.getThemeExample().containsIndex() ).isFalse();
+        assertions.assertThat( validator.getThemeExample().containsIndexHtml() ).isFalse();
+        assertions.assertThat( validator.getDependencies().containsDependency() ).isFalse();
+        assertions.assertAll();
     }
 
-    @Test
-    public void noThemesConfigured()
-    throws Exception {
-        forProject( "theme/theme-no-themes-configured" )
-            .execute( "asciidoctor-theme" )
-            .assertErrorFreeLog();
-        Assert.assertTrue(
-            this.validator.themeFilesNotExists()
-            && this.validator.generatedFilesNotExists()
-            && this.validator.dependencyNotExists()
-        );
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-theme" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void buildDirectoryDoesNotExists( final MavenExecutionResult result ) {
+        final ProjectValidator validator = new ProjectValidator( result );
+        final SoftAssertions assertions = new SoftAssertions();
+
+        assertThat( result )
+            .out()
+                .plain()
+                    .containsSequence(
+                        "[ERROR] Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectorydoesnotexists: Theme: Error unpacking theme: /dir-doesnt-exists/themes/theme-example/asciidoc/snippets/inprogress.adoc -> [Help 1]",
+                        "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-builddirectorydoesnotexists: Theme: Error unpacking theme"
+                    );
+
+        assertions.assertThat( result.isSuccesful() ).isFalse();
+        assertions.assertThat( validator.getBuild().exists() ).isFalse();
+        assertions.assertAll();
     }
 
-    @Test
-    public void themeBuildDirectoryDoesntExistsTest()
+    @MavenTest
+    @MavenGoal( "clean" )
+    @MavenGoal( "asciidoctor-theme" )
+    @MavenOption( MavenCLIOptions.DEBUG )
+    @Execution( ExecutionMode.CONCURRENT )
+    public void themeDoesNotExist( final MavenExecutionResult result )
     throws Exception {
-        forProject( "theme/theme-buildDirectory-ioexception" )
-            .execute( "asciidoctor-theme" )
-            .assertLogText( Messages.THEME_ERROR_UNPACKING );
+        final ProjectValidator validator = new ProjectValidator( result );
+        final SoftAssertions assertions = new SoftAssertions();
+        assertThat( result )
+            .isFailure()
+            .out()
+                .plain()
+                    .containsSequence(
+                        "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-theme (default-asciidoctor-theme) on project theme-doesnotexists: Theme: Error downloading theme"
+                    );
 
-        Assert.assertTrue( this.validator.buildDirectoryNotExists() );
-    }
-
-    @Test
-    public void themeDoesntExistsTest()
-    throws Exception {
-        forProject( "theme/theme-doesnt-exists" )
-            .execute( "asciidoctor-theme" )
-            .assertLogText( Messages.THEME_ERROR_DOWNLOADING );
-
-        Assert.assertTrue( this.validator.themeFilesNotExists() );
+        assertions.assertThat( result.isSuccesful() ).isFalse();
+        assertions.assertThat( validator.getThemeExample().containsIndex() ).isFalse();
+        assertions.assertAll();
     }
 }

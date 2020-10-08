@@ -2,10 +2,12 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 
 /**
  * Zip utils
@@ -33,20 +35,13 @@ public final class ZipUtil {
      * @since 1.0
      */
     public static void unzip(final File zipFile, final File outputDir) throws IOException {
-        final byte[] buffer = new byte[512];
-
-        try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile))) {
+        try ( final ZipInputStream zis = new ZipInputStream( new FileInputStream(zipFile) ) ) {
             ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
+            while ( zipEntry != null ) {
                 if (!zipEntry.isDirectory()) {
                     final File newFile = resolveZipEntry(outputDir, zipEntry);
                     newFile.getParentFile().mkdirs();
-                    try (final FileOutputStream fos = new FileOutputStream(newFile);) {
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                    }
+                    Files.copy( zis, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING );
                 }
                 zis.closeEntry();
                 zipEntry = zis.getNextEntry();
@@ -69,14 +64,12 @@ public final class ZipUtil {
      * @since 1.0
      */
     private static File resolveZipEntry(final File outputDir, final ZipEntry zipEntry) throws IOException {
-        final File destFile = new File(outputDir, zipEntry.getName());
+        final File file = new File( outputDir, zipEntry.getName( ));
         final String destDirPath = outputDir.getCanonicalPath() + File.separator;
-        final String destFilePath = destFile.getCanonicalPath();
-
+        final String destFilePath = file.getCanonicalPath();
         if (!destFilePath.startsWith(destDirPath)) {
             throw new IOException( "Zip Slip vulnerability: " + zipEntry.getName() );
         }
-
-        return destFile;
+        return file;
     }
 }

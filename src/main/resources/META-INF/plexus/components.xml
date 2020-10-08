@@ -7,19 +7,22 @@
             <configuration>
                 <id>asciidoctor-lifecycle-build</id>
                 <phases>
-                    <phase>asciidoctor-prepare-theme</phase>
+                    <phase>asciidoctor-pre-theme</phase>
                     <phase>asciidoctor-theme</phase>
-                    <phase>asciidoctor-prepare-convert</phase>
+                    <phase>asciidoctor-prepare-resources</phase>
+                    <phase>asciidoctor-pre-convert</phase>
                     <phase>asciidoctor-convert</phase>
                     <phase>asciidoctor-post-convert</phase>
-                    <phase>asciidoctor-prepare-publish</phase>
+                    <phase>asciidoctor-verify</phase>
+                    <phase>asciidoctor-pre-publish</phase>
                     <phase>asciidoctor-publish</phase>
-                    <phase>asciidoctor-prepare-notify</phase>
+                    <phase>asciidoctor-post-publish</phase>
+                    <phase>asciidoctor-pre-notify</phase>
                     <phase>asciidoctor-notify</phase>
                 </phases>
                 <default-phases>
                     <asciidoctor-theme>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-theme</asciidoctor-theme>
-                    <asciidoctor-prepare-convert>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:prepare-sources</asciidoctor-prepare-convert>
+                    <asciidoctor-prepare-resources>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-copy-sources</asciidoctor-prepare-resources>
                     <asciidoctor-convert>org.asciidoctor:asciidoctor-maven-plugin:process-asciidoc</asciidoctor-convert>
                     <asciidoctor-publish>com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:asciidoctor-publish</asciidoctor-publish>
                 </default-phases>

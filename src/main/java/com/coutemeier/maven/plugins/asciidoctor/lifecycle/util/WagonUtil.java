@@ -2,6 +2,7 @@ package com.coutemeier.maven.plugins.asciidoctor.lifecycle.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -69,7 +69,6 @@ public final class WagonUtil {
 
             if ( id != null && id.equals( repositoryId ) && ( server.getConfiguration() != null ) ) {
                 final PlexusConfiguration plexusConf = new XmlPlexusConfiguration( (Xpp3Dom) server.getConfiguration() );
-
                 ComponentConfigurator componentConfigurator = null;
                 try {
                     componentConfigurator = (ComponentConfigurator) container.lookup( ComponentConfigurator.ROLE, "basic" );
@@ -99,21 +98,20 @@ public final class WagonUtil {
     public static ProxyInfo getProxyInfo( final MavenSession mavenSession, final Log log, final Repository repository, final SettingsDecrypter settingsDecrypter ) {
         String protocol = repository.getProtocol();
         String url = repository.getUrl();
+        final String originalProtocol = protocol;
 
         if ( log.isDebugEnabled() ) {
             log.debug( "repository protocol " + protocol );
         }
 
-        final String originalProtocol = protocol;
-
-        if ( StringUtils.equalsIgnoreCase( "dav", protocol ) && url.startsWith( "dav:" ) ) {
+        if ( url.toLowerCase().startsWith( "dav:" ) ) {
             url = url.substring( 4 );
             if ( url.startsWith( "http" ) ) {
                 try {
                     final URL publishRepository = new URL( url );
                     protocol = publishRepository.getProtocol();
                     if ( log.isDebugEnabled() ) {
-                        log.debug( "found dav protocol so transform to real transport protocol " + protocol );
+                        log.debug( "Found dav protocol so transform to real transport protocol " + protocol );
                     }
                 } catch ( MalformedURLException e ) {
                     log.warn( "fail to build URL with " + url );
@@ -127,31 +125,26 @@ public final class WagonUtil {
             final MavenExecutionRequest request = mavenSession.getRequest();
 
             if ( request != null ) {
-                final List<Proxy> proxies = request.getProxies();
+                final List<Proxy> proxies = safe( request.getProxies() );
 
-                if ( proxies != null ) {
-                    for ( Proxy proxy : proxies ) {
-                        if ( proxy.isActive() && ( protocol.equalsIgnoreCase( proxy.getProtocol() )
-                            || originalProtocol.equalsIgnoreCase( proxy.getProtocol() ) ) ) {
-                            final SettingsDecryptionResult result = settingsDecrypter.decrypt( new DefaultSettingsDecryptionRequest( proxy ) );
-                            proxy = result.getProxy();
+                for ( Proxy proxy : proxies ) {
+                    if ( proxy.isActive() && ( protocol.equalsIgnoreCase( proxy.getProtocol() )
+                        || originalProtocol.equalsIgnoreCase( proxy.getProtocol() ) ) ) {
+                        final SettingsDecryptionResult result = settingsDecrypter.decrypt( new DefaultSettingsDecryptionRequest( proxy ) );
+                        final ProxyInfo proxyInfo = new ProxyInfo();
+                        proxy = result.getProxy();
+                        proxyInfo.setHost( proxy.getHost() );
+                        proxyInfo.setType( protocol );
+                        proxyInfo.setPort( proxy.getPort() );
+                        proxyInfo.setNonProxyHosts( proxy.getNonProxyHosts() );
+                        proxyInfo.setUserName( proxy.getUsername() );
+                        proxyInfo.setPassword( proxy.getPassword() );
 
-                            final ProxyInfo proxyInfo = new ProxyInfo();
-                            proxyInfo.setHost( proxy.getHost() );
-                            // so hackish for wagon the protocol is https for site dav:
-                            // dav:https://dav.codehaus.org/mojo/
-                            proxyInfo.setType( protocol );
-                            proxyInfo.setPort( proxy.getPort() );
-                            proxyInfo.setNonProxyHosts( proxy.getNonProxyHosts() );
-                            proxyInfo.setUserName( proxy.getUsername() );
-                            proxyInfo.setPassword( proxy.getPassword() );
+                        log.debug( "found proxyInfo "
+                                        + ( "host:port " + proxyInfo.getHost() + ":" + proxyInfo.getPort()
+                                        + ", " + proxyInfo.getUserName() ) );
 
-                            log.debug( "found proxyInfo "
-                                            + ( "host:port " + proxyInfo.getHost() + ":" + proxyInfo.getPort()
-                                            + ", " + proxyInfo.getUserName() ) );
-
-                            return proxyInfo;
-                        }
+                        return proxyInfo;
                     }
                 }
             }
@@ -182,5 +175,9 @@ public final class WagonUtil {
             log.error( cause );
         }
         return "";
+    }
+
+    private static List<Proxy> safe( final List<Proxy> proxies ) {
+        return ( proxies == null ) ? Collections.emptyList() : proxies;
     }
 }
