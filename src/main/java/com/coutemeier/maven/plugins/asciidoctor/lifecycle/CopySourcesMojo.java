@@ -29,8 +29,8 @@ import com.coutemeier.maven.plugins.asciidoctor.lifecycle.util.FileUtil;
  * @author rrialq
  * @since 1.0
  */
-@Mojo(name = "prepare-sources", requiresProject = true, threadSafe = true)
-public class PrepareSourcesMojo extends AbstractAsciidoctorLifecycleMojo {
+@Mojo(name = "asciidoctor-copy-sources", requiresProject = true, threadSafe = true)
+public class CopySourcesMojo extends AbstractAsciidoctorLifecycleMojo {
     @Override
     protected void doExecute() throws MojoExecutionException, MojoFailureException {
         try {

@@ -54,11 +54,13 @@ This section will disappear with the final release.
 * Renamed ```asciidoctor-prepare-notify``` to ```asciidoctor-pre-notify```.
 * Renamed ```asciidoctor-prepare-publish``` to ```asciidoctor-pre-publish```.
 * Renamed ```asciidoctor-prepare-theme``` to ```asciidoctor-pre-theme```.
+* Renamed ```PrepareSourcesMojo.java``` to ```CopySourcesMojo.java``` (and integration test related files).
 * Takari tests were replaced with https://github.com/khmarbaise/maven-it-extension[Integration Testing Framework].
 * JUnit4 was replaced with https://junit.org/junit5/[JUnit5] and AssertJ.
 * Some tests now owns their own IT class.
 * Removed one ignored test (publishWithProxy) and one redundant test (publishWithoutProxy).
-* Now all the tests can be executed in CONCURRENT.
+* Now tests can be executed in parallel with ```-Pparallel```.
+* Now jacoco execution is optional. You can enable it with ```-Pquality```.
 
 .2020/04/23
 * Files `README.adoc` and `lifecycle.adoc` updated.

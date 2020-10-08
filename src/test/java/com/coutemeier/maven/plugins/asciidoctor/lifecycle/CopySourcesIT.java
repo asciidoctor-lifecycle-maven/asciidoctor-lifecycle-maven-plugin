@@ -16,10 +16,10 @@ import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 
 @MavenJupiterExtension
 @Execution( ExecutionMode.CONCURRENT )
-public class PrepareSourcesIT {
+public class CopySourcesIT {
     @MavenTest
     @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-pre-convert" )
+    @MavenGoal( "asciidoctor-prepare-resources" )
     @MavenOption( MavenCLIOptions.DEBUG )
     @Execution( ExecutionMode.CONCURRENT )
     public void missingBuildDirectory( MavenExecutionResult result )
@@ -28,13 +28,13 @@ public class PrepareSourcesIT {
             .isFailure()
             .out()
             .plain()
-            .containsSequence( "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:prepare-sources (default-prepare-sources) on project prepare-sources-ioexception: " + Messages.PREPARE_SOURCES_ERROR_PREPARING )
+            .containsSequence( "org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal com.coutemeier.maven.plugins:asciidoctor-lifecycle-maven-plugin:1.0-SNAPSHOT:asciidoctor-copy-sources (default-asciidoctor-copy-sources) on project prepare-sources-ioexception: Error preparing asciidoctor sources" )
         ;
     }
 
     @MavenTest
     @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-pre-convert" )
+    @MavenGoal( "asciidoctor-prepare-resources" )
     @MavenOption( MavenCLIOptions.DEBUG )
     @Execution( ExecutionMode.CONCURRENT )
     public void missingSourceDirectory( MavenExecutionResult result )

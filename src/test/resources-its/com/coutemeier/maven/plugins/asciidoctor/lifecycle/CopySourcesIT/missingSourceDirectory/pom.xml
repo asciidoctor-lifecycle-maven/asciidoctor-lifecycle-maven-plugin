@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coutemeier.maven.plugins.test</groupId>
-    <artifactId>prepare-sources-ioexception</artifactId>
+    <artifactId>prepare-sources-source-directory</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -12,7 +12,7 @@
     </properties>
 
     <build>
-        <defaultGoal>clean asciidoctor-pre-convert</defaultGoal>
+        <defaultGoal>clean asciidoctor-copy-sources</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>com.coutemeier.maven.plugins</groupId>
