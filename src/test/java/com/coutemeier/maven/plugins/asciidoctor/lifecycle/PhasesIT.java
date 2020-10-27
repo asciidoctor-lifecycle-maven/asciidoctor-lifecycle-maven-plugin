@@ -1,26 +1,20 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
-import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenDebug;
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
-import com.soebes.itf.jupiter.extension.MavenOption;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+import org.assertj.core.api.SoftAssertions;
 
 @MavenJupiterExtension
-@Execution( ExecutionMode.CONCURRENT )
+@MavenDebug
 public class PhasesIT {
 
     @MavenTest
     @MavenGoal( "clean" )
     @MavenGoal( "asciidoctor-pre-convert" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void prepareConvertGoal( MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );
@@ -35,8 +29,6 @@ public class PhasesIT {
     @MavenTest
     @MavenGoal( "clean" )
     @MavenGoal( "asciidoctor-convert" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void convertGoal( final MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );
@@ -52,8 +44,6 @@ public class PhasesIT {
     @MavenTest
     @MavenGoal( "clean" )
     @MavenGoal( "package" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void packageGoal( final MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );

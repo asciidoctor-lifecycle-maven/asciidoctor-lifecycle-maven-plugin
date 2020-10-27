@@ -1,31 +1,25 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
-
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
-import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenDebug;
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
-import com.soebes.itf.jupiter.extension.MavenOption;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.extension.SystemProperty;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
+
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
 @MavenJupiterExtension
-@Execution( ExecutionMode.CONCURRENT )
+@MavenGoal("clean")
+@MavenGoal("asciidoctor-convert")
+@MavenDebug
 public class SkipParameterIT {
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-convert" )
-    @MavenOption( MavenCLIOptions.DEBUG )
     @SystemProperty( value="asciidoctor.skip", content="true" )
     @DisplayName( "asciidoctor.skip=true" )
-    @Execution( ExecutionMode.CONCURRENT )
     public void skipTrue( MavenExecutionResult result )
     throws Exception {
         assertThat( result )
@@ -42,12 +36,8 @@ public class SkipParameterIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-convert" )
-    @MavenOption( MavenCLIOptions.DEBUG )
     @SystemProperty( value="asciidoctor.skip", content="false" )
     @DisplayName( "asciidoctor.skip=false" )
-    @Execution( ExecutionMode.CONCURRENT )
     public void skipFalse( MavenExecutionResult result )
     throws Exception {
         assertThat( result )
@@ -64,11 +54,7 @@ public class SkipParameterIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-convert" )
-    @MavenOption( MavenCLIOptions.DEBUG )
     @DisplayName( "asciidoctor.skip absent" )
-    @Execution( ExecutionMode.CONCURRENT )
     public void skipMissing( MavenExecutionResult result )
     throws Exception {
         assertThat( result )

@@ -1,23 +1,18 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
-
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
-import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenDebug;
 import com.soebes.itf.jupiter.extension.MavenGoal;
-import com.soebes.itf.jupiter.extension.MavenOption;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
 public class PublishToUnsupportedProtocolsIT
 extends AbstractPublishMojoIT {
     @MavenTest
     @MavenGoal( "clean" )
     @MavenGoal( "asciidoctor-publish" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
+    @MavenDebug
     public void publishToSamba( final MavenExecutionResult result ) {
         assertThat( result )
             .isFailure()
