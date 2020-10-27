@@ -1,27 +1,21 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
-
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
-import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenDebug;
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
-import com.soebes.itf.jupiter.extension.MavenOption;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+import org.assertj.core.api.SoftAssertions;
+
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
 @MavenJupiterExtension
-@Execution( ExecutionMode.CONCURRENT )
+@MavenGoal( "clean" )
+@MavenGoal( "asciidoctor-prepare-resources" )
+@MavenDebug
 public class CopySourcesIT {
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-prepare-resources" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void missingBuildDirectory( MavenExecutionResult result )
     throws Exception {
         assertThat( result )
@@ -33,10 +27,6 @@ public class CopySourcesIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-prepare-resources" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void missingSourceDirectory( MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );
