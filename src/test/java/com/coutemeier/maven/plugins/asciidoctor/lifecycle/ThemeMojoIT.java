@@ -1,27 +1,21 @@
 package com.coutemeier.maven.plugins.asciidoctor.lifecycle;
 
-import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
-
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
 import com.coutemeier.maven.plugins.asciidoctor.lifecycle.vo.ProjectValidator;
-import com.soebes.itf.jupiter.extension.MavenCLIOptions;
+import com.soebes.itf.jupiter.extension.MavenDebug;
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
-import com.soebes.itf.jupiter.extension.MavenOption;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
+import org.assertj.core.api.SoftAssertions;
+
+import static com.soebes.itf.extension.assertj.MavenITAssertions.assertThat;
 
 @MavenJupiterExtension
-@Execution( ExecutionMode.CONCURRENT )
+@MavenGoal("clean")
+@MavenGoal("asciidoctor-theme")
+@MavenDebug
 public class ThemeMojoIT {
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-theme" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void themeExists( final MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );
@@ -33,10 +27,6 @@ public class ThemeMojoIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-theme" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void noThemesConfigured( final MavenExecutionResult result ) {
         final ProjectValidator validator = new ProjectValidator( result );
         final SoftAssertions assertions = new SoftAssertions();
@@ -48,10 +38,6 @@ public class ThemeMojoIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-theme" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void buildDirectoryDoesNotExists( final MavenExecutionResult result ) {
         final ProjectValidator validator = new ProjectValidator( result );
         final SoftAssertions assertions = new SoftAssertions();
@@ -70,10 +56,6 @@ public class ThemeMojoIT {
     }
 
     @MavenTest
-    @MavenGoal( "clean" )
-    @MavenGoal( "asciidoctor-theme" )
-    @MavenOption( MavenCLIOptions.DEBUG )
-    @Execution( ExecutionMode.CONCURRENT )
     public void themeDoesNotExist( final MavenExecutionResult result )
     throws Exception {
         final ProjectValidator validator = new ProjectValidator( result );
