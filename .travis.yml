@@ -3,7 +3,13 @@ jdk:
     - openjdk8
 sudo: false # faster builds
 
+# Do no separate mvn install ..
+install: skip
+
 script:
         - "mvn clean verify jacoco:report jacoco:report-integration -Pquality -Pparallel"
 after_success:
         - "mvn coveralls:report -Pquality"
+cache:
+  directories:
+  - $HOME/.m2
